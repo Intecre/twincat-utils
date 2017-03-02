@@ -1,0 +1,201 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+  <POU Name="T_Task" Id="{91408a89-9e5e-4cd9-a531-bed854a04d51}" SpecialFunc="None">
+    <Declaration><![CDATA[// Exposes _TaskInfo[x] information for the task index the object is instantied in.
+//
+// After declaration, each property can be directly accessed.
+//
+// Set the index using task.Index
+FUNCTION_BLOCK T_Task // Simply exposes task information.
+VAR
+// Backing Properties
+	_index : BYTE := 1;
+	_cycleTimeInMs : LREAL;
+	_isFirstScan : BOOL;
+	_cycleTimeExceeded : BOOL;
+	_name : STRING(63);
+	_runTimeInMs : UDINT;
+	_distributedClockTimeInMs : LINT;
+
+// FBs
+	initialised : BOOL := FALSE;
+	taskIndex : GETCURTASKINDEX;
+	
+END_VAR
+
+VAR CONSTANT
+	HUNDRED_NS_IN_MS : LINT := 10000;
+	NS_IN_MS : LINT := 1000000;
+END_VAR
+
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+
+]]></ST>
+    </Implementation>
+    <Folder Name="Properties" Id="{40705766-e38a-4fab-b379-1b30258dfd7b}" />
+    <Property Name="CycleCount" Id="{6041aa89-f745-4903-948c-e044fe1a39e9}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Number of task cycles executed.
+PROPERTY PUBLIC CycleCount : UDINT ]]></Declaration>
+      <Get Name="Get" Id="{af07d638-7ccb-41a9-8d1f-19e3538be3a6}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[cycleCount := TwinCAT_SystemInfoVarList._TaskInfo[_index].CycleCount;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="CyclesPerSecond" Id="{8e563278-f639-4356-aa4b-c2aadc67d469}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Configured cycles per second (1 / task time)
+PROPERTY CyclesPerSecond : LREAL ]]></Declaration>
+      <Get Name="Get" Id="{8ba279ac-4db3-4e47-88a6-9987f4f4010d}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[CyclesPerSecond := 1 / CycleTimeInSecs;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="CycleTimeExceeded" Id="{2dc58f71-ecc5-4281-a35b-f01931a07368}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Last cycle time exceeded
+PROPERTY CycleTimeExceeded : BOOL ]]></Declaration>
+      <Get Name="Get" Id="{ba7b93c6-8197-4cca-9c0d-7bcf6c56b937}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_cycleTimeExceeded := TwinCAT_SystemInfoVarList._TaskInfo[_index].CycleTimeExceeded;
+cycleTimeExceeded := _cycleTimeExceeded;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="CycleTimeInMs" Id="{58f2eb2c-ba92-4545-b960-fd1836a8957c}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Configured task cycle time in ms
+PROPERTY CycleTimeInMs : LREAL ]]></Declaration>
+      <Get Name="Get" Id="{4fb0f5c0-b166-4fd4-8daa-1e863446cffa}">
+        <Declaration><![CDATA[VAR
+	myByte : BYTE;
+END_VAR]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[myByte := _index;
+_cycleTimeInMs := TwinCAT_SystemInfoVarList._TaskInfo[myByte].CycleTime / LINT_TO_UDINT(HUNDRED_NS_IN_MS); // CycleTime expressed in 100ns units.
+cycleTimeInMs := _cycleTimeInMs;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="CycleTimeInSecs" Id="{df7cd388-77d1-449a-9343-e24dd5989a77}" FolderPath="Properties\">
+      <Declaration><![CDATA[// Configured task cycle time in seconds
+PROPERTY CycleTimeInSecs : LREAL ]]></Declaration>
+      <Get Name="Get" Id="{f02673c2-dc80-4fe8-9256-f7098f020899}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[CycleTimeInSecs:= CycleTimeInMs / 1000;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="DistributedClockTimeInMs" Id="{ad308fd0-a973-437e-be58-90470e8ef930}" FolderPath="Properties\">
+      <Declaration><![CDATA[//Distributed clock time in milliseconds.
+PROPERTY PUBLIC DistributedClockTimeInMs : LINT]]></Declaration>
+      <Get Name="Get" Id="{2d876189-ac67-4e4f-9a27-b4eeaad97533}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_distributedClockTimeInMs := TwinCAT_SystemInfoVarList._TaskInfo[_index].DcTaskTime / NS_IN_MS; // CycleTime expressed ns.
+DistributedClockTimeInMs := _distributedClockTimeInMs;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Index" Id="{e3f963f0-b880-4563-9015-cbd2aab42b42}" FolderPath="Properties\">
+      <Declaration><![CDATA[//Get/Set the task for the infomration required. Can use "SetToThisTask()" to set to local task.
+PROPERTY PUBLIC Index : BYTE ]]></Declaration>
+      <Get Name="Get" Id="{3a6c812c-f41b-414b-abab-4b0101e262da}">
+        <Declaration><![CDATA[PUBLIC 
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Index := _index;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{56c7d3a0-c8fb-4dd5-b35a-fc3e2d7423a5}">
+        <Declaration><![CDATA[PUBLIC ]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_index := Index;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="IsFirstScan" Id="{1aa53d71-32fb-4f84-86ef-4fa13b3630c5}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY IsFirstScan : BOOL]]></Declaration>
+      <Get Name="Get" Id="{9d3a93a4-63a8-463f-9b32-444c5411721f}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_isFirstScan := TwinCAT_SystemInfoVarList._TaskInfo[_index].FirstCycle;
+IsFirstScan := _isFirstScan;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Name" Id="{58ad3b49-926d-4ebc-8baa-2c23d6ed7d4f}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY Name : STRING(63) ]]></Declaration>
+      <Get Name="Get" Id="{3997e70e-6fe6-470b-b9d3-da89c8ae110d}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_name := TwinCAT_SystemInfoVarList._TaskInfo[_index].TaskName;
+Name := _name;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="SetToThisTask" Id="{5eb1e400-790b-4fee-887d-61c3d51d6183}">
+      <Declaration><![CDATA[//set the task object to this task
+METHOD PUBLIC SetToThisTask : BOOL
+VAR
+	curTask : GETCURTASKINDEX;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[curTask();
+Index := curTask.index;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="T_Task">
+      <LineId Id="3" Count="1" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Task.CycleCount.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Task.CyclesPerSecond.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Task.CycleTimeExceeded.Get">
+      <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Task.CycleTimeInMs.Get">
+      <LineId Id="3" Count="1" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Task.CycleTimeInSecs.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Task.DistributedClockTimeInMs.Get">
+      <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Task.Index.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Task.Index.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Task.IsFirstScan.Get">
+      <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Task.Name.Get">
+      <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Task.SetToThisTask">
+      <LineId Id="9" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,226 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+  <POU Name="FB_ParameterList" Id="{3f9645d7-6387-4cd5-895d-f3c9df1ec9bd}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_ParameterList // store params for permanence. THEY MUST BE PART OF AN OBJECT ELSEWHERE!
+VAR
+	_unNumberOfEntries : UDINT;
+	_unIndexForProperties : UDINT;
+	asDictionary : ARRAY[0..MAX_DICTIONARY_SIZE] OF ST_KeyReferencePair;
+END_VAR
+VAR CONSTANT
+	MAX_DICTIONARY_SIZE : UDINT := 1000; // arbitrary
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="AddToList" Id="{d05a8a52-c1d6-4e36-b214-7645d6c4eaf0}">
+      <Declaration><![CDATA[METHOD PUBLIC AddToList : BOOL
+VAR_INPUT
+	sKey : T_MaxString;
+	tRef : T_Arg;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF KeyExists(sKey) THEN
+	RETURN;
+END_IF
+
+IF _unNumberOfEntries + 1 > MAX_DICTIONARY_SIZE THEN
+	RETURN;
+END_IF
+
+asDictionary[_unNumberOfEntries].Key := sKey;
+asDictionary[_unNumberOfEntries].Ref := tRef;
+
+_unNumberOfEntries := _unNumberOfEntries + 1;
+
+AddToList := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ClearList" Id="{6f827b07-8f82-44ed-947b-3d6bd655006c}">
+      <Declaration><![CDATA[METHOD PUBLIC ClearList
+VAR 
+	indexer : UDINT;
+	sBlankKeyRef : ST_KeyReferencePair;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR indexer := 0 TO _unNumberOfEntries - 1 DO
+	asDictionary[indexer] := sBlankKeyRef;
+END_FOR
+
+_unNumberOfEntries := 0;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="GetByKey" Id="{06685ac5-b98f-4071-a66a-01c516768f42}">
+      <Declaration><![CDATA[METHOD PUBLIC GetByKey : T_Arg
+VAR_INPUT
+	sKey : STRING;
+END_VAR
+
+VAR
+	indexer : UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR indexer := 0 TO _unNumberOfEntries - 1 DO
+	
+	IF asDictionary[indexer].Key = sKey THEN
+		GetByKey := asDictionary[indexer].Ref;
+		RETURN;
+	END_IF;
+	
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Index" Id="{009f4fce-e464-4d5a-9cd0-87e23737cca6}">
+      <Declaration><![CDATA[PROPERTY PUBLIC Index : UDINT]]></Declaration>
+      <Get Name="Get" Id="{9f5a3d34-8b66-40c1-abef-b68b9540fbba}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Index := _unIndexForProperties;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{74eb379e-0e95-41f5-90e8-3125ee755ee4}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF Index  < _unNumberOfEntries THEN
+	_unIndexForProperties := Index;
+ELSE
+	_unIndexForProperties := _unNumberOfEntries;
+END_IF]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="IndexKey" Id="{09de8396-8d5d-4a8a-b634-d98a7f39a972}">
+      <Declaration><![CDATA[PROPERTY PRIVATE IndexKey : STRING]]></Declaration>
+      <Get Name="Get" Id="{05470053-518e-4ad1-b6a3-68749e5ce6f8}">
+        <Declaration><![CDATA[PUBLIC 
+
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF _unIndexForProperties < _unNumberOfEntries THEN
+	IndexKey := asDictionary[_unIndexForProperties].Key;
+END_IF;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="IndexRef" Id="{d14235a0-ac6a-4177-8059-3e8716ceb6fc}">
+      <Declaration><![CDATA[PROPERTY PRIVATE IndexRef : T_Arg]]></Declaration>
+      <Get Name="Get" Id="{fa7f3b9d-4a46-49bd-8b16-374553f20bad}">
+        <Declaration><![CDATA[PUBLIC 
+
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF _unIndexForProperties < _unNumberOfEntries THEN
+	IndexRef := asDictionary[_unIndexForProperties].Ref;
+END_IF;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="KeyExists" Id="{752b1774-5a23-4c01-b8a8-82d741be2047}">
+      <Declaration><![CDATA[METHOD PUBLIC KeyExists : BOOL
+VAR_INPUT
+	sKey : T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[KeyExists := NOT(F_ARGISZERO(GetByKey(sKey)));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RemoveByIndex" Id="{01f75a79-2299-4f43-a88d-488087a050a4}">
+      <Declaration><![CDATA[{warning 'add FB_.ParameterList.RemoveByIndex implementation'}
+METHOD RemoveByIndex : BOOL
+VAR_INPUT
+	unListEntry : UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RemoveByKey" Id="{77a5373a-3da1-4c52-9767-2fd1ed6bd18e}">
+      <Declaration><![CDATA[{warning 'add FB_.ParameterList.RemoveByKey implementation'}
+METHOD RemoveByKey : BOOL
+VAR_INPUT
+	sKey : T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="unNumberOfEntries" Id="{dbedab0d-4484-4603-b95c-bd0bd0999e01}">
+      <Declaration><![CDATA[PROPERTY PUBLIC unNumberOfEntries : UDINT]]></Declaration>
+      <Get Name="Get" Id="{e0f330d6-3631-4fb3-942e-4eb7107aa48d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[unNumberOfEntries := _unNumberOfEntries;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <LineIds Name="FB_ParameterList">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ParameterList.AddToList">
+      <LineId Id="38" Count="1" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="47" Count="3" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ParameterList.ClearList">
+      <LineId Id="10" Count="1" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ParameterList.GetByKey">
+      <LineId Id="16" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="14" Count="1" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ParameterList.Index.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ParameterList.Index.Set">
+      <LineId Id="3" Count="3" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ParameterList.IndexKey.Get">
+      <LineId Id="3" Count="1" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ParameterList.IndexRef.Get">
+      <LineId Id="3" Count="1" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ParameterList.KeyExists">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ParameterList.RemoveByIndex">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ParameterList.RemoveByKey">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ParameterList.unNumberOfEntries.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

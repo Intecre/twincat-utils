@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+  <POU Name="F_Logger" Id="{852c98e6-427b-41a5-90fd-93ad32d4751e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION F_Logger : STRING;
+VAR_INPUT
+	LogSeverity : E_LogSeverity;
+	Message : T_MaxString;
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[ADSLOGSTR(LogSeverity OR ADSLOG_MSGTYPE_LOG, Message, '');
+F_Logger := Message;]]></ST>
+    </Implementation>
+    <LineIds Name="F_Logger">
+      <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
