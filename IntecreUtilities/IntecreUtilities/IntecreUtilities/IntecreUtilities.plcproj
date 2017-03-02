@@ -61,6 +61,9 @@ Added Task.CyclesPerSeconds
     <Compile Include="System\T_Task.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utilities\aewaec.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Utilities\Conversion\CharIsNumberOrPeriod.TcPOU">
       <SubType>Code</SubType>
     </Compile>
