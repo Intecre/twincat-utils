@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+  <POU Name="FB_Assert" Id="{ecb56ce5-5949-45d6-a7a3-6a44bf4e9be1}" SpecialFunc="None">
+    <Declaration><![CDATA[//A series of methods for use when testing functionality.
+FUNCTION_BLOCK PUBLIC FB_Assert]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="FinishedTestingMsg" Id="{106987b1-ce00-47e4-aac5-d476825cced6}">
+      <Declaration><![CDATA[METHOD FinishedTestingMsg]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[F_LogInfo('... Finished Testing');]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FloatsAreDifferent" Id="{ab1883dd-fa0d-4b4f-ab8d-1b1323d1918b}">
+      <Declaration><![CDATA[METHOD FINAL FloatsAreDifferent : BOOL
+VAR_INPUT
+	Float_1 : LREAL;
+	Float_2 : LREAL;
+	Precision : LREAL; // floating point precision.
+	FailMsg : T_MaxString;
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ABS(Float_1 - Float_2) <= Precision THEN
+	F_LogError( 
+		CONCAT('Assert.FloatsAreDifferent failed: ', FailMsg ) 
+	);
+ELSE
+	FloatsAreDifferent := TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FloatsAreEqual" Id="{77593574-aaba-4f16-88d4-b5011110ee23}">
+      <Declaration><![CDATA[METHOD FINAL FloatsAreEqual : BOOL
+VAR_INPUT
+	Float_1 : LREAL;
+	Float_2 : LREAL;
+	Precision : LREAL; // floating point precision.
+	FailMsg : T_MaxString;
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ABS(Float_1 - Float_2) > Precision THEN
+	F_LogError( 
+		CONCAT('Assert.FloatsAreEqual failed: ', FailMsg ) 
+	);
+ELSE
+	FloatsAreEqual := TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="IsFalse" Id="{93a463f2-4d73-4cc3-b90b-0a8fb8b299f2}">
+      <Declaration><![CDATA[METHOD FINAL IsFalse : BOOL
+VAR_INPUT
+	Condition : BOOL;
+	FailMsg : T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF Condition THEN
+	F_LogError( 
+		CONCAT( 'Assert.IsFalse failed: ', FailMsg ) 
+	);	
+ELSE
+	IsFalse := TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="IsTrue" Id="{f4a50788-6073-4164-9cb5-a901d67a227a}">
+      <Declaration><![CDATA[METHOD FINAL IsTrue : BOOL
+VAR_INPUT
+	Condition : BOOL;
+	FailMsg : T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT Condition THEN
+	F_LogError( 
+		CONCAT( 'Assert.IsTrue failed: ', FailMsg ) 
+	);
+ELSE
+	IsTrue := TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="StartTestingMsg" Id="{01264389-f134-4d34-bb86-b5a5b91ced6b}">
+      <Declaration><![CDATA[METHOD PUBLIC StartTestingMsg
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[F_LogInfo('Testing started...');]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_Assert">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Assert.FinishedTestingMsg">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Assert.FloatsAreDifferent">
+      <LineId Id="12" Count="5" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Assert.FloatsAreEqual">
+      <LineId Id="12" Count="5" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Assert.IsFalse">
+      <LineId Id="14" Count="5" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Assert.IsTrue">
+      <LineId Id="9" Count="5" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Assert.StartTestingMsg">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

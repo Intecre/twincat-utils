@@ -29,10 +29,11 @@
     <Released>true</Released>
     <Placeholder>Intecre.Utilities</Placeholder>
     <Author>Mark Lazarides</Author>
-    <Title>IL Utilities</Title>
+    <Title>Intecre.Utilities</Title>
     <DefaultNamespace>Intecre.Utilities</DefaultNamespace>
-    <Description>1.5.2 - fixed task initialisation bug
+    <Description>1.6.0 - addition of Assert FB, with methods to aid testing.
 
+1.5.2 - fixed task initialisation bug
 1.5.1 - modifying TryStringToLreal to avoid rounding error.
 
 1.5.0 - Added FB_List
@@ -43,7 +44,7 @@
 Added Task.CyclesPerSeconds
 </Description>
     <DocFormat>reStructuredText</DocFormat>
-    <ProjectVersion>1.5.2</ProjectVersion>
+    <ProjectVersion>1.6.1</ProjectVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Project Information\F_GetCompany.TcPOU">
@@ -59,9 +60,6 @@ Added Task.CyclesPerSeconds
       <SystemCall>true</SystemCall>
     </Compile>
     <Compile Include="System\T_Task.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Utilities\aewaec.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\Conversion\CharIsNumberOrPeriod.TcPOU">
@@ -125,6 +123,9 @@ Added Task.CyclesPerSeconds
     <Compile Include="Utilities\String\F_Concat6.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utilities\Testing\FB_Assert.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Version\Global_Version.TcGVL">
       <SubType>Code</SubType>
     </Compile>
@@ -137,6 +138,7 @@ Added Task.CyclesPerSeconds
     <Folder Include="System" />
     <Folder Include="Utilities\Logger" />
     <Folder Include="Utilities\Conversion" />
+    <Folder Include="Utilities\Testing" />
     <Folder Include="Utilities\Object Tracking" />
     <Folder Include="Utilities\String" />
     <Folder Include="Version" />

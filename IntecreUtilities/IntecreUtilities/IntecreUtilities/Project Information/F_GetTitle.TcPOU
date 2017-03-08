@@ -9,11 +9,11 @@ VAR_INPUT
 	
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[F_GetTitle := "IL Utilities";
+      <ST><![CDATA[F_GetTitle := "Intecre.Utilities";
 ]]></ST>
     </Implementation>
     <LineIds Name="F_GetTitle">
-      <LineId Id="470" Count="0" />
+      <LineId Id="483" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>
   </POU>
