@@ -31,8 +31,9 @@
     <Author>Mark Lazarides</Author>
     <Title>Intecre.Utilities</Title>
     <DefaultNamespace>Intecre.Utilities</DefaultNamespace>
-    <Description>1.6.2.0 - added FBs for loggers, building in edge catching.
+    <Description>1.6.2.1 - exposed the trigger flag (.Q) for FBLoggers
 
+1.6.2.0 - added FBs for loggers, building in edge catching.
 1.6.1.1 - testing global  data type in libs
 1.6.0 - addition of Assert FB, with methods to aid testing.
 
@@ -47,7 +48,7 @@
 Added Task.CyclesPerSeconds
 </Description>
     <DocFormat>reStructuredText</DocFormat>
-    <ProjectVersion>1.6.2.0</ProjectVersion>
+    <ProjectVersion>1.6.2.1</ProjectVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Project Information\F_GetCompany.TcPOU">

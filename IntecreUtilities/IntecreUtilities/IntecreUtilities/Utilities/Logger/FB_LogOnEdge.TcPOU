@@ -8,6 +8,9 @@ VAR_INPUT
 	LogSeverity : E_LogSeverity; // severity
 	EventFallingEdge : BOOL := FALSE; // TRUE for falling edge, FALSE for rising edge.
 END_VAR
+VAR_OUTPUT
+	Q : BOOL;
+END_VAR
 VAR
 	rt : R_TRIG;
 	ft : F_TRIG;
@@ -20,32 +23,50 @@ END_VAR
       <ST><![CDATA[rt(CLK := Event);
 ft(CLK := Event);
 
-IF SEL(EventFallingEdge, rt.Q, ft.Q) THEN
+Q := SEL(EventFallingEdge, rt.Q, ft.Q);
+
+IF Q THEN
 	
 	CASE LogSeverity OF
-		E_LogSeverity.Info : 
-			F_LogInfo(Message);
-		E_LogSeverity.Warning :
-			F_LogWarning(Message);
-		E_LogSeverity.Error :
-			F_LogError(Message);
-	ELSE
+		
+		E_LogSeverity.Info : F_LogInfo(Message);
+			
+		E_LogSeverity.Warning :	F_LogWarning(Message);
+			
+		E_LogSeverity.Error : F_LogError(Message);
+	ELSE 
+		
 		F_LogError(
-			CONCAT('Error in FB_LogOnEdge, Logseverity incorrect. Log Message for event is : ', Message)
+			CONCAT(
+				'Error in FB_LogOnEdge, Logseverity incorrect. Log Message for event is : ', 
+				Message
+			)
 		);
+		
 	END_CASE
 	
 END_IF]]></ST>
     </Implementation>
     <LineIds Name="FB_LogOnEdge">
       <LineId Id="20" Count="0" />
+      <LineId Id="65" Count="0" />
       <LineId Id="39" Count="0" />
+      <LineId Id="66" Count="0" />
       <LineId Id="29" Count="0" />
       <LineId Id="40" Count="0" />
       <LineId Id="30" Count="0" />
+      <LineId Id="69" Count="0" />
       <LineId Id="32" Count="0" />
-      <LineId Id="34" Count="3" />
-      <LineId Id="41" Count="4" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="43" Count="1" />
+      <LineId Id="76" Count="2" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="75" Count="0" />
       <LineId Id="33" Count="0" />
       <LineId Id="46" Count="0" />
       <LineId Id="31" Count="0" />

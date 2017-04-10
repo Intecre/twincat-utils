@@ -7,6 +7,9 @@ VAR_INPUT
 	Message : T_MaxString; // Log message
 	EventFallingEdge : BOOL := FALSE; // Defined which edge: FALSE = rising TRUE = falling, 
 END_VAR
+VAR_OUTPUT
+	Q : BOOL;
+END_VAR
 VAR
 	fbLogEdge : FB_LogOnEdge;
 END_VAR
@@ -16,11 +19,13 @@ END_VAR
 	Event:= Event, 
 	Message:= Message, 
 	LogSeverity:= E_LogSeverity.Info, 
-	EventFallingEdge:= EventFallingEdge
+	EventFallingEdge:= EventFallingEdge,
+	Q => Q
 );]]></ST>
     </Implementation>
     <LineIds Name="FB_LogInfoEdge">
-      <LineId Id="15" Count="4" />
+      <LineId Id="15" Count="3" />
+      <LineId Id="32" Count="1" />
       <LineId Id="9" Count="0" />
     </LineIds>
   </POU>
