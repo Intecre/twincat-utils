@@ -31,7 +31,10 @@
     <Author>Mark Lazarides</Author>
     <Title>Intecre.Utilities</Title>
     <DefaultNamespace>Intecre.Utilities</DefaultNamespace>
-    <Description>1.6.0 - addition of Assert FB, with methods to aid testing.
+    <Description>1.6.2.0 - added FBs for loggers, building in edge catching.
+
+1.6.1.1 - testing global  data type in libs
+1.6.0 - addition of Assert FB, with methods to aid testing.
 
 1.5.2 - fixed task initialisation bug
 1.5.1 - modifying TryStringToLreal to avoid rounding error.
@@ -44,7 +47,7 @@
 Added Task.CyclesPerSeconds
 </Description>
     <DocFormat>reStructuredText</DocFormat>
-    <ProjectVersion>1.6.1</ProjectVersion>
+    <ProjectVersion>1.6.2.0</ProjectVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Project Information\F_GetCompany.TcPOU">
@@ -81,6 +84,18 @@ Added Task.CyclesPerSeconds
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\Logger\E_LogSeverity.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\Logger\FB_LogErrorEdge.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\Logger\FB_LogWarningEdge.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\Logger\FB_LogOnEdge.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\Logger\FB_LogInfoEdge.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\Logger\F_LogError.TcPOU">
@@ -170,6 +185,9 @@ Added Task.CyclesPerSeconds
     <None Include="IntecreUtilities.tmc">
       <SubType>Content</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PinnedGlobalDataType Include="stTestGlobalLibExport" />
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>
