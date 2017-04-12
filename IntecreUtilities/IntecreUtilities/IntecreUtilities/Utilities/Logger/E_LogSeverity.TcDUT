@@ -7,7 +7,7 @@ TYPE E_LogSeverity :
 (
 	Info := ADSLOG_MSGTYPE_HINT,
 	Warning := ADSLOG_MSGTYPE_WARN,
-	Error := ADSLOG_MSGTYPE_ERROR	
+	Error := ADSLOG_MSGTYPE_ERROR
 ) DWORD;
 END_TYPE
 ]]></Declaration>

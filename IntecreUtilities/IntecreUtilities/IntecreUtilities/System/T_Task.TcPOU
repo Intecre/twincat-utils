@@ -134,7 +134,8 @@ IsFirstScan := _isFirstScan;]]></ST>
       </Get>
     </Property>
     <Property Name="Name" Id="{58ad3b49-926d-4ebc-8baa-2c23d6ed7d4f}" FolderPath="Properties\">
-      <Declaration><![CDATA[PROPERTY Name : STRING(63) ]]></Declaration>
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'}
+PROPERTY Name : STRING(63) ]]></Declaration>
       <Get Name="Get" Id="{3997e70e-6fe6-470b-b9d3-da89c8ae110d}">
         <Declaration><![CDATA[]]></Declaration>
         <Implementation>

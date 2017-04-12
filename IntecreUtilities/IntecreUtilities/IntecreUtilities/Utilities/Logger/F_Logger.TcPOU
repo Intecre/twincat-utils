@@ -9,11 +9,15 @@ END_VAR
 
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[ADSLOGSTR(LogSeverity OR ADSLOG_MSGTYPE_LOG, Message, '');
-F_Logger := Message;]]></ST>
+      <ST><![CDATA[IF LogSeverity >= SEL(LogConfig.UseLogLevelSwtich, LogSeverity ,LogConfig.LogLevel) THEN
+	ADSLOGSTR(LogSeverity OR ADSLOG_MSGTYPE_LOG, Message, '');
+	F_Logger := Message;
+END_IF]]></ST>
     </Implementation>
     <LineIds Name="F_Logger">
-      <LineId Id="3" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="13" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>
   </POU>

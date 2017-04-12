@@ -31,7 +31,9 @@
     <Author>Mark Lazarides</Author>
     <Title>Intecre.Utilities</Title>
     <DefaultNamespace>Intecre.Utilities</DefaultNamespace>
-    <Description>1.6.2.1 - exposed the trigger flag (.Q) for FBLoggers
+    <Description>1.6.3.0 - added global LogConfig to adjust level of logging centrally and easilly.
+
+1.6.2.1 - exposed the trigger flag (.Q) for FBLoggers
 
 1.6.2.0 - added FBs for loggers, building in edge catching.
 1.6.1.1 - testing global  data type in libs
@@ -48,9 +50,17 @@
 Added Task.CyclesPerSeconds
 </Description>
     <DocFormat>reStructuredText</DocFormat>
-    <ProjectVersion>1.6.2.1</ProjectVersion>
+    <ProjectVersion>1.6.3.0</ProjectVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="GVLs\LogConfig.TcGVL">
+      <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
+    </Compile>
+    <Compile Include="GVLs\Objects.TcGVL">
+      <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
+    </Compile>
     <Compile Include="Project Information\F_GetCompany.TcPOU">
       <SubType>Code</SubType>
       <SystemCall>true</SystemCall>
