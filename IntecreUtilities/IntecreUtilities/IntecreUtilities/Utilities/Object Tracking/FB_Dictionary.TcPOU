@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+  <POU Name="FB_Dictionary" Id="{c29a5ccc-af91-48ad-9b38-0f1964c51b1a}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Dictionary EXTENDS TNamedBase
+VAR
+	Keys : FB_StringList;
+	Values : FB_TargList;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="AddItem" Id="{7f6a3f31-76ca-43fd-91b7-7728f56d08a8}">
+      <Declaration><![CDATA[// Add item to list. TRUE if successful. 
+METHOD PUBLIC AddItem : BOOL
+VAR_INPUT
+	Key : T_MaxString; // item key to add.
+	Value : T_Arg;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF Keys.Count <> Values.Count THEN
+	F_LogWarning(
+		CONCAT(InstanceName, ' error, missmatch keys and values count. Clearing dictionary.')
+	);
+	THIS^.Clear();
+	RETURN;
+END_IF
+IF Keys.Count = GVL_List.LIST_SIZE THEN
+	F_LogWarning(
+		CONCAT(InstanceName, ' error, dictionary is full.')
+	);
+	RETURN;
+END_IF
+IF Key = '' THEN
+	F_LogWarning(
+		CONCAT(InstanceName, ' error, key is null.')
+	);
+	RETURN;
+END_IF
+IF THIS^.Contains( Key ) >= 0  THEN
+	F_LogWarning(
+		CONCAT(InstanceName, ' error, key already exists in dictionary.')
+	);
+	RETURN;
+END_IF
+
+IF Value.cbLen <= 0 THEN
+	F_LogWarning(
+		CONCAT(InstanceName, ' error, value has no length.')
+	);
+	RETURN;
+END_IF
+
+// Add the key.
+IF NOT Keys.AddItem( Key ) THEN
+	F_LogWarning(
+		CONCAT(InstanceName, ' error adding key.')
+	);
+	RETURN;
+END_IF
+// add the value.
+IF NOT Values.AddItem( Value ) THEN // if this fails, remove the key.
+	F_LogWarning(
+		CONCAT(InstanceName, ' error adding value.')
+	);
+	Keys.RemoveIndex( 
+		TO_UDINT( Keys.Contains( Key ) )
+	);
+	RETURN;
+END_IF
+
+AddItem := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Clear" Id="{6171b5ae-1e5a-4da3-8aae-f3f9b14b50f0}">
+      <Declaration><![CDATA[// Removes all list items
+METHOD PUBLIC Clear]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Keys.Clear();
+Values.Clear();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Contains" Id="{d4b61f9c-9d80-41dc-973a-fcda4ce30650}">
+      <Declaration><![CDATA[// TRUE if Item is in FB_List.
+METHOD PUBLIC Contains : INT
+VAR_INPUT
+	Key : T_MaxString; // Item to check.
+END_VAR
+VAR
+	i : UINT := 0;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Contains := Keys.Contains ( Key );
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Count" Id="{44f257b5-c4fa-4cd1-8dc1-bdecfe5fa265}">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'}
+// Number of items in list.
+PROPERTY PUBLIC Count : UDINT]]></Declaration>
+      <Get Name="Get" Id="{58e1d400-3be9-4148-b0a0-4123ff0c7bde}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Count := Keys.Count;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Get" Id="{70d9cd8c-ffd0-4f6d-a5d4-d94f7bdee34a}">
+      <Declaration><![CDATA[// Return item in list at index position. Returns empty string if invalid index.
+METHOD PUBLIC Get : T_Arg
+VAR_INPUT
+	Key : T_MaxString;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.TryGet(Key, Get);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Remove" Id="{6fb60066-ca81-4592-b347-e83cce4a9db9}">
+      <Declaration><![CDATA[//Remove the specified index. Shuffle remaining so list is intact.
+METHOD PUBLIC Remove : BOOL
+VAR_INPUT
+	Key : T_MaxString;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF Keys.Contains( Key ) < 0 THEN // invalid index request.
+	F_LogWarning(
+		CONCAT(InstanceName, ' error, cannot remove key as not in dictionary.')
+	);
+	RETURN;
+END_IF
+
+Values.RemoveIndex(
+	TO_UDINT( Keys.Contains( Key ) ) 
+);
+
+Keys.RemoveIndex( 
+	TO_UDINT( Keys.Contains( Key ) ) 
+);
+
+Remove := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TryGet" Id="{57309371-ecb9-4896-9524-830ae1c28ddc}">
+      <Declaration><![CDATA[// TRUE if successful and list item in sItem
+METHOD PUBLIC TryGet : BOOL
+VAR_INPUT
+	Key : T_MaxString;
+END_VAR
+VAR_IN_OUT
+	Value : T_Arg;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF Keys.Contains( Key ) >= 0 THEN
+	Value := Values.GetIndex( 
+				TO_UDINT( Keys.Contains( Key ) ) 
+			);
+	TryGet := TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TryGetIndex" Id="{ec616992-8a13-444b-bbce-5f2335c63e5a}">
+      <Declaration><![CDATA[// TRUE if successful and list item in sItem
+METHOD PUBLIC TryGetIndex : BOOL
+VAR_INPUT
+	Index : UDINT;
+END_VAR
+VAR_IN_OUT
+	Key : T_MaxString;
+	Value : T_Arg;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF Index < Keys.Count THEN
+	Key := Keys.GetIndex( Index );
+	Value := Values.GetIndex( Index );
+	TryGetIndex := TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_Dictionary">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Dictionary.AddItem">
+      <LineId Id="19" Count="0" />
+      <LineId Id="21" Count="3" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="47" Count="1" />
+      <LineId Id="50" Count="2" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="25" Count="1" />
+      <LineId Id="28" Count="1" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="33" Count="3" />
+      <LineId Id="38" Count="1" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="44" Count="2" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="68" Count="2" />
+      <LineId Id="57" Count="1" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="71" Count="2" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Dictionary.Clear">
+      <LineId Id="9" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Dictionary.Contains">
+      <LineId Id="20" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Dictionary.Count.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Dictionary.Get">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Dictionary.Remove">
+      <LineId Id="45" Count="3" />
+      <LineId Id="9" Count="2" />
+      <LineId Id="49" Count="5" />
+      <LineId Id="38" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Dictionary.TryGet">
+      <LineId Id="10" Count="0" />
+      <LineId Id="23" Count="1" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Dictionary.TryGetIndex">
+      <LineId Id="10" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

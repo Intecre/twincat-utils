@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
-  <POU Name="FB_StringList" Id="{5c73482d-8467-44b4-9630-4f585c9087e0}" SpecialFunc="None">
-    <Declaration><![CDATA[// List of Strings.
-FUNCTION_BLOCK FB_StringList
+  <POU Name="FB_PointerList" Id="{cf4de339-0e99-4d2b-8c7a-54ce898dfd52}" SpecialFunc="None">
+    <Declaration><![CDATA[// List of UDINTs.
+FUNCTION_BLOCK FB_PointerList
 VAR
-	List : ARRAY[ 0 .. GVL_List.LIST_SIZE - 1 ] OF T_MaxString; // hold list
+	List : ARRAY[ 0 .. GVL_List.LIST_SIZE - 1 ] OF PVOID; // hold list
 	_Count : UDINT := 0; // number of items.
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
-    <Method Name="AddItem" Id="{51cf5f24-1e90-4b10-8307-a413650f5567}">
+    <Method Name="AddItem" Id="{d54d03f0-8ffe-45d9-9627-60e9c4adc15a}">
       <Declaration><![CDATA[// Add item to list. TRUE if successful. 
 METHOD PUBLIC AddItem : BOOL
 VAR_INPUT
-	Item : T_MaxString; // item to add.
+	Item : PVOID; // item to add.
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -26,7 +26,7 @@ END_VAR
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Clear" Id="{bb59a1ae-0eeb-466d-95c9-57077c064997}">
+    <Method Name="Clear" Id="{fa6a092b-8e0d-44e0-a255-e4267043dc44}">
       <Declaration><![CDATA[// Removes all list items
 METHOD PUBLIC Clear]]></Declaration>
       <Implementation>
@@ -34,11 +34,11 @@ METHOD PUBLIC Clear]]></Declaration>
 _Count := 0;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Contains" Id="{a309eed6-6ea3-4d92-8dd9-2037a6444569}">
-      <Declaration><![CDATA[// TRUE if Item is in FB_List.
+    <Method Name="Contains" Id="{40351be9-98a5-4ce3-8796-26157b52a52c}">
+      <Declaration><![CDATA[// TRUE if sItem is in FB_List.
 METHOD PUBLIC Contains : INT
 VAR_INPUT
-	Item : T_MaxString; // Item to check.
+	Item : PVOID; // Item to check.
 END_VAR
 VAR
 	i : UINT := 0;
@@ -51,32 +51,31 @@ WHILE ( (Contains < 0) AND (i < _Count) ) DO
 	Contains := SEL(Item = List[i], Contains, TO_INT(i) ); // if it matches, return the position.
 	i := i + 1;
 	
-END_WHILE
-]]></ST>
+END_WHILE]]></ST>
       </Implementation>
     </Method>
-    <Property Name="Count" Id="{718e1bc0-d094-4e9e-81d3-a5637c94a50a}">
+    <Property Name="Count" Id="{f0f2efff-ff0a-4b3b-ace2-3c2fe6d7fe0b}">
       <Declaration><![CDATA[{attribute 'monitoring' := 'call'}
 // Number of items in list.
 PROPERTY PUBLIC Count : UDINT]]></Declaration>
-      <Get Name="Get" Id="{4590a6b8-077b-41b8-bc5b-3bb4b99253fe}">
+      <Get Name="Get" Id="{3c56af6a-8445-4bac-a0f6-36b937233719}">
         <Declaration><![CDATA[]]></Declaration>
         <Implementation>
           <ST><![CDATA[Count := _Count;]]></ST>
         </Implementation>
       </Get>
     </Property>
-    <Method Name="GetIndex" Id="{fd53e871-2041-41d3-b12f-1eeb2e3044e7}">
+    <Method Name="GetIndex" Id="{2495e298-bdc3-4cf7-aa60-28a0e73773cd}">
       <Declaration><![CDATA[// Return item in list at index position. Returns empty string if invalid index.
-METHOD PUBLIC GetIndex : T_MaxString
+METHOD PUBLIC GetIndex : PVOID
 VAR_INPUT
-	Index : UDINT;
+	Index : PVOID;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[THIS^.TryGetIndex(Index,  GetIndex);]]></ST>
       </Implementation>
     </Method>
-    <Method Name="RemoveIndex" Id="{53807321-aeb2-4947-b125-ec03bf79b054}">
+    <Method Name="RemoveIndex" Id="{33bddad0-bbd9-44ec-808b-aa44ba444292}">
       <Declaration><![CDATA[//Remove the specified index. Shuffle remaining so list is intact.
 METHOD PUBLIC RemoveIndex : BOOL
 VAR_INPUT
@@ -97,66 +96,67 @@ IF Index < _Count - 1 THEN // If Index = _Count -1, last two lines sufficient.
 	
 END_IF
 
-RemoveIndex := TRUE;
-
-List[_Count - 1] := ''; // default the "old" end of the list.
-_Count := _Count - 1; // reduce count.]]></ST>
+List[_Count - 1] := 0; // default the "old" end of the list.
+_Count := _Count - 1; // reduce count.
+RemoveIndex := TRUE;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="TryGetIndex" Id="{22736251-d160-497b-8fff-8a6a25c6582d}">
+    <Method Name="TryGetIndex" Id="{638f1091-5991-412a-ae83-31ef81ffea5b}">
       <Declaration><![CDATA[// TRUE if successful and list item in sItem
 METHOD PUBLIC TryGetIndex : BOOL
 VAR_INPUT
-	Index : UDINT;
+	Index : PVOID;
 END_VAR
 VAR_IN_OUT
-	Item : T_MaxString;
+	Item : PVOID;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF Index < _Count THEN
 	TryGetIndex := TRUE;
 	Item := List[Index];
+ELSE
+	Item := 0;
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="FB_StringList">
+    <LineIds Name="FB_PointerList">
       <LineId Id="9" Count="0" />
     </LineIds>
-    <LineIds Name="FB_StringList.AddItem">
+    <LineIds Name="FB_PointerList.AddItem">
       <LineId Id="8" Count="0" />
       <LineId Id="10" Count="1" />
       <LineId Id="9" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
-    <LineIds Name="FB_StringList.Clear">
+    <LineIds Name="FB_PointerList.Clear">
       <LineId Id="7" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
-    <LineIds Name="FB_StringList.Contains">
-      <LineId Id="40" Count="6" />
-      <LineId Id="20" Count="0" />
+    <LineIds Name="FB_PointerList.Contains">
+      <LineId Id="39" Count="6" />
       <LineId Id="5" Count="0" />
     </LineIds>
-    <LineIds Name="FB_StringList.Count.Get">
+    <LineIds Name="FB_PointerList.Count.Get">
       <LineId Id="2" Count="0" />
     </LineIds>
-    <LineIds Name="FB_StringList.GetIndex">
+    <LineIds Name="FB_PointerList.GetIndex">
       <LineId Id="5" Count="0" />
     </LineIds>
-    <LineIds Name="FB_StringList.RemoveIndex">
+    <LineIds Name="FB_PointerList.RemoveIndex">
       <LineId Id="8" Count="4" />
       <LineId Id="16" Count="0" />
       <LineId Id="24" Count="3" />
       <LineId Id="36" Count="0" />
       <LineId Id="17" Count="0" />
-      <LineId Id="38" Count="2" />
+      <LineId Id="38" Count="0" />
       <LineId Id="14" Count="0" />
       <LineId Id="37" Count="0" />
+      <LineId Id="45" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
-    <LineIds Name="FB_StringList.TryGetIndex">
+    <LineIds Name="FB_PointerList.TryGetIndex">
       <LineId Id="10" Count="0" />
-      <LineId Id="12" Count="0" />
+      <LineId Id="12" Count="2" />
       <LineId Id="11" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>

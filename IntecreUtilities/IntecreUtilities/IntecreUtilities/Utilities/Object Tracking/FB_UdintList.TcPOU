@@ -36,7 +36,7 @@ _Count := 0;]]></ST>
     </Method>
     <Method Name="Contains" Id="{1e39d79c-d386-48dc-911b-8d9a46fe8290}">
       <Declaration><![CDATA[// TRUE if sItem is in FB_List.
-METHOD PUBLIC Contains : BOOL
+METHOD PUBLIC Contains : INT
 VAR_INPUT
 	Item : UDINT; // Item to check.
 END_VAR
@@ -44,9 +44,11 @@ VAR
 	i : UINT := 0;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[WHILE ( (Contains = FALSE) AND (i < _Count) ) DO
+        <ST><![CDATA[Contains := -1;
+i := 0;
+WHILE ( (Contains < 0) AND (i < _Count) ) DO
 	
-	Contains := Item = List[i];
+	Contains := SEL(Item = List[i], Contains, TO_INT(i) ); // if it matches, return the position.
 	i := i + 1;
 	
 END_WHILE
@@ -133,11 +135,7 @@ END_IF]]></ST>
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_UdintList.Contains">
-      <LineId Id="30" Count="0" />
-      <LineId Id="25" Count="0" />
-      <LineId Id="28" Count="0" />
-      <LineId Id="31" Count="0" />
-      <LineId Id="26" Count="0" />
+      <LineId Id="39" Count="6" />
       <LineId Id="20" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>

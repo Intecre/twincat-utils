@@ -26,12 +26,16 @@
     </DeploymentEvents>
     <CombineIds>false</CombineIds>
     <Company>Intecre Ltd</Company>
-    <Released>true</Released>
+    <Released>false</Released>
     <Placeholder>Intecre.Utilities</Placeholder>
     <Author>Mark Lazarides</Author>
     <Title>Intecre.Utilities</Title>
     <DefaultNamespace>Intecre.Utilities</DefaultNamespace>
-    <Description>1.6.3.0 - added global LogConfig to adjust level of logging centrally and easilly.
+    <Description>1.7.0.0 - Changed all list objects to return index of item in ".Contains()" method. returns -1 if not found.
+
+1.6.4.0 - Added FB_PointerList
+1.6.3.1 - testing FB_ParamsTracking
+1.6.3.0 - added global LogConfig to adjust level of logging centrally and easilly.
 
 1.6.2.1 - exposed the trigger flag (.Q) for FBLoggers
 
@@ -50,9 +54,13 @@
 Added Task.CyclesPerSeconds
 </Description>
     <DocFormat>reStructuredText</DocFormat>
-    <ProjectVersion>1.6.3.0</ProjectVersion>
+    <ProjectVersion>1.7.0.0</ProjectVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="GVLs\CollectionParameters.TcGVL">
+      <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
+    </Compile>
     <Compile Include="GVLs\LogConfig.TcGVL">
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>
@@ -121,13 +129,19 @@ Added Task.CyclesPerSeconds
     <Compile Include="Utilities\Logger\F_LogWarning.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utilities\Object Tracking\FB_Dictionary.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Utilities\Object Tracking\FB_StringList.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utilities\Object Tracking\FB_ParameterList.TcPOU">
+    <Compile Include="Utilities\Object Tracking\FB_TargList.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\Object Tracking\FB_UdintList.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\Object Tracking\FB_PointerList.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\Object Tracking\GVL_List.TcGVL">
@@ -136,6 +150,10 @@ Added Task.CyclesPerSeconds
     </Compile>
     <Compile Include="Utilities\Object Tracking\ST_KeyReferencePair.TcDUT">
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\Object Tracking\TGenericCollection.TcPOU">
+      <SubType>Code</SubType>
+      <ExcludeFromBuild>true</ExcludeFromBuild>
     </Compile>
     <Compile Include="Utilities\String\F_Concat3.TcPOU">
       <SubType>Code</SubType>
@@ -149,7 +167,13 @@ Added Task.CyclesPerSeconds
     <Compile Include="Utilities\String\F_Concat6.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utilities\String\F_TargToString.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Utilities\Testing\FB_Assert.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\TNamedBase.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Version\Global_Version.TcGVL">

@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+  <POU Name="TGenericCollection" Id="{e481bb3a-f53c-455a-8869-ffee33fe2ff9}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK TGenericCollection
+VAR
+	name : STRING;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//WIP. Consider making it runtime capable of change.  ]]></ST>
+    </Implementation>
+    <Method Name="FB_init" Id="{a5a18c66-e929-46f3-b815-8b6ba56d0b05}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+	T : Tc2_Utilities.T_Arg // provide type of the collection.
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF T.cbLen > 0 THEN
+	
+ELSE
+	F_LogError(  );
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="TGenericCollection">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="TGenericCollection.FB_init">
+      <LineId Id="9" Count="0" />
+      <LineId Id="11" Count="1" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+  <POU Name="TNamedBase" Id="{747db62b-b007-4b65-974e-3e30c9f6f818}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'reflection'}
+FUNCTION_BLOCK TNamedBase
+VAR
+	{attribute 'instance-path'}
+    {attribute 'no_init'}
+	name : STRING;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="InstanceName" Id="{b025274c-dbbe-41b4-9d4a-6b264880646b}">
+      <Declaration><![CDATA[PROPERTY FINAL InstanceName : T_MaxString;]]></Declaration>
+      <Get Name="Get" Id="{c76f2db8-929e-42c3-879d-8eaff2d7bbd0}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[InstanceName := Name;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <LineIds Name="TNamedBase">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="TNamedBase.InstanceName.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
