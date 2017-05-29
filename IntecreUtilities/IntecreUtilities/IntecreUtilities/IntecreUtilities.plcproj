@@ -167,6 +167,9 @@ Added Task.CyclesPerSeconds
     <Compile Include="Utilities\String\F_Concat6.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utilities\String\F_Concat7.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Utilities\String\F_TargToString.TcPOU">
       <SubType>Code</SubType>
     </Compile>

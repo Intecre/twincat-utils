@@ -20,35 +20,27 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF Keys.Count <> Values.Count THEN
-	F_LogWarning(
-		CONCAT(InstanceName, ' error, missmatch keys and values count. Clearing dictionary.')
-	);
+	LogWarning('Missmatch keys and values count. Clearing dictionary.');
 	THIS^.Clear();
 	RETURN;
 END_IF
 IF Keys.Count = GVL_List.LIST_SIZE THEN
 	F_LogWarning(
-		CONCAT(InstanceName, ' error, dictionary is full.')
+		CONCAT(InstanceName, 'Dictionary is full.')
 	);
 	RETURN;
 END_IF
 IF Key = '' THEN
-	F_LogWarning(
-		CONCAT(InstanceName, ' error, key is null.')
-	);
+	LogWarning('key is null.');
 	RETURN;
 END_IF
 IF THIS^.Contains( Key ) >= 0  THEN
-	F_LogWarning(
-		CONCAT(InstanceName, ' error, key already exists in dictionary.')
-	);
+	LogWarning('Key already exists in dictionary.');
 	RETURN;
 END_IF
 
 IF Value.cbLen <= 0 THEN
-	F_LogWarning(
-		CONCAT(InstanceName, ' error, value has no length.')
-	);
+	LogWarning('Value has no length.');
 	RETURN;
 END_IF
 
@@ -61,9 +53,7 @@ IF NOT Keys.AddItem( Key ) THEN
 END_IF
 // add the value.
 IF NOT Values.AddItem( Value ) THEN // if this fails, remove the key.
-	F_LogWarning(
-		CONCAT(InstanceName, ' error adding value.')
-	);
+	LogWarning('Error adding value.');
 	Keys.RemoveIndex( 
 		TO_UDINT( Keys.Contains( Key ) )
 	);
@@ -124,9 +114,7 @@ VAR_INPUT
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF Keys.Contains( Key ) < 0 THEN // invalid index request.
-	F_LogWarning(
-		CONCAT(InstanceName, ' error, cannot remove key as not in dictionary.')
-	);
+	LogWarning('Cannot remove key as not in dictionary.');
 	RETURN;
 END_IF
 
@@ -182,21 +170,20 @@ END_IF]]></ST>
     </LineIds>
     <LineIds Name="FB_Dictionary.AddItem">
       <LineId Id="19" Count="0" />
-      <LineId Id="21" Count="3" />
+      <LineId Id="23" Count="1" />
       <LineId Id="20" Count="0" />
       <LineId Id="47" Count="1" />
       <LineId Id="50" Count="2" />
       <LineId Id="49" Count="0" />
       <LineId Id="25" Count="1" />
-      <LineId Id="28" Count="1" />
       <LineId Id="31" Count="0" />
       <LineId Id="27" Count="0" />
-      <LineId Id="33" Count="3" />
+      <LineId Id="33" Count="1" />
       <LineId Id="38" Count="1" />
       <LineId Id="32" Count="0" />
       <LineId Id="40" Count="0" />
       <LineId Id="42" Count="0" />
-      <LineId Id="44" Count="2" />
+      <LineId Id="46" Count="0" />
       <LineId Id="43" Count="0" />
       <LineId Id="53" Count="0" />
       <LineId Id="66" Count="0" />
@@ -205,7 +192,7 @@ END_IF]]></ST>
       <LineId Id="57" Count="1" />
       <LineId Id="67" Count="0" />
       <LineId Id="59" Count="0" />
-      <LineId Id="71" Count="2" />
+      <LineId Id="71" Count="0" />
       <LineId Id="60" Count="0" />
       <LineId Id="63" Count="0" />
       <LineId Id="62" Count="0" />
@@ -230,7 +217,8 @@ END_IF]]></ST>
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Dictionary.Remove">
-      <LineId Id="45" Count="3" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="48" Count="0" />
       <LineId Id="9" Count="2" />
       <LineId Id="49" Count="5" />
       <LineId Id="38" Count="1" />
