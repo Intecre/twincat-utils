@@ -36,23 +36,12 @@ _Count := 0;]]></ST>
     </Method>
     <Method Name="Contains" Id="{1e39d79c-d386-48dc-911b-8d9a46fe8290}">
       <Declaration><![CDATA[// TRUE if sItem is in FB_List.
-METHOD PUBLIC Contains : INT
+METHOD PUBLIC Contains : BOOL
 VAR_INPUT
 	Item : UDINT; // Item to check.
-END_VAR
-VAR
-	i : UINT := 0;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[Contains := -1;
-i := 0;
-WHILE ( (Contains < 0) AND (i < _Count) ) DO
-	
-	Contains := SEL(Item = List[i], Contains, TO_INT(i) ); // if it matches, return the position.
-	i := i + 1;
-	
-END_WHILE
-]]></ST>
+        <ST><![CDATA[Contains := FindIndex(Item) >= 0;]]></ST>
       </Implementation>
     </Method>
     <Property Name="Count" Id="{de59a019-ec52-488c-9476-616d6f998219}">
@@ -66,6 +55,26 @@ PROPERTY PUBLIC Count : UDINT]]></Declaration>
         </Implementation>
       </Get>
     </Property>
+    <Method Name="FindIndex" Id="{d36aca7f-5d3e-44c1-b668-4ccb65770ee0}">
+      <Declaration><![CDATA[METHOD PUBLIC FindIndex : INT
+VAR_INPUT
+	Item : UDINT; // Item to check.
+END_VAR
+VAR
+	i : UINT := 0;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FindIndex := -1;
+i := 0;
+WHILE ( (FindIndex < 0) AND (i < _Count) ) DO
+	
+	FindIndex := SEL(Item = List[i], FindIndex, TO_INT(i) ); // if it matches, return the position.
+	i := i + 1;
+	
+END_WHILE]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="GetIndex" Id="{cdd95fd1-cdde-436e-bd15-0f36ccf1c07d}">
       <Declaration><![CDATA[// Return item in list at index position. Returns empty string if invalid index.
 METHOD PUBLIC GetIndex : UDINT
@@ -135,12 +144,14 @@ END_IF]]></ST>
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_UdintList.Contains">
-      <LineId Id="39" Count="6" />
-      <LineId Id="20" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_UdintList.Count.Get">
       <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_UdintList.FindIndex">
+      <LineId Id="6" Count="6" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_UdintList.GetIndex">
       <LineId Id="5" Count="0" />

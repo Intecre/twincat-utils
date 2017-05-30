@@ -36,23 +36,12 @@ _Count := 0;]]></ST>
     </Method>
     <Method Name="Contains" Id="{924f2197-aee4-4a0e-a924-ceba24bd6410}">
       <Declaration><![CDATA[// TRUE if Item is in FB_List.
-METHOD PUBLIC Contains : INT
+METHOD PUBLIC Contains : BOOL
 VAR_INPUT
 	Item : T_Arg; // Item to check.
-END_VAR
-VAR
-	i : UINT := 0;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[Contains := -1;
-i := 0;
-WHILE ( (Contains < 0) AND (i < _Count) ) DO
-	
-	Contains := SEL(Item = List[i], Contains, TO_INT(i) ); // if it matches, return the position.
-	i := i + 1;
-	
-END_WHILE
-]]></ST>
+        <ST><![CDATA[Contains := FindIndex(Item) >= 0;]]></ST>
       </Implementation>
     </Method>
     <Property Name="Count" Id="{ea805cf5-f90e-4089-a198-e5f95d09b44b}">
@@ -66,6 +55,26 @@ PROPERTY PUBLIC Count : UDINT]]></Declaration>
         </Implementation>
       </Get>
     </Property>
+    <Method Name="FindIndex" Id="{a804a17e-940b-4212-abfe-c9f67ce123f8}">
+      <Declaration><![CDATA[METHOD PUBLIC FindIndex : INT
+VAR_INPUT
+	Item : T_Arg; // Item to check.
+END_VAR
+VAR
+	i : UINT := 0;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FindIndex := -1;
+i := 0;
+WHILE ( (FindIndex < 0) AND (i < _Count) ) DO
+	
+	FindIndex := SEL(Item = List[i], FindIndex, TO_INT(i) ); // if it matches, return the position.
+	i := i + 1;
+	
+END_WHILE]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="GetIndex" Id="{62e1a232-c66b-48da-8ffe-c2567273ec59}">
       <Declaration><![CDATA[// Return item in list at index position. Returns empty string if invalid index.
 METHOD PUBLIC GetIndex : T_Arg
@@ -132,18 +141,14 @@ END_IF]]></ST>
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_TargList.Contains">
-      <LineId Id="40" Count="0" />
-      <LineId Id="39" Count="0" />
-      <LineId Id="30" Count="0" />
-      <LineId Id="25" Count="0" />
-      <LineId Id="28" Count="0" />
-      <LineId Id="31" Count="0" />
-      <LineId Id="26" Count="0" />
-      <LineId Id="20" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_TargList.Count.Get">
       <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_TargList.FindIndex">
+      <LineId Id="6" Count="6" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_TargList.GetIndex">
       <LineId Id="5" Count="0" />

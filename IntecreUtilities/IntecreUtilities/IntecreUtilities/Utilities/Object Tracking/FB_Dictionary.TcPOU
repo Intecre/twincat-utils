@@ -34,7 +34,7 @@ IF Key = '' THEN
 	LogWarning('key is null.');
 	RETURN;
 END_IF
-IF THIS^.Contains( Key ) >= 0  THEN
+IF Contains( Key )  THEN
 	LogWarning('Key already exists in dictionary.');
 	RETURN;
 END_IF
@@ -55,7 +55,7 @@ END_IF
 IF NOT Values.AddItem( Value ) THEN // if this fails, remove the key.
 	LogWarning('Error adding value.');
 	Keys.RemoveIndex( 
-		TO_UDINT( Keys.Contains( Key ) )
+		INT_TO_UDINT( Keys.FindIndex( Key ) )
 	);
 	RETURN;
 END_IF
@@ -73,7 +73,7 @@ Values.Clear();]]></ST>
     </Method>
     <Method Name="Contains" Id="{d4b61f9c-9d80-41dc-973a-fcda4ce30650}">
       <Declaration><![CDATA[// TRUE if Item is in FB_List.
-METHOD PUBLIC Contains : INT
+METHOD PUBLIC Contains : BOOL
 VAR_INPUT
 	Key : T_MaxString; // Item to check.
 END_VAR
@@ -106,6 +106,15 @@ END_VAR]]></Declaration>
         <ST><![CDATA[THIS^.TryGet(Key, Get);]]></ST>
       </Implementation>
     </Method>
+    <Property Name="ReferenceToThis" Id="{fe01e567-8b69-499d-bb15-e6243979bb05}">
+      <Declaration><![CDATA[PROPERTY PUBLIC ReferenceToThis : REFERENCE TO FB_Dictionary]]></Declaration>
+      <Get Name="Get" Id="{4723c871-a6a0-4092-af51-2c3e6a7a17b1}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ReferenceToThis REF= THIS^;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Method Name="Remove" Id="{6fb60066-ca81-4592-b347-e83cce4a9db9}">
       <Declaration><![CDATA[//Remove the specified index. Shuffle remaining so list is intact.
 METHOD PUBLIC Remove : BOOL
@@ -113,17 +122,17 @@ VAR_INPUT
 	Key : T_MaxString;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF Keys.Contains( Key ) < 0 THEN // invalid index request.
+        <ST><![CDATA[IF Keys.Contains( Key ) THEN // invalid index request.
 	LogWarning('Cannot remove key as not in dictionary.');
 	RETURN;
 END_IF
 
 Values.RemoveIndex(
-	TO_UDINT( Keys.Contains( Key ) ) 
+	INT_TO_UDINT( Keys.FindIndex( Key ) ) 
 );
 
 Keys.RemoveIndex( 
-	TO_UDINT( Keys.Contains( Key ) ) 
+	INT_TO_UDINT( Keys.FindIndex( Key ) ) 
 );
 
 Remove := TRUE;]]></ST>
@@ -139,9 +148,9 @@ VAR_IN_OUT
 	Value : T_Arg;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF Keys.Contains( Key ) >= 0 THEN
+        <ST><![CDATA[IF Keys.Contains( Key ) THEN
 	Value := Values.GetIndex( 
-				TO_UDINT( Keys.Contains( Key ) ) 
+				INT_TO_UDINT( Keys.FindIndex( Key ) ) 
 			);
 	TryGet := TRUE;
 END_IF]]></ST>
@@ -215,6 +224,9 @@ END_IF]]></ST>
     </LineIds>
     <LineIds Name="FB_Dictionary.Get">
       <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Dictionary.ReferenceToThis.Get">
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_Dictionary.Remove">
       <LineId Id="45" Count="0" />

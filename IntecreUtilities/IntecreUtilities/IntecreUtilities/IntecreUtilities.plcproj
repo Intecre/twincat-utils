@@ -31,7 +31,7 @@
     <Author>Mark Lazarides</Author>
     <Title>Intecre.Utilities</Title>
     <DefaultNamespace>Intecre.Utilities</DefaultNamespace>
-    <Description>1.7.0.0 - Changed all list objects to return index of item in ".Contains()" method. returns -1 if not found.
+    <Description>1.7.0.0 - Changed all list objects to return index of item in ".Contains()" method. returns -1 if not found. Added F_StringToTarg
 
 1.6.4.0 - Added FB_PointerList
 1.6.3.1 - testing FB_ParamsTracking
@@ -171,6 +171,9 @@ Added Task.CyclesPerSeconds
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\String\F_TargToString.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\String\F_StringToTarg.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\Testing\FB_Assert.TcPOU">

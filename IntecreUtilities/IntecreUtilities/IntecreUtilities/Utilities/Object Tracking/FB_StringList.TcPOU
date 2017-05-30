@@ -36,22 +36,12 @@ _Count := 0;]]></ST>
     </Method>
     <Method Name="Contains" Id="{a309eed6-6ea3-4d92-8dd9-2037a6444569}">
       <Declaration><![CDATA[// TRUE if Item is in FB_List.
-METHOD PUBLIC Contains : INT
+METHOD PUBLIC Contains : BOOL
 VAR_INPUT
 	Item : T_MaxString; // Item to check.
-END_VAR
-VAR
-	i : UINT := 0;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[Contains := -1;
-i := 0;
-WHILE ( (Contains < 0) AND (i < _Count) ) DO
-	
-	Contains := SEL(Item = List[i], Contains, TO_INT(i) ); // if it matches, return the position.
-	i := i + 1;
-	
-END_WHILE
+        <ST><![CDATA[Contains := FindIndex(Item) >= 0;
 ]]></ST>
       </Implementation>
     </Method>
@@ -66,6 +56,26 @@ PROPERTY PUBLIC Count : UDINT]]></Declaration>
         </Implementation>
       </Get>
     </Property>
+    <Method Name="FindIndex" Id="{5adba4b6-ada1-4b43-b252-79c61e10ea0d}">
+      <Declaration><![CDATA[METHOD PUBLIC FindIndex : INT
+VAR_INPUT
+	Item : T_MaxString; // Item to check.
+END_VAR
+VAR
+	i : UINT := 0;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FindIndex := -1;
+i := 0;
+WHILE ( (FindIndex < 0) AND (i < _Count) ) DO
+	
+	FindIndex := SEL(Item = List[i], FindIndex, TO_INT(i) ); // if it matches, return the position.
+	i := i + 1;
+	
+END_WHILE]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="GetIndex" Id="{fd53e871-2041-41d3-b12f-1eeb2e3044e7}">
       <Declaration><![CDATA[// Return item in list at index position. Returns empty string if invalid index.
 METHOD PUBLIC GetIndex : T_MaxString
@@ -133,12 +143,15 @@ END_IF]]></ST>
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_StringList.Contains">
-      <LineId Id="40" Count="6" />
       <LineId Id="20" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_StringList.Count.Get">
       <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringList.FindIndex">
+      <LineId Id="6" Count="6" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_StringList.GetIndex">
       <LineId Id="5" Count="0" />
