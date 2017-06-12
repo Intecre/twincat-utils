@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+  <POU Name="F_DictionaryValuesCrc" Id="{35315de4-bb50-47a6-92c7-6ae3f8a96abc}" SpecialFunc="None">
+    <Declaration><![CDATA[// Return CRC of the values stored in the dictionary.
+FUNCTION F_DictionaryValuesCrc : WORD
+VAR_IN_OUT
+	Dictionary : FB_Dictionary;
+END_VAR
+VAR
+	i : UDINT;
+	sKey : T_MaxString;
+	tValue : T_Arg;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF Dictionary.Count > 0 THEN
+	
+	IF NOT Dictionary.TryGetIndex(Index := 0, Key := sKey, Value := tValue) THEN
+		RETURN;
+	ELSE
+		F_DictionaryValuesCrc := F_DATA_TO_CRC16_CCITT(
+			pData := tValue.pData,
+			cbData := tValue.cbLen,
+			crc := 16#FFFF // First pass needs the seed.
+			);
+	END_IF
+	
+END_IF
+
+FOR i := 1 TO (Dictionary.Count -1) DO
+	
+	IF NOT Dictionary.TryGetIndex(Index := 0, Key := sKey, Value := tValue) THEN
+		F_DictionaryValuesCrc := 16#0000;
+		RETURN;
+	ELSE
+		F_DictionaryValuesCrc := F_DATA_TO_CRC16_CCITT(
+			pData := tValue.pData,
+			cbData := tValue.cbLen,
+			crc := F_DictionaryValuesCrc // iteratively pass in CRC.
+			);
+	END_IF
+	
+END_FOR]]></ST>
+    </Implementation>
+    <LineIds Name="F_DictionaryValuesCrc">
+      <LineId Id="41" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="33" Count="1" />
+      <LineId Id="37" Count="3" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="19" Count="1" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="45" Count="7" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

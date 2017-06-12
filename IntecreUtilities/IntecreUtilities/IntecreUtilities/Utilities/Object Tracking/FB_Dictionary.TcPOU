@@ -97,7 +97,7 @@ PROPERTY PUBLIC Count : UDINT]]></Declaration>
       </Get>
     </Property>
     <Method Name="Get" Id="{70d9cd8c-ffd0-4f6d-a5d4-d94f7bdee34a}">
-      <Declaration><![CDATA[// Return item in list at index position. Returns empty string if invalid index.
+      <Declaration><![CDATA[// Return item in dictionary base on key.
 METHOD PUBLIC Get : T_Arg
 VAR_INPUT
 	Key : T_MaxString;
@@ -174,6 +174,24 @@ END_VAR]]></Declaration>
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="TryGetPartialKey" Id="{7941785e-7afc-4792-98ed-824c55eed538}">
+      <Declaration><![CDATA[// TRUE if successful. Returns value associated with first key that provides partial match
+METHOD PUBLIC TryGetPartialKey : BOOL
+VAR_INPUT
+	PartialKey : T_MaxString;
+END_VAR
+VAR_IN_OUT
+	Value : T_Arg;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF Keys.ContainsPartial( PartialKey ) THEN
+	Value := Values.GetIndex( 
+				INT_TO_UDINT( Keys.FindIndexPartialKey( PartialKey ) ) 
+			);
+	TryGetPartialKey := TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="FB_Dictionary">
       <LineId Id="9" Count="0" />
     </LineIds>
@@ -247,6 +265,13 @@ END_IF]]></ST>
       <LineId Id="10" Count="0" />
       <LineId Id="24" Count="0" />
       <LineId Id="23" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Dictionary.TryGetPartialKey">
+      <LineId Id="10" Count="0" />
+      <LineId Id="23" Count="1" />
+      <LineId Id="22" Count="0" />
       <LineId Id="11" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
