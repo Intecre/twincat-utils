@@ -9,14 +9,14 @@ VAR_INPUT
 	
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[F_GetVersion.iMajor := 1;
-F_GetVersion.iMinor := 7;
-F_GetVersion.iBuild := 2;
+      <ST><![CDATA[F_GetVersion.iMajor := 2;
+F_GetVersion.iMinor := 0;
+F_GetVersion.iBuild := 0;
 F_GetVersion.iRevision := 0;
 ]]></ST>
     </Implementation>
     <LineIds Name="F_GetVersion">
-      <LineId Id="949" Count="3" />
+      <LineId Id="1005" Count="3" />
       <LineId Id="2" Count="0" />
     </LineIds>
   </POU>

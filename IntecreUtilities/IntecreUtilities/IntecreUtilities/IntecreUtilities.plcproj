@@ -31,8 +31,9 @@
     <Author>Mark Lazarides</Author>
     <Title>Intecre.Utilities</Title>
     <DefaultNamespace>Intecre.Utilities</DefaultNamespace>
-    <Description>1.7.2.0 - Final 3.1.4020.32 build. Maintenance only for this branch.
+    <Description>2.0.0.0 Compiled against TC3.1.4022
 
+1.7.2.0 - Final 3.1.4020.32 build. Maintenance only for this branch.
 1.7.1.1 - Added partial contains and findindex for FB_StringList and FB_Dictionary
 
 1.7.1.0 - Added F_DictionaryValuesCrc, which calculates CRC of values in dictionary.
@@ -58,7 +59,7 @@
 Added Task.CyclesPerSeconds
 </Description>
     <DocFormat>reStructuredText</DocFormat>
-    <ProjectVersion>1.7.2.0</ProjectVersion>
+    <ProjectVersion>2.0.0.0</ProjectVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="GVLs\CollectionParameters.TcGVL">
@@ -239,19 +240,19 @@ Added Task.CyclesPerSeconds
   </ItemGroup>
   <ItemGroup>
     <PlaceholderResolution Include="Tc2_Math">
-      <Resolution>Tc2_Math, 3.3.0.0 (Beckhoff Automation GmbH)</Resolution>
+      <Resolution>Tc2_Math, * (Beckhoff Automation GmbH)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="Tc2_Standard">
-      <Resolution>Tc2_Standard, 3.3.2.0 (Beckhoff Automation GmbH)</Resolution>
+      <Resolution>Tc2_Standard, * (Beckhoff Automation GmbH)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="Tc2_System">
-      <Resolution>Tc2_System, 3.4.17.0 (Beckhoff Automation GmbH)</Resolution>
+      <Resolution>Tc2_System, * (Beckhoff Automation GmbH)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="Tc2_Utilities">
-      <Resolution>Tc2_Utilities, 3.3.22.0 (Beckhoff Automation GmbH)</Resolution>
+      <Resolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="Tc3_Module">
-      <Resolution>Tc3_Module, 3.3.16.0 (Beckhoff Automation GmbH)</Resolution>
+      <Resolution>Tc3_Module, * (Beckhoff Automation GmbH)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
