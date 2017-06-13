@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+  <POU Name="TNamedBase" Id="{747db62b-b007-4b65-974e-3e30c9f6f818}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'reflection'}
+FUNCTION_BLOCK TNamedBase
+VAR
+	{attribute 'instance-path'}
+    {attribute 'no_init'}
+	name : STRING;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="InstanceName" Id="{b025274c-dbbe-41b4-9d4a-6b264880646b}">
+      <Declaration><![CDATA[PROPERTY FINAL InstanceName : T_MaxString;]]></Declaration>
+      <Get Name="Get" Id="{c76f2db8-929e-42c3-879d-8eaff2d7bbd0}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[InstanceName := Name;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="LogError" Id="{68460783-e2b1-4495-92bf-87f826bbe299}">
+      <Declaration><![CDATA[METHOD LogError
+VAR_INPUT
+	Msg : T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[F_LogError(
+	F_Concat3(InstanceName , ': ', Msg)
+);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="LogInfo" Id="{d072dd6f-6f37-41d6-8089-6cac6bd97a28}">
+      <Declaration><![CDATA[METHOD LogInfo
+VAR_INPUT
+	Msg : T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[F_LogInfo(
+	F_Concat3(InstanceName , ': ', Msg)
+);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="LogWarning" Id="{6676ad4f-087f-4dd6-bf57-0b34c5abe60e}">
+      <Declaration><![CDATA[METHOD LogWarning
+VAR_INPUT
+	Msg : T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[F_LogWarning(
+	F_Concat3(InstanceName , ': ', Msg)
+);]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="TNamedBase">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="TNamedBase.InstanceName.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="TNamedBase.LogError">
+      <LineId Id="7" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="TNamedBase.LogInfo">
+      <LineId Id="7" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="TNamedBase.LogWarning">
+      <LineId Id="7" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

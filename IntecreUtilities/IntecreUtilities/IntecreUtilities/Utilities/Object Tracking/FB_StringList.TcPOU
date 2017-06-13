@@ -35,22 +35,25 @@ _Count := 0;]]></ST>
       </Implementation>
     </Method>
     <Method Name="Contains" Id="{a309eed6-6ea3-4d92-8dd9-2037a6444569}">
-      <Declaration><![CDATA[// TRUE if sItem is in FB_List.
+      <Declaration><![CDATA[// TRUE if Item is in FB_List.
 METHOD PUBLIC Contains : BOOL
 VAR_INPUT
 	Item : T_MaxString; // Item to check.
-END_VAR
-VAR
-	i : UINT := 0;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[WHILE ( (Contains = FALSE) AND (i < _Count) ) DO
-	
-	Contains := Item = List[i];
-	i := i + 1;
-	
-END_WHILE
+        <ST><![CDATA[Contains := FindIndex(Item) >= 0;
 ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ContainsPartial" Id="{7a7f2235-0e70-49ce-ae3e-9202b3b1ec91}">
+      <Declaration><![CDATA[// TRUE if supplied key part is in any entry
+METHOD PUBLIC ContainsPartial : BOOL
+VAR_INPUT
+	PartialItem : T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ContainsPartial := FindIndexPartialKey(PartialItem) >= 0;]]></ST>
       </Implementation>
     </Method>
     <Property Name="Count" Id="{718e1bc0-d094-4e9e-81d3-a5637c94a50a}">
@@ -64,6 +67,50 @@ PROPERTY PUBLIC Count : UDINT]]></Declaration>
         </Implementation>
       </Get>
     </Property>
+    <Method Name="FindIndex" Id="{5adba4b6-ada1-4b43-b252-79c61e10ea0d}">
+      <Declaration><![CDATA[METHOD PUBLIC FindIndex : INT
+VAR_INPUT
+	Item : T_MaxString; // Item to check.
+END_VAR
+VAR
+	i : UINT := 0;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FindIndex := -1;
+i := 0;
+WHILE ( (FindIndex < 0) AND (i < _Count) ) DO
+	
+	FindIndex := SEL(Item = List[i], FindIndex, TO_INT(i) ); // if it matches, return the position.
+	i := i + 1;
+	
+END_WHILE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FindIndexPartialKey" Id="{0617c0e9-f0f7-4092-8ade-c42aa34f7378}">
+      <Declaration><![CDATA[// Find first index where list entry contains supplied key.
+METHOD PUBLIC FindIndexPartialKey : INT
+VAR_INPUT
+	PartialKey : T_MaxString; // Item to check.
+END_VAR
+VAR
+	i : UINT := 0;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FindIndexPartialKey := -1;
+i := 0;
+WHILE ( (FindIndexPartialKey < 0) AND (i < _Count) ) DO
+	
+	IF FIND(List[i],PartialKey) > 0 THEN
+		FindIndexPartialKey := TO_INT(i);
+	END_IF
+
+	i := i + 1;
+	
+END_WHILE]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="GetIndex" Id="{fd53e871-2041-41d3-b12f-1eeb2e3044e7}">
       <Declaration><![CDATA[// Return item in list at index position. Returns empty string if invalid index.
 METHOD PUBLIC GetIndex : T_MaxString
@@ -114,8 +161,6 @@ END_VAR]]></Declaration>
         <ST><![CDATA[IF Index < _Count THEN
 	TryGetIndex := TRUE;
 	Item := List[Index];
-ELSE
-	Item := '';
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -133,16 +178,24 @@ END_IF]]></ST>
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_StringList.Contains">
-      <LineId Id="30" Count="0" />
-      <LineId Id="25" Count="0" />
-      <LineId Id="28" Count="0" />
-      <LineId Id="31" Count="0" />
-      <LineId Id="26" Count="0" />
       <LineId Id="20" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringList.ContainsPartial">
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_StringList.Count.Get">
       <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringList.FindIndex">
+      <LineId Id="6" Count="6" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringList.FindIndexPartialKey">
+      <LineId Id="6" Count="2" />
+      <LineId Id="21" Count="2" />
+      <LineId Id="9" Count="3" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_StringList.GetIndex">
       <LineId Id="5" Count="0" />
@@ -160,7 +213,7 @@ END_IF]]></ST>
     </LineIds>
     <LineIds Name="FB_StringList.TryGetIndex">
       <LineId Id="10" Count="0" />
-      <LineId Id="12" Count="2" />
+      <LineId Id="12" Count="0" />
       <LineId Id="11" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>

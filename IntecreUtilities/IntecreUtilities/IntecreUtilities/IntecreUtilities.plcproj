@@ -31,7 +31,15 @@
     <Author>Mark Lazarides</Author>
     <Title>Intecre.Utilities</Title>
     <DefaultNamespace>Intecre.Utilities</DefaultNamespace>
-    <Description>1.6.3.0 - added global LogConfig to adjust level of logging centrally and easilly.
+    <Description>1.7.2.0 - Final 3.1.4020.32 build. Maintenance only for this branch.
+
+1.7.1.1 - Added partial contains and findindex for FB_StringList and FB_Dictionary
+
+1.7.1.0 - Added F_DictionaryValuesCrc, which calculates CRC of values in dictionary.
+1.7.0.0 - Changed all list objects to return index of item in ".Contains()" method. returns -1 if not found. Added F_StringToTarg
+1.6.4.0 - Added FB_PointerList
+1.6.3.1 - testing FB_ParamsTracking
+1.6.3.0 - added global LogConfig to adjust level of logging centrally and easilly.
 
 1.6.2.1 - exposed the trigger flag (.Q) for FBLoggers
 
@@ -50,9 +58,13 @@
 Added Task.CyclesPerSeconds
 </Description>
     <DocFormat>reStructuredText</DocFormat>
-    <ProjectVersion>1.6.3.0</ProjectVersion>
+    <ProjectVersion>1.7.2.0</ProjectVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="GVLs\CollectionParameters.TcGVL">
+      <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
+    </Compile>
     <Compile Include="GVLs\LogConfig.TcGVL">
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>
@@ -121,13 +133,22 @@ Added Task.CyclesPerSeconds
     <Compile Include="Utilities\Logger\F_LogWarning.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utilities\Object Tracking\FB_Dictionary.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Utilities\Object Tracking\FB_StringList.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utilities\Object Tracking\FB_ParameterList.TcPOU">
+    <Compile Include="Utilities\Object Tracking\FB_TargList.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\Object Tracking\FB_UdintList.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\Object Tracking\FB_PointerList.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\Object Tracking\F_DictionaryValuesCrc.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\Object Tracking\GVL_List.TcGVL">
@@ -136,6 +157,10 @@ Added Task.CyclesPerSeconds
     </Compile>
     <Compile Include="Utilities\Object Tracking\ST_KeyReferencePair.TcDUT">
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\Object Tracking\TGenericCollection.TcPOU">
+      <SubType>Code</SubType>
+      <ExcludeFromBuild>true</ExcludeFromBuild>
     </Compile>
     <Compile Include="Utilities\String\F_Concat3.TcPOU">
       <SubType>Code</SubType>
@@ -149,7 +174,19 @@ Added Task.CyclesPerSeconds
     <Compile Include="Utilities\String\F_Concat6.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utilities\String\F_Concat7.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\String\F_TargToString.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\String\F_StringToTarg.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Utilities\Testing\FB_Assert.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\TNamedBase.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Version\Global_Version.TcGVL">
@@ -199,6 +236,23 @@ Added Task.CyclesPerSeconds
   </ItemGroup>
   <ItemGroup>
     <PinnedGlobalDataType Include="stTestGlobalLibExport" />
+  </ItemGroup>
+  <ItemGroup>
+    <PlaceholderResolution Include="Tc2_Math">
+      <Resolution>Tc2_Math, 3.3.0.0 (Beckhoff Automation GmbH)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="Tc2_Standard">
+      <Resolution>Tc2_Standard, 3.3.2.0 (Beckhoff Automation GmbH)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="Tc2_System">
+      <Resolution>Tc2_System, 3.4.17.0 (Beckhoff Automation GmbH)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="Tc2_Utilities">
+      <Resolution>Tc2_Utilities, 3.3.22.0 (Beckhoff Automation GmbH)</Resolution>
+    </PlaceholderResolution>
+    <PlaceholderResolution Include="Tc3_Module">
+      <Resolution>Tc3_Module, 3.3.16.0 (Beckhoff Automation GmbH)</Resolution>
+    </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>
