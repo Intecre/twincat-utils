@@ -6,7 +6,7 @@
 VAR_GLOBAL CONSTANT
 	{attribute 'const_non_replaced'}
 	{attribute 'linkalways'}
-	stLibVersion_Intecre_Utilities : ST_LibVersion := (iMajor := 1, iMinor := 7, iBuild := 1, iRevision := 1, sVersion := '1.7.1.1');
+	stLibVersion_Intecre_Utilities : ST_LibVersion := (iMajor := 1, iMinor := 7, iBuild := 2, iRevision := 0, sVersion := '1.7.2.0');
 END_VAR
 ]]></Declaration>
   </GVL>
