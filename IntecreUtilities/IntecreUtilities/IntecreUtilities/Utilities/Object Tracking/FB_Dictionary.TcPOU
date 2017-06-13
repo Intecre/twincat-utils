@@ -141,7 +141,7 @@ Remove := TRUE;]]></ST>
     <Method Name="TryGet" Id="{57309371-ecb9-4896-9524-830ae1c28ddc}">
       <Declaration><![CDATA[// TRUE if successful and list item in sItem
 METHOD PUBLIC TryGet : BOOL
-VAR_INPUT
+VAR_IN_OUT CONSTANT
 	Key : T_MaxString;
 END_VAR
 VAR_IN_OUT
@@ -177,7 +177,7 @@ END_IF]]></ST>
     <Method Name="TryGetPartialKey" Id="{7941785e-7afc-4792-98ed-824c55eed538}">
       <Declaration><![CDATA[// TRUE if successful. Returns value associated with first key that provides partial match
 METHOD PUBLIC TryGetPartialKey : BOOL
-VAR_INPUT
+VAR_IN_OUT CONSTANT
 	PartialKey : T_MaxString;
 END_VAR
 VAR_IN_OUT
