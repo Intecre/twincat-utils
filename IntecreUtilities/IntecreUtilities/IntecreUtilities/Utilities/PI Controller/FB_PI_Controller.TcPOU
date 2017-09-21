@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.3">
+  <POU Name="FB_PI_Controller" Id="{667c926c-65f6-42bc-9d46-ef9968266b60}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_PI_Controller
+VAR_INPUT
+	Reset				: BOOL; // Reset integral component
+	ProcessVariable 	: LREAL;
+	Setpoint			: LREAL;
+	Kp					: LREAL;
+	IntegralConstant 	: LREAL; // Repeats per minute
+	RepeatsPerMinute	: BOOL := TRUE; // if false, repeats per second.
+	MaxLoopOutput		: LREAL;
+	MinLoopOutput		: LREAL;
+	Bias				: LREAL;
+END_VAR
+VAR_OUTPUT
+	Output 	: LREAL;
+END_VAR
+VAR
+	p 		: FB_P_Control;
+	i 		: FB_I_Controller;
+	preClampedOutput : LREAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[p(
+	ProcessVariable:= ProcessVariable, 
+	Setpoint:= Setpoint, 
+	Kp:= Kp 
+);
+
+i(
+	ProcessVariable := ProcessVariable, 
+	Setpoint := Setpoint, 
+	Ki	:= IntegralConstant / SEL(RepeatsPerMinute, 1, 60) , // normalising to repeats per minute. FB_I_COntroller block works in repeats per second natively.
+	Pause := (preClampedOutput > MaxLoopOutput) OR (preClampedOutput < MinLoopOutput) ,
+	Reset := Reset
+);
+
+// caclculate output
+preClampedOutput := p.Term + i.Term + Bias;
+Output := LIMIT( MinLoopOutput, preClampedOutput, MaxLoopOutput ); // clamp the output]]></ST>
+    </Implementation>
+    <LineIds Name="FB_PI_Controller">
+      <LineId Id="190" Count="15" />
+      <LineId Id="55" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

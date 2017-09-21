@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.3">
+  <POU Name="FB_I_Controller" Id="{daef964f-bc91-4064-8aa8-f6afefb52e99}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_I_Controller
+VAR_INPUT
+	ProcessVariable 		: LREAL;
+	Setpoint				: LREAL;
+	Ki						: LREAL; // Resets per unitTime
+	MaxIntegralComponent 	: LREAL := 1000; // max absolute value of Output
+	MinIntegralComponent	: LREAL := -1000; // min abs value of output.
+	Pause					: BOOL;	// pause integration
+	Reset					: BOOL; // reset integration.
+END_VAR
+VAR_OUTPUT
+	Term					: LREAL;
+END_VAR                 	
+VAR                     	
+	_Ki 					: LREAL; // include cycle time.
+	integralComponent		: LREAL;
+	error 					: LREAL;
+	task 					: T_Task;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// if block turned off, do nothing.
+IF Ki <= 0 THEN
+	Term := 0;
+	RETURN;
+END_IF
+
+IF Reset THEN
+	integralComponent := 0;
+ELSIF Pause THEN
+	RETURN;
+END_IF
+
+// get gain with scan time.
+_Ki := Ki * task.CycleTimeInSecs;
+
+// get this error.
+error := Setpoint - ProcessVariable  ;
+
+// sum errors (gains included)
+integralComponent := integralComponent + _Ki * error;
+
+// clamp output, and reverse engineer integral accordingly.
+IF integralComponent > MaxIntegralComponent THEN
+	integralComponent := MaxIntegralComponent;
+ELSIF integralComponent < MinIntegralComponent THEN
+	integralComponent := MinIntegralComponent;
+END_IF
+
+// derive integral output.
+Term := integralComponent;]]></ST>
+    </Implementation>
+    <LineIds Name="FB_I_Controller">
+      <LineId Id="241" Count="28" />
+      <LineId Id="16" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

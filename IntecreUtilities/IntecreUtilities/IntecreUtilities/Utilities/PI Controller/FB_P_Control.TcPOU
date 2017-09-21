@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.3">
+  <POU Name="FB_P_Control" Id="{5b99849f-1fb0-4200-b85f-0d13e85c0b7e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_P_Control
+VAR_INPUT
+	ProcessVariable : LREAL;
+	Setpoint 		: LREAL;
+	Kp 				: LREAL;
+END_VAR         	
+VAR_OUTPUT      	
+	Term 			: LREAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Term := (Setpoint - ProcessVariable) * Kp;]]></ST>
+    </Implementation>
+    <LineIds Name="FB_P_Control">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

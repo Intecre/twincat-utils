@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.3">
+  <POU Name="T_TestBase" Id="{cf43b595-fd8d-4755-bf5a-2fec59bd2fc0}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK T_TestBase EXTENDS TNamedBase
+VAR
+	_done : BOOL;
+	_testsPassed : BOOL;
+	_reset : BOOL;
+	_startTests : BOOL;
+	_task : T_Task;
+	_startTime : LINT; // ms
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="Done" Id="{cc6b35ed-861e-40d9-b64a-583b9efa7f70}">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'} PROPERTY Done : BOOL;]]></Declaration>
+      <Get Name="Get" Id="{563a55d2-6394-4feb-9952-e27846a74973}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Done := _done; ]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{cd6bb8e0-1035-4620-99d7-fe63791219ff}">
+        <Declaration><![CDATA[ ]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_done := Done;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="DonePulse" Id="{69daae97-218a-4a5e-a596-88e585acbc2a}">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'} PROPERTY DonePulse : BOOL]]></Declaration>
+      <Get Name="Get" Id="{bb5d7734-e305-4edc-91b9-025e213ca3a1}">
+        <Declaration><![CDATA[VAR_INST
+	pulse : R_TRIG;
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[pulse( CLK := Done );
+DonePulse := pulse.Q;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="nElapsedTimeInMs" Id="{e45e4b5b-34f4-4a70-ba84-9331932690c9}">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'} PROPERTY nElapsedTimeInMs : LINT]]></Declaration>
+      <Get Name="Get" Id="{f0416f8b-05b8-41ce-8c39-e6b4ca45df62}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[nElapsedTimeInMs := _task.DistributedClockTimeInMs - _startTime;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Passed" Id="{bbf31e0e-e0e1-4439-bc58-ff8a8d786e36}">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'} PROPERTY Passed : BOOL;]]></Declaration>
+      <Get Name="Get" Id="{c2a05465-df13-4139-940b-78df6bfb865e}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Passed := THIS^._testsPassed AND Done;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Reset" Id="{ed97f53b-fcfb-4b50-86ef-8defedbb18c2}">
+      <Declaration><![CDATA[METHOD Reset]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_reset := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Start" Id="{46534931-5501-419a-b28c-8c4d057122da}">
+      <Declaration><![CDATA[METHOD Start
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.Reset();
+_startTests := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="StartTimer" Id="{d4d9a5ca-456e-412d-b8dc-70d4c2039c9a}">
+      <Declaration><![CDATA[METHOD StartTimer]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_task.SetToThisTask(); // which ever thread this is called on sets the timer.
+_startTime := _task.DistributedClockTimeInMs;]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="tElapsedTimeInMs" Id="{a7b4614d-a01c-4463-8818-40a516e5640b}">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'} PROPERTY tElapsedTimeInMs : TIME]]></Declaration>
+      <Get Name="Get" Id="{dc2255c6-8bf8-48a6-b1a6-fd6bfa69bf11}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[tElapsedTimeInMs := TO_TIME(nElapsedTimeInMs);]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <LineIds Name="T_TestBase">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="T_TestBase.Done.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_TestBase.Done.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_TestBase.DonePulse.Get">
+      <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_TestBase.nElapsedTimeInMs.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_TestBase.Passed.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_TestBase.Reset">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="T_TestBase.Start">
+      <LineId Id="8" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="T_TestBase.StartTimer">
+      <LineId Id="6" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="T_TestBase.tElapsedTimeInMs.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
