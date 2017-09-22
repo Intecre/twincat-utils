@@ -31,8 +31,8 @@
     <Author>Mark Lazarides</Author>
     <Title>Intecre.Utilities</Title>
     <DefaultNamespace>Intecre.Utilities</DefaultNamespace>
-    <Description>2.0.2.0 Added Testing base
-
+    <Description>2.0.3.0 Added Terminal interfaces
+2.0.2.0 Added Testing base
 2.0.1.0 Added PI control loop
 2.0.0.0 Compiled against TC3.1.4022
 1.7.2.0 - Final 3.1.4020.32 build. Maintenance only for this branch.
@@ -60,7 +60,7 @@
 Added Task.CyclesPerSeconds
 </Description>
     <DocFormat>reStructuredText</DocFormat>
-    <ProjectVersion>2.0.2.0</ProjectVersion>
+    <ProjectVersion>2.0.3.0</ProjectVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="GVLs\CollectionParameters.TcGVL">
@@ -88,6 +88,39 @@ Added Task.CyclesPerSeconds
       <SystemCall>true</SystemCall>
     </Compile>
     <Compile Include="System\T_Task.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Terminal Interfaces\Analogue Input EL3xxx\EL3058\stEL3058_Channel.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Terminal Interfaces\Analogue Input EL3xxx\EL3058\stEL3058_ChannelStatus.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Terminal Interfaces\Analogue Input EL3xxx\EL3152\stEL3152_Channel.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Terminal Interfaces\Analogue Input EL3xxx\EL3152\stEL3152_ChannelStatus.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Terminal Interfaces\Analogue Input EL3xxx\EL3318\stEL3318_Channel.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Terminal Interfaces\Analogue Input EL3xxx\EL3318\stEL3318_ChannelStatus.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Terminal Interfaces\EtherCAT Standard\stInfoData.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Terminal Interfaces\EtherCAT Standard\stWcState.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Terminal Interfaces\System EL9xxx\EL9410\stEL9410.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Terminal Interfaces\System EL9xxx\EL9576\stEL9576.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Terminal Interfaces\System EL9xxx\EL9576\stEL9576_Status.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\Conversion\CharIsNumberOrPeriod.TcPOU">
@@ -210,6 +243,15 @@ Added Task.CyclesPerSeconds
   <ItemGroup>
     <Folder Include="DUTs" />
     <Folder Include="GVLs" />
+    <Folder Include="Terminal Interfaces" />
+    <Folder Include="Terminal Interfaces\Analogue Input EL3xxx" />
+    <Folder Include="Terminal Interfaces\Analogue Input EL3xxx\EL3058" />
+    <Folder Include="Terminal Interfaces\Analogue Input EL3xxx\EL3152" />
+    <Folder Include="Terminal Interfaces\Analogue Input EL3xxx\EL3318" />
+    <Folder Include="Terminal Interfaces\EtherCAT Standard" />
+    <Folder Include="Terminal Interfaces\System EL9xxx" />
+    <Folder Include="Terminal Interfaces\System EL9xxx\EL9576" />
+    <Folder Include="Terminal Interfaces\System EL9xxx\EL9410" />
     <Folder Include="Utilities" />
     <Folder Include="Project Information" />
     <Folder Include="System" />
