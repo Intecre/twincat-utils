@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.6">
+  <POU Name="F_ConcatLarge" Id="{4db9989f-1492-47e5-8436-5fadffe0d25b}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION F_ConcatLarge : STRING(StringsParams.MAX_STRING_LENGTH)
+VAR_IN_OUT CONSTANT
+	StringOne 	: STRING(StringsParams.MAX_STRING_LENGTH);
+	StringTwo	: STRING(StringsParams.MAX_STRING_LENGTH);
+END_VAR
+VAR
+	i, j, forFrom, forTo, maxLen : DINT;
+	response : STRING(StringsParams.MAX_STRING_LENGTH);
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[maxLen := TO_DINT(StringsParams.MAX_STRING_LENGTH);
+FOR i := 0 TO LEN(StringOne) DO
+	response[i] := StringOne[i]; 
+END_FOR
+
+j := 0;
+
+IF LEN(stringOne) + LEN(StringTwo) > maxLen - 1 THEN
+	forFrom := maxLen - 1 - LEN(StringTwo);
+	forTo := maxLen - 2;
+
+ELSE
+	forFrom := LEN(StringOne);
+	forTo := LEN(StringOne) + LEN(StringTwo) - 1 ;
+	
+END_IF
+
+FOR i := forFrom TO forTo DO
+	response[i] := StringTwo[j];
+	j := j + 1;
+END_FOR
+
+response[forTo + 1] := 16#0; // string terminating character
+F_ConcatLarge := response;]]></ST>
+    </Implementation>
+    <LineIds Name="F_ConcatLarge">
+      <LineId Id="28" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="13" Count="1" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="31" Count="15" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="29" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -31,7 +31,10 @@
     <Author>Mark Lazarides</Author>
     <Title>Intecre.Utilities</Title>
     <DefaultNamespace>Intecre.Utilities</DefaultNamespace>
-    <Description>2.0.3.0 Added Terminal interfaces
+    <Description>2.0.4.0 Added parameterisable string length
+
+2.0.3.1 Corercte PI Controller issue
+2.0.3.0 Added Terminal interfaces
 2.0.2.0 Added Testing base
 2.0.1.0 Added PI control loop
 2.0.0.0 Compiled against TC3.1.4022
@@ -60,7 +63,7 @@
 Added Task.CyclesPerSeconds
 </Description>
     <DocFormat>reStructuredText</DocFormat>
-    <ProjectVersion>2.0.3.0</ProjectVersion>
+    <ProjectVersion>2.0.4.0</ProjectVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="GVLs\CollectionParameters.TcGVL">
@@ -72,6 +75,10 @@ Added Task.CyclesPerSeconds
       <LinkAlways>true</LinkAlways>
     </Compile>
     <Compile Include="GVLs\Objects.TcGVL">
+      <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
+    </Compile>
+    <Compile Include="GVLs\StringsParams.TcGVL">
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>
     </Compile>
@@ -227,6 +234,27 @@ Added Task.CyclesPerSeconds
     <Compile Include="Utilities\String\F_StringToTarg.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utilities\String\Large Concats\F_ClearLarge.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\String\Large Concats\F_Concat3_Large.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\String\Large Concats\F_Concat4_Large.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\String\Large Concats\F_Concat5_Large.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\String\Large Concats\F_Concat6_Large.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\String\Large Concats\F_Concat7_Large.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\String\Large Concats\F_ConcatLarge.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Utilities\Testing\FB_Assert.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -258,6 +286,7 @@ Added Task.CyclesPerSeconds
     <Folder Include="Utilities\Logger" />
     <Folder Include="Utilities\Conversion" />
     <Folder Include="Utilities\PI Controller" />
+    <Folder Include="Utilities\String\Large Concats" />
     <Folder Include="Utilities\Testing" />
     <Folder Include="Utilities\Object Tracking" />
     <Folder Include="Utilities\String" />

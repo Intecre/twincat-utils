@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.6">
+  <POU Name="F_ClearLarge" Id="{aee1f00c-288c-495e-9191-3d47b22ee060}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION F_ClearLarge 
+VAR_IN_OUT CONSTANT
+	stringToClear 	: STRING(StringsParams.MAX_STRING_LENGTH);
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[MEMSET(ADR(stringToClear), 16#0, sizeof(stringToClear));]]></ST>
+    </Implementation>
+    <LineIds Name="F_ClearLarge">
+      <LineId Id="7" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

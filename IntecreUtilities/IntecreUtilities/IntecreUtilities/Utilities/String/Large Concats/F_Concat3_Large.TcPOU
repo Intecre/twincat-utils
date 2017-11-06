@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.6">
+  <POU Name="F_Concat3_Large" Id="{d074b91b-6f44-48d1-b047-26a84770af6d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION F_Concat3_Large : STRING(StringsParams.MAX_STRING_LENGTH);
+VAR_IN_OUT CONSTANT
+	StringOne 	: STRING(StringsParams.MAX_STRING_LENGTH);
+	StringTwo	: STRING(StringsParams.MAX_STRING_LENGTH);
+	StringThree	: STRING(StringsParams.MAX_STRING_LENGTH);
+END_VAR
+VAR
+	str : STRING(StringsParams.MAX_STRING_LENGTH);
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[str := F_ConcatLarge( StringTwo, StringThree );
+
+F_Concat3_Large := 
+	F_ConcatLarge(
+		StringOne, 
+		str
+	);]]></ST>
+    </Implementation>
+    <LineIds Name="F_Concat3_Large">
+      <LineId Id="28" Count="1" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="20" Count="3" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

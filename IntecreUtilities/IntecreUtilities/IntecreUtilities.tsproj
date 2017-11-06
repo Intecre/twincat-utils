@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4020.32">
+<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4022.2">
 	<DataTypes>
 		<DataType>
 			<Name GUID="{85DC3E7A-8ADA-435B-9479-25573909A7DB}" Namespace="AX5000" TcBaseType="true">E_AX5000_P_0275_ActiveFeedbackAndMemory</Name>
@@ -78,7 +78,7 @@
 			</SubItem>
 		</DataType>
 	</DataTypes>
-	<Project ProjectGUID="{83E3C23D-9DEB-4EAD-91D6-1CD18FD375E1}" TargetNetId="192.168.12.101.1.1" ShowHideConfigurations="#x106">
+	<Project ProjectGUID="{83E3C23D-9DEB-4EAD-91D6-1CD18FD375E1}" TargetNetId="192.168.12.101.1.1" ShowHideConfigurations="#x1c7">
 		<System>
 			<Settings MaxCpus="4" NonWinCpus="1">
 				<Cpu CpuId="3"/>
@@ -91,7 +91,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{D1B062E0-87EA-4121-B516-D7E6660B0CAA}" Name="IntecreUtilities" PrjFilePath="IntecreUtilities\IntecreUtilities.plcproj" TmcFilePath="IntecreUtilities\IntecreUtilities.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e">
-				<Instance Id="#x01010010" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="IntecreUtilities\IntecreUtilities.tmc">
 					<Name>IntecreUtilities Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 				</Instance>

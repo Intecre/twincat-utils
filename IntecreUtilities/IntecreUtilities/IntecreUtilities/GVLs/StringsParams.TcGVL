@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.6">
+  <GVL Name="StringsParams" Id="{2e6b8489-182d-47da-abb3-674801c0761a}" ParameterList="True">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL CONSTANT
+	MAX_STRING_LENGTH : UDINT := 255; // used for all string concats.
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>
