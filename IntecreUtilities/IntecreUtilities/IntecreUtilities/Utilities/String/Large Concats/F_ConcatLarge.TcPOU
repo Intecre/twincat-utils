@@ -7,43 +7,39 @@ VAR_IN_OUT CONSTANT
 	StringTwo	: STRING(StringsParams.MAX_STRING_LENGTH);
 END_VAR
 VAR
-	i, j, forFrom, forTo, maxLen : DINT;
+	i, sizeToCpy, teminatingCharPos, maxLen : DINT;
 	response : STRING(StringsParams.MAX_STRING_LENGTH);
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[maxLen := TO_DINT(StringsParams.MAX_STRING_LENGTH);
-FOR i := 0 TO LEN(StringOne) DO
-	response[i] := StringOne[i]; 
-END_FOR
+      <ST><![CDATA[maxLen := TO_DINT(StringsParams.MAX_STRING_LENGTH) - 1; // - 1 allows for terminating character in last position.
 
-j := 0;
-
-IF LEN(stringOne) + LEN(StringTwo) > maxLen - 1 THEN
-	forFrom := maxLen - 1 - LEN(StringTwo);
-	forTo := maxLen - 2;
+IF LEN(stringOne) + LEN(StringTwo) > maxLen THEN
+	sizeToCpy := maxLen - LEN(StringTwo); //need room for the terminating character
+	teminatingCharPos := maxLen; // this is the index position for utf-8 string as byte array
 
 ELSE
-	forFrom := LEN(StringOne);
-	forTo := LEN(StringOne) + LEN(StringTwo) - 1 ;
+	sizeToCpy := LEN(StringOne);
+	teminatingCharPos := LEN(StringOne) + LEN(StringTwo);
 	
 END_IF
 
-FOR i := forFrom TO forTo DO
-	response[i] := StringTwo[j];
-	j := j + 1;
-END_FOR
+// copy strings into response
+MEMCPY( ADR(response), ADR(StringOne), TO_UDINT(sizeToCpy) );
+MEMCPY( ADR(response[sizeToCpy]), ADR(StringTwo), TO_UDINT( LEN(StringTwo) ) );
 
-response[forTo + 1] := 16#0; // string terminating character
+response[teminatingCharPos] := 16#0; // string terminating character
 F_ConcatLarge := response;]]></ST>
     </Implementation>
     <LineIds Name="F_ConcatLarge">
       <LineId Id="28" Count="0" />
-      <LineId Id="7" Count="0" />
-      <LineId Id="13" Count="1" />
-      <LineId Id="16" Count="0" />
-      <LineId Id="31" Count="15" />
+      <LineId Id="58" Count="8" />
       <LineId Id="18" Count="0" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="72" Count="0" />
       <LineId Id="30" Count="0" />
       <LineId Id="29" Count="0" />
     </LineIds>

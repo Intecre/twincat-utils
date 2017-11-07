@@ -31,8 +31,9 @@
     <Author>Mark Lazarides</Author>
     <Title>Intecre.Utilities</Title>
     <DefaultNamespace>Intecre.Utilities</DefaultNamespace>
-    <Description>2.0.4.0 Added parameterisable string length
+    <Description>2.0.4.1 Added parameterisable string length. Test mempy
 
+2.0.4.0 Added parameterisable string length
 2.0.3.1 Corercte PI Controller issue
 2.0.3.0 Added Terminal interfaces
 2.0.2.0 Added Testing base
@@ -63,7 +64,7 @@
 Added Task.CyclesPerSeconds
 </Description>
     <DocFormat>reStructuredText</DocFormat>
-    <ProjectVersion>2.0.4.0</ProjectVersion>
+    <ProjectVersion>2.0.4.1</ProjectVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="GVLs\CollectionParameters.TcGVL">
