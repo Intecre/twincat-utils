@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.7">
   <POU Name="T_Task" Id="{91408a89-9e5e-4cd9-a531-bed854a04d51}" SpecialFunc="None">
     <Declaration><![CDATA[// Exposes _TaskInfo[x] information for the task index the object is instantied in.
 //
@@ -73,12 +73,9 @@ cycleTimeExceeded := _cycleTimeExceeded;]]></ST>
       <Declaration><![CDATA[// Configured task cycle time in ms
 PROPERTY CycleTimeInMs : LREAL ]]></Declaration>
       <Get Name="Get" Id="{4fb0f5c0-b166-4fd4-8daa-1e863446cffa}">
-        <Declaration><![CDATA[VAR
-	myByte : BYTE;
-END_VAR]]></Declaration>
+        <Declaration><![CDATA[]]></Declaration>
         <Implementation>
-          <ST><![CDATA[myByte := _index;
-_cycleTimeInMs := TwinCAT_SystemInfoVarList._TaskInfo[myByte].CycleTime / LINT_TO_UDINT(HUNDRED_NS_IN_MS); // CycleTime expressed in 100ns units.
+          <ST><![CDATA[_cycleTimeInMs := TwinCAT_SystemInfoVarList._TaskInfo[_index].CycleTime / LINT_TO_UDINT(HUNDRED_NS_IN_MS); // CycleTime expressed in 100ns units.
 cycleTimeInMs := _cycleTimeInMs;]]></ST>
         </Implementation>
       </Get>
@@ -170,7 +167,7 @@ Index := curTask.index;]]></ST>
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="T_Task.CycleTimeInMs.Get">
-      <LineId Id="3" Count="1" />
+      <LineId Id="4" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="T_Task.CycleTimeInSecs.Get">
