@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.7">
   <POU Name="TNamedBase" Id="{747db62b-b007-4b65-974e-3e30c9f6f818}" SpecialFunc="None">
     <Declaration><![CDATA[{attribute 'reflection'}
 FUNCTION_BLOCK TNamedBase
@@ -7,6 +7,8 @@ VAR
 	{attribute 'instance-path'}
     {attribute 'no_init'}
 	name : STRING;
+	_instanceName : STRING; // name minus project name etc.
+	_instanceSet : BOOL;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -15,11 +17,13 @@ END_VAR
     <Property Name="InstanceName" Id="{b025274c-dbbe-41b4-9d4a-6b264880646b}">
       <Declaration><![CDATA[PROPERTY FINAL InstanceName : T_MaxString;]]></Declaration>
       <Get Name="Get" Id="{c76f2db8-929e-42c3-879d-8eaff2d7bbd0}">
-        <Declaration><![CDATA[VAR
-END_VAR
-]]></Declaration>
+        <Declaration><![CDATA[]]></Declaration>
         <Implementation>
-          <ST><![CDATA[InstanceName := Name;]]></ST>
+          <ST><![CDATA[IF NOT _instanceSet THEN
+	setInstanceName();
+END_IF
+
+InstanceName := _instanceName;]]></ST>
         </Implementation>
       </Get>
     </Property>
@@ -59,10 +63,29 @@ END_VAR
 );]]></ST>
       </Implementation>
     </Method>
+    <Method Name="setInstanceName" Id="{d237b876-4874-4101-9aea-59f0ea3e9132}">
+      <Declaration><![CDATA[METHOD PRIVATE setInstanceName 
+VAR
+	charsToDeleteFromPath : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// format is  Solution_Name.ProjectName.FirstDeclaredPOU.etc.etc... 
+
+// find project name position,  
+charsToDeleteFromPath := FIND( name, TwinCAT_SystemInfoVarList._AppInfo.ProjectName );
+//then add the length of it, 
+charsToDeleteFromPath := charsToDeleteFromPath + LEN( TwinCAT_SystemInfoVarList._AppInfo.ProjectName );
+//gives us just "FirstDeclaredPOU.etc.etc..." from above.
+_instanceName := DELETE( name, charsToDeleteFromPath, 1 );
+_instanceSet := TRUE;]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="TNamedBase">
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="TNamedBase.InstanceName.Get">
+      <LineId Id="5" Count="3" />
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="TNamedBase.LogError">
@@ -76,6 +99,17 @@ END_VAR
     <LineIds Name="TNamedBase.LogWarning">
       <LineId Id="7" Count="1" />
       <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="TNamedBase.setInstanceName">
+      <LineId Id="11" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="10" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
