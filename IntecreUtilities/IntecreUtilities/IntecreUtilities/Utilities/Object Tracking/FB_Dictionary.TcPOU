@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.3">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.9">
   <POU Name="FB_Dictionary" Id="{c29a5ccc-af91-48ad-9b38-0f1964c51b1a}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Dictionary EXTENDS TNamedBase
 VAR
@@ -141,7 +141,7 @@ Remove := TRUE;]]></ST>
     <Method Name="TryGet" Id="{57309371-ecb9-4896-9524-830ae1c28ddc}">
       <Declaration><![CDATA[// TRUE if successful and list item in sItem
 METHOD PUBLIC TryGet : BOOL
-VAR_IN_OUT CONSTANT
+VAR_INPUT
 	Key : T_MaxString;
 END_VAR
 VAR_IN_OUT

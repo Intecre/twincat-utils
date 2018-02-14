@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.6">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.9">
   <POU Name="F_ConcatLarge" Id="{4db9989f-1492-47e5-8436-5fadffe0d25b}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION F_ConcatLarge : STRING(StringsParams.MAX_STRING_LENGTH)
 VAR_IN_OUT CONSTANT

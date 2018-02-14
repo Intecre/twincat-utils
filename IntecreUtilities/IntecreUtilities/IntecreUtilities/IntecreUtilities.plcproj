@@ -31,8 +31,14 @@
     <Author>Mark Lazarides</Author>
     <Title>Intecre.Utilities</Title>
     <DefaultNamespace>Intecre.Utilities</DefaultNamespace>
-    <Description>2.0.4.2 - updated T_NamedBase to remove project name from the isntance name.
+    <Description>2.0.6.0 - attempting fix for tryget issue
 
+2.0.5.2 - Corrected bug in datetime
+2.0.5.1 - Added property to task for system time
+2.0.5.0 
+	-Adding Concatenations for WSTRINGS
+	-Adding some assert directly onto TTestBase
+2.0.4.2 - updated T_NamedBase to remove project name from the isntance name.
 2.0.4.1 Added parameterisable string length. Test mempy
 2.0.4.0 Added parameterisable string length
 2.0.3.1 Corercte PI Controller issue
@@ -60,7 +66,7 @@
 &amp; Added F_Gate (return state of BOOL and reset if true). good for one shot tests.
 Added Task.CyclesPerSeconds</Description>
     <DocFormat>reStructuredText</DocFormat>
-    <ProjectVersion>2.0.4.2</ProjectVersion>
+    <ProjectVersion>2.0.6.0</ProjectVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="GVLs\CollectionParameters.TcGVL">
