@@ -31,7 +31,7 @@
     <Author>Mark Lazarides</Author>
     <Title>Intecre.Utilities</Title>
     <DefaultNamespace>Intecre.Utilities</DefaultNamespace>
-    <Description>2.0.6.0 - attempting fix for tryget issue
+    <Description>2.0.6.0 - Fix for dictionary tryget issue
 
 2.0.5.2 - Corrected bug in datetime
 2.0.5.1 - Added property to task for system time
