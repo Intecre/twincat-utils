@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.9">
+  <POU Name="T_Timer" Id="{c856fe31-e123-4b16-a6bb-15d98c82e22c}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK T_Timer
+VAR_INPUT
+END_VAR
+VAR
+	task : T_Task;
+	startTime : LINT; // ms
+	_elapsedTimeInMs : LINT;
+	_duration : LINT := 1;
+	_signal : BOOL;
+	_offSignal : BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="ElapsedTime" Id="{8a9904e6-31e7-4e9d-b86a-65ffda125fec}">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'} PROPERTY ElapsedTime : TIME]]></Declaration>
+      <Get Name="Get" Id="{488b6893-b0d4-43d1-9238-e2400fb8eeb8}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ElapsedTime := LINT_TO_TIME( ElapsedTimeInMs );]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="ElapsedTimeInMs" Id="{39ef3b5b-f7fe-40ca-8898-e880621dc8f1}">
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'} PROPERTY ElapsedTimeInMs : LINT]]></Declaration>
+      <Get Name="Get" Id="{d3f3f543-20a9-47bf-a9e3-ec99c7f0ed86}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ElapsedTimeInMs := task.DistributedClockTimeInMs - startTime;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Q_Off" Id="{08c2a48f-0dc0-49de-bf2d-183d52c59718}">
+      <Declaration><![CDATA[PROPERTY Q_Off : BOOL]]></Declaration>
+      <Get Name="Get" Id="{55ca00d5-a49d-4730-b3fd-217e8419398d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Q_Off := _offSignal AND_THEN
+			( ( task.DistributedClockTimeInMs - startTime ) > _duration );]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Q_On" Id="{c1cc5243-5ef3-42dc-8554-e5a72de2db44}">
+      <Declaration><![CDATA[PROPERTY Q_On : BOOL]]></Declaration>
+      <Get Name="Get" Id="{efe2eca9-3b6a-4325-8ce4-26b59119f648}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Q_On := _signal AND_THEN
+			( ( task.DistributedClockTimeInMs - startTime ) > _duration );]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Q_PulseTrain" Id="{b920a6f9-c141-4439-bcab-162c60d1dcff}">
+      <Declaration><![CDATA[PROPERTY Q_PulseTrain : BOOL]]></Declaration>
+      <Get Name="Get" Id="{828a837c-2803-441e-a68b-cba172ccf9a3}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Q_PulseTrain := _signal AND_THEN
+			( ( task.DistributedClockTimeInMs - startTime ) MOD _duration > ( _duration / 2 ) );]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="SetPeriod" Id="{33ba7951-e554-427e-81de-58f215094336}">
+      <Declaration><![CDATA[PROPERTY SetPeriod : TIME]]></Declaration>
+      <Get Name="Get" Id="{d87eca3d-708b-4edf-be46-377add0fce6b}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[SetPeriod := LINT_TO_TIME( _duration );]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{bb954fa6-c7bf-4921-8824-f6432d76b967}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_duration := MAX( TIME_TO_LINT( SetPeriod ), 1);]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <Property Name="Signal" Id="{e88dd959-ce19-4a18-bb9b-dbb847f8258f}">
+      <Declaration><![CDATA[PROPERTY Signal : BOOL]]></Declaration>
+      <Get Name="Get" Id="{bec11fc9-db93-40f7-9738-dc0829db2d72}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Signal := _signal;
+]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{5d28a183-9130-4cf0-97a4-ce74854267a9}">
+        <Declaration><![CDATA[
+VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF Signal <> _signal THEN
+	startTime := task.DistributedClockTimeInMs;
+	_signal := Signal;
+	_offSignal := NOT _signal;
+END_IF]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
+    <LineIds Name="T_Timer">
+      <LineId Id="14" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Timer.ElapsedTime.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Timer.ElapsedTimeInMs.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Timer.Q_Off.Get">
+      <LineId Id="2" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Timer.Q_On.Get">
+      <LineId Id="2" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Timer.Q_PulseTrain.Get">
+      <LineId Id="2" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Timer.SetPeriod.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Timer.SetPeriod.Set">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Timer.Signal.Get">
+      <LineId Id="2" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Timer.Signal.Set">
+      <LineId Id="7" Count="1" />
+      <LineId Id="11" Count="1" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

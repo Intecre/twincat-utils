@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.9">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.10">
   <POU Name="FB_StringList" Id="{5c73482d-8467-44b4-9630-4f585c9087e0}" SpecialFunc="None">
     <Declaration><![CDATA[// List of Strings.
 FUNCTION_BLOCK FB_StringList
@@ -54,6 +54,27 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[ContainsPartial := FindIndexPartialKey(PartialItem) >= 0;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="CopyList" Id="{39a405c5-ca28-4471-b710-3b8972918780}">
+      <Declaration><![CDATA[METHOD CopyList
+VAR_IN_OUT
+	ListToCopyTo : ARRAY[ 0 .. GVL_List.LIST_SIZE - 1 ] OF T_MaxString; // hold list
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ListToCopyTo := THIS^.List;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="CopyListAndClear" Id="{c3e0a3e7-6839-4cd3-bbb6-f7d0188b7693}">
+      <Declaration><![CDATA[METHOD CopyListAndClear
+VAR_IN_OUT
+	ListToCopyTo : ARRAY[ 0 .. GVL_List.LIST_SIZE - 1 ] OF T_MaxString; // hold list
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.CopyList( ListToCopyTo );
+THIS^.Clear();]]></ST>
       </Implementation>
     </Method>
     <Property Name="Count" Id="{718e1bc0-d094-4e9e-81d3-a5637c94a50a}">
@@ -183,6 +204,13 @@ END_IF]]></ST>
     </LineIds>
     <LineIds Name="FB_StringList.ContainsPartial">
       <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringList.CopyList">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_StringList.CopyListAndClear">
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="0" />
     </LineIds>
     <LineIds Name="FB_StringList.Count.Get">
       <LineId Id="2" Count="0" />

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.7">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.12">
   <POU Name="T_Task" Id="{91408a89-9e5e-4cd9-a531-bed854a04d51}" SpecialFunc="None">
     <Declaration><![CDATA[// Exposes _TaskInfo[x] information for the task index the object is instantied in.
 //
@@ -90,6 +90,34 @@ PROPERTY CycleTimeInSecs : LREAL ]]></Declaration>
         </Implementation>
       </Get>
     </Property>
+    <Property Name="DateTimeFromDc" Id="{59a9e3cb-3f43-4481-8abb-f488ade44dd1}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY DateTimeFromDc : DATE_AND_TIME]]></Declaration>
+      <Get Name="Get" Id="{b0d79845-6ae9-4e73-ae5d-458379ae4868}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[DateTimeFromDc := LINT_TO_DT( TO_LINT( DT#2000-1-1-00:00 ) + TwinCAT_SystemInfoVarList._TaskInfo[_index].DcTaskTime / 1000000000 );]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="DateTimeString" Id="{ab8ee405-c790-408e-9600-9288b33b1474}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY DateTimeString : STRING]]></Declaration>
+      <Get Name="Get" Id="{61ecf890-d2fd-4dcd-9a03-fd6d70e13eda}">
+        <Declaration><![CDATA[VAR
+	temp : STRING;
+END_VAR]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[// remove the leading DT# : DT#2018-07-30-09:23:47
+temp := DELETE( TO_STRING( DateTimeFromDc ), 3, 1 );
+// add underscore between datae and time 2018-07-30-09:23:47
+temp := REPLACE( temp, '_', 1, 11 );
+// replace the colons with dashes 2018-07-30_09:23:47
+temp := REPLACE( REPLACE( temp, '-', 1, 14 ), '-', 1, 17 );
+
+// 2018-07-30_09-23-47
+DateTimeString :=  temp;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Property Name="DistributedClockTimeInMs" Id="{ad308fd0-a973-437e-be58-90470e8ef930}" FolderPath="Properties\">
       <Declaration><![CDATA[//Distributed clock time in milliseconds.
 PROPERTY PUBLIC DistributedClockTimeInMs : LINT]]></Declaration>
@@ -171,6 +199,15 @@ Index := curTask.index;]]></ST>
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="T_Task.CycleTimeInSecs.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Task.DateTimeFromDc.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Task.DateTimeString.Get">
+      <LineId Id="5" Count="3" />
+      <LineId Id="11" Count="2" />
+      <LineId Id="9" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="T_Task.DistributedClockTimeInMs.Get">

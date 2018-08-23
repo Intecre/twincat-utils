@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.7">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.10">
   <POU Name="TNamedBase" Id="{747db62b-b007-4b65-974e-3e30c9f6f818}" SpecialFunc="None">
     <Declaration><![CDATA[{attribute 'reflection'}
 FUNCTION_BLOCK TNamedBase
@@ -72,12 +72,16 @@ END_VAR
       <Implementation>
         <ST><![CDATA[// format is  Solution_Name.ProjectName.FirstDeclaredPOU.etc.etc... 
 
-// find project name position,  
-charsToDeleteFromPath := FIND( name, TwinCAT_SystemInfoVarList._AppInfo.ProjectName );
-//then add the length of it, 
-charsToDeleteFromPath := charsToDeleteFromPath + LEN( TwinCAT_SystemInfoVarList._AppInfo.ProjectName );
-//gives us just "FirstDeclaredPOU.etc.etc..." from above.
+//Remove Solution_Name
+charsToDeleteFromPath := FIND( name, '.' );
 _instanceName := DELETE( name, charsToDeleteFromPath, 1 );
+
+//Remove ProjectName
+charsToDeleteFromPath := FIND( _instanceName, '.' );
+
+//gives us just "FirstDeclaredPOU.etc.etc..." from above.
+_instanceName := DELETE( _instanceName, charsToDeleteFromPath, 1 );
+
 _instanceSet := TRUE;]]></ST>
       </Implementation>
     </Method>
@@ -102,13 +106,17 @@ _instanceSet := TRUE;]]></ST>
     </LineIds>
     <LineIds Name="TNamedBase.setInstanceName">
       <LineId Id="11" Count="0" />
-      <LineId Id="14" Count="0" />
-      <LineId Id="12" Count="0" />
-      <LineId Id="6" Count="0" />
-      <LineId Id="15" Count="0" />
-      <LineId Id="7" Count="0" />
-      <LineId Id="16" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="21" Count="0" />
       <LineId Id="5" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="28" Count="0" />
       <LineId Id="10" Count="0" />
     </LineIds>
   </POU>
