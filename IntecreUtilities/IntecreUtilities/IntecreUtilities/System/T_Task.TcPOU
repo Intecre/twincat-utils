@@ -16,6 +16,7 @@ VAR
 	_name : STRING(63);
 	_runTimeInMs : UDINT;
 	_distributedClockTimeInMs : LINT;
+	_distributedClockTimeInNs : LINT;
 
 // FBs
 	initialised : BOOL := FALSE;
@@ -129,6 +130,17 @@ DistributedClockTimeInMs := _distributedClockTimeInMs;]]></ST>
         </Implementation>
       </Get>
     </Property>
+    <Property Name="DistributedClockTimeInNs" Id="{e8e863a3-bf8f-4578-8d3d-d32c7bdfbcd7}" FolderPath="Properties\">
+      <Declaration><![CDATA[//Distributed clock time in nanoseconds.
+PROPERTY PUBLIC DistributedClockTimeInNs : LINT]]></Declaration>
+      <Get Name="Get" Id="{b46378c8-0e1f-4973-9b7f-f91e069d3e26}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[_distributedClockTimeInNs := TwinCAT_SystemInfoVarList._TaskInfo[_index].DcTaskTime; // CycleTime expressed ns.
+DistributedClockTimeInNs := _distributedClockTimeInNs;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Property Name="Index" Id="{e3f963f0-b880-4563-9015-cbd2aab42b42}" FolderPath="Properties\">
       <Declaration><![CDATA[//Get/Set the task for the infomration required. Can use "SetToThisTask()" to set to local task.
 PROPERTY PUBLIC Index : BYTE ]]></Declaration>
@@ -211,6 +223,10 @@ Index := curTask.index;]]></ST>
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="T_Task.DistributedClockTimeInMs.Get">
+      <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Task.DistributedClockTimeInNs.Get">
       <LineId Id="3" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>

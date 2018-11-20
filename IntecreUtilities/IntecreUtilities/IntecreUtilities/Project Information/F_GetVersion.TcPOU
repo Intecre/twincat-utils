@@ -4,6 +4,7 @@
     <Declaration><![CDATA[// This function has been automatically generated from the project information.
 {attribute 'signature_flag' := '1073741824'}
 {attribute 'TcGenerated'}
+{attribute 'no-analysis'}
 FUNCTION F_GetVersion : ST_LibVersion
 VAR_INPUT
 	
@@ -12,11 +13,11 @@ END_VAR]]></Declaration>
       <ST><![CDATA[F_GetVersion.iMajor := 2;
 F_GetVersion.iMinor := 1;
 F_GetVersion.iBuild := 1;
-F_GetVersion.iRevision := 4;
+F_GetVersion.iRevision := 5;
 ]]></ST>
     </Implementation>
     <LineIds Name="F_GetVersion">
-      <LineId Id="1681" Count="3" />
+      <LineId Id="1709" Count="3" />
       <LineId Id="2" Count="0" />
     </LineIds>
   </POU>

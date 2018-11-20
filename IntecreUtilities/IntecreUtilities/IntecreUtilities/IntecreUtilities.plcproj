@@ -31,8 +31,9 @@
     <Author>Mark Lazarides</Author>
     <Title>Intecre.Utilities</Title>
     <DefaultNamespace>Intecre.Utilities</DefaultNamespace>
-    <Description>2.1.1.4 Added library category
+    <Description>2.1.1.5 Added distributed clock time in nano seconds to T_Task
 
+2.1.1.4 Added library category
 2.1.1.3 Added DateTimeString property to task
 2.1.1.2 Added CopyToList on string list to get the whole list.
 2.1.1.1 Correct bug in instance Name of TNamedBase.
@@ -64,7 +65,7 @@
     <SelectedLibraryCategories>
       <Id>{d7292350-a6c3-11e8-98d0-529269fb1459}</Id>
     </SelectedLibraryCategories>
-    <ProjectVersion>2.1.1.4</ProjectVersion>
+    <ProjectVersion>2.1.1.5</ProjectVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="GVLs\CollectionParameters.TcGVL">

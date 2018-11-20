@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.12">
   <POU Name="F_GetTitle" Id="{d2e9f439-ab6f-47c4-8c56-63968cb934f5}" SpecialFunc="None">
     <Declaration><![CDATA[// This function has been automatically generated from the project information.
 {attribute 'signature_flag' := '1073741824'}
 {attribute 'TcGenerated'}
+{attribute 'no-analysis'}
 FUNCTION F_GetTitle : WSTRING
 VAR_INPUT
 	
@@ -13,7 +14,7 @@ END_VAR]]></Declaration>
 ]]></ST>
     </Implementation>
     <LineIds Name="F_GetTitle">
-      <LineId Id="483" Count="0" />
+      <LineId Id="497" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>
   </POU>
