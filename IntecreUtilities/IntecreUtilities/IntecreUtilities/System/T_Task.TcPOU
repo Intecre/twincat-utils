@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.16">
   <POU Name="T_Task" Id="{91408a89-9e5e-4cd9-a531-bed854a04d51}" SpecialFunc="None">
     <Declaration><![CDATA[// Exposes _TaskInfo[x] information for the task index the object is instantied in.
 //
@@ -91,6 +91,21 @@ PROPERTY CycleTimeInSecs : LREAL ]]></Declaration>
         </Implementation>
       </Get>
     </Property>
+    <Property Name="DateString" Id="{616e5652-030b-4cd6-9192-7709b5fd84f8}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY DateString : STRING]]></Declaration>
+      <Get Name="Get" Id="{0581ed3f-a33f-4c7f-b30d-98f628a4400a}">
+        <Declaration><![CDATA[VAR
+	temp : STRING;
+END_VAR]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[// remove the trailing time: 2018-07-30_09-23-47
+temp := DELETE( TO_STRING( DateTimeString ), 9,11 );
+
+// 2018-07-30
+DateString :=  temp;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Property Name="DateTimeFromDc" Id="{59a9e3cb-3f43-4481-8abb-f488ade44dd1}" FolderPath="Properties\">
       <Declaration><![CDATA[PROPERTY DateTimeFromDc : DATE_AND_TIME]]></Declaration>
       <Get Name="Get" Id="{b0d79845-6ae9-4e73-ae5d-458379ae4868}">
@@ -138,6 +153,16 @@ PROPERTY PUBLIC DistributedClockTimeInNs : LINT]]></Declaration>
         <Implementation>
           <ST><![CDATA[_distributedClockTimeInNs := TwinCAT_SystemInfoVarList._TaskInfo[_index].DcTaskTime; // CycleTime expressed ns.
 DistributedClockTimeInNs := _distributedClockTimeInNs;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="DistributedClockTimeInSecs" Id="{370d3deb-7b42-403a-9b38-24a446961671}" FolderPath="Properties\">
+      <Declaration><![CDATA[//Distributed clock time in milliseconds.
+PROPERTY PUBLIC DistributedClockTimeInSecs : LINT]]></Declaration>
+      <Get Name="Get" Id="{a29bac17-28db-4ddc-9253-5731fb2ea9b7}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[DistributedClockTimeInSecs := DistributedClockTimeInMs / 1000;]]></ST>
         </Implementation>
       </Get>
     </Property>
@@ -192,6 +217,21 @@ END_VAR]]></Declaration>
 Index := curTask.index;]]></ST>
       </Implementation>
     </Method>
+    <Property Name="TimeString" Id="{e1d88600-633d-4a6c-8840-1f294aad9e86}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY TimeString : STRING]]></Declaration>
+      <Get Name="Get" Id="{e50c2d43-b2b8-41d2-9825-b04dca7f3999}">
+        <Declaration><![CDATA[VAR
+	temp : STRING;
+END_VAR]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[// remove the leading date 2018-07-30_09-23-47
+temp := DELETE( TO_STRING( DateTimeString ), 11, 1 );
+
+// 09-23-47
+TimeString :=  temp;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <LineIds Name="T_Task">
       <LineId Id="3" Count="1" />
       <LineId Id="2" Count="0" />
@@ -213,6 +253,10 @@ Index := curTask.index;]]></ST>
     <LineIds Name="T_Task.CycleTimeInSecs.Get">
       <LineId Id="2" Count="0" />
     </LineIds>
+    <LineIds Name="T_Task.DateString.Get">
+      <LineId Id="16" Count="3" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
     <LineIds Name="T_Task.DateTimeFromDc.Get">
       <LineId Id="2" Count="0" />
     </LineIds>
@@ -228,6 +272,9 @@ Index := curTask.index;]]></ST>
     </LineIds>
     <LineIds Name="T_Task.DistributedClockTimeInNs.Get">
       <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Task.DistributedClockTimeInSecs.Get">
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="T_Task.Index.Get">
@@ -247,6 +294,10 @@ Index := curTask.index;]]></ST>
     <LineIds Name="T_Task.SetToThisTask">
       <LineId Id="9" Count="0" />
       <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="T_Task.TimeString.Get">
+      <LineId Id="16" Count="3" />
+      <LineId Id="2" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<TcSmItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmItem" TcSmVersion="1.0" TcVersion="3.1.4022.14" ClassName="CNestedPlcProjDef">
-	<Project GUID="{D1B062E0-87EA-4121-B516-D7E6660B0CAA}" Name="IntecreUtilities" PrjFilePath="..\..\IntecreUtilities\IntecreUtilities.plcproj" TmcFilePath="..\..\IntecreUtilities\IntecreUtilities.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e">
+<TcSmItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmItem" TcSmVersion="1.0" TcVersion="3.1.4022.29" ClassName="CNestedPlcProjDef">
+	<Project GUID="{D1B062E0-87EA-4121-B516-D7E6660B0CAA}" Name="IntecreUtilities" PrjFilePath="..\..\IntecreUtilities\IntecreUtilities.plcproj" TmcFilePath="..\..\IntecreUtilities\IntecreUtilities.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" CopyTmcToTarget="true" CopyTpyToTarget="false">
 		<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="IntecreUtilities\IntecreUtilities.tmc">
 			<Name>IntecreUtilities Instance</Name>
 			<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>

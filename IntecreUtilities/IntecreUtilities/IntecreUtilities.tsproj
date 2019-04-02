@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4022.14">
+<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4022.29">
 	<DataTypes>
 		<DataType>
 			<Name GUID="{85DC3E7A-8ADA-435B-9479-25573909A7DB}" Namespace="AX5000" TcBaseType="true">E_AX5000_P_0275_ActiveFeedbackAndMemory</Name>
@@ -61,22 +61,6 @@
 				<Hide GUID="{B6598B95-DC2C-454C-9B12-DE628B32D897}"/>
 			</Hides>
 		</DataType>
-		<DataType>
-			<Name GUID="{8DBD0A42-1726-478A-8B94-67660D3CC825}" PersistentType="true">stTestGlobalLibExport</Name>
-			<BitSize>768</BitSize>
-			<SubItem>
-				<Name>var1</Name>
-				<Type GUID="{18071995-0000-0000-0000-00000000000E}">LREAL</Type>
-				<BitSize>64</BitSize>
-				<BitOffs>0</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>var2</Name>
-				<Type GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</Type>
-				<BitSize>648</BitSize>
-				<BitOffs>64</BitOffs>
-			</SubItem>
-		</DataType>
 	</DataTypes>
 	<Project ProjectGUID="{83E3C23D-9DEB-4EAD-91D6-1CD18FD375E1}" Target64Bit="true" ShowHideConfigurations="#x3c7">
 		<System>
@@ -92,7 +76,7 @@
 		<Plc>
 			<Project File="IntecreUtilities.xti"/>
 			<Project GUID="{654925C7-ABC9-4D59-BFEF-383AF8AA71D9}" Name="Tests" PrjFilePath="Tests\Tests.plcproj" TmcFilePath="Tests\Tests.tmc" ReloadTmc="true" AmsPort="852" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2">
+				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Tests\Tests.tmc">
 					<Name>Tests Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<TaskPouOids>

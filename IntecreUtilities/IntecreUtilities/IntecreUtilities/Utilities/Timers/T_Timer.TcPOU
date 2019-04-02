@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.9">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.17">
   <POU Name="T_Timer" Id="{c856fe31-e123-4b16-a6bb-15d98c82e22c}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK T_Timer
+    <Declaration><![CDATA[FUNCTION_BLOCK T_Timer // a timer block. Will start timing as soon as T_Timer.Signal is present. 
 VAR_INPUT
 END_VAR
 VAR
@@ -17,7 +17,7 @@ END_VAR
       <ST><![CDATA[]]></ST>
     </Implementation>
     <Property Name="ElapsedTime" Id="{8a9904e6-31e7-4e9d-b86a-65ffda125fec}">
-      <Declaration><![CDATA[{attribute 'monitoring' := 'call'} PROPERTY ElapsedTime : TIME]]></Declaration>
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'} PROPERTY ElapsedTime : TIME // returns 0 if Signal = FALSE;]]></Declaration>
       <Get Name="Get" Id="{488b6893-b0d4-43d1-9238-e2400fb8eeb8}">
         <Declaration><![CDATA[]]></Declaration>
         <Implementation>
@@ -26,11 +26,12 @@ END_VAR
       </Get>
     </Property>
     <Property Name="ElapsedTimeInMs" Id="{39ef3b5b-f7fe-40ca-8898-e880621dc8f1}">
-      <Declaration><![CDATA[{attribute 'monitoring' := 'call'} PROPERTY ElapsedTimeInMs : LINT]]></Declaration>
+      <Declaration><![CDATA[{attribute 'monitoring' := 'call'} PROPERTY ElapsedTimeInMs : LINT // returns 0 if Signal = FALSE;]]></Declaration>
       <Get Name="Get" Id="{d3f3f543-20a9-47bf-a9e3-ec99c7f0ed86}">
         <Declaration><![CDATA[]]></Declaration>
         <Implementation>
-          <ST><![CDATA[ElapsedTimeInMs := task.DistributedClockTimeInMs - startTime;]]></ST>
+          <ST><![CDATA[ElapsedTimeInMs := 
+	SEL(_signal, 0,  task.DistributedClockTimeInMs - startTime);]]></ST>
         </Implementation>
       </Get>
     </Property>
@@ -121,7 +122,7 @@ END_IF]]></ST>
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="T_Timer.ElapsedTimeInMs.Get">
-      <LineId Id="2" Count="0" />
+      <LineId Id="2" Count="1" />
     </LineIds>
     <LineIds Name="T_Timer.Q_Off.Get">
       <LineId Id="2" Count="0" />

@@ -1,23 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
   <POU Name="F_Logger" Id="{852c98e6-427b-41a5-90fd-93ad32d4751e}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION F_Logger : STRING;
 VAR_INPUT
-	LogSeverity : E_LogSeverity;
+	LogSeverity : E_LogSeverity_Ish;
 	Message : T_MaxString;
 END_VAR
 
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF LogSeverity >= SEL(LogConfig.UseLogLevelSwtich, LogSeverity ,LogConfig.LogLevel) THEN
+      <ST><![CDATA[IF ( LogSeverity < E_LogSeverity_Ish.None ) 
+	AND_THEN ( LogSeverity >= LogConfig.LogLevel ) THEN
+	
 	ADSLOGSTR(LogSeverity OR ADSLOG_MSGTYPE_LOG, Message, '');
 	F_Logger := Message;
+	
 END_IF]]></ST>
     </Implementation>
     <LineIds Name="F_Logger">
       <LineId Id="14" Count="0" />
+      <LineId Id="23" Count="1" />
       <LineId Id="16" Count="0" />
       <LineId Id="13" Count="0" />
+      <LineId Id="25" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>
   </POU>

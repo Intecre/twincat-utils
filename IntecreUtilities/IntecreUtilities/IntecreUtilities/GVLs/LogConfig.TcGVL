@@ -1,13 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
   <GVL Name="LogConfig" Id="{7c65e267-1db9-41c8-90bc-d0c05ea63b98}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
-{attribute 'strict'}
 VAR_GLOBAL
-	// set TRUE to switch logging levels.
-	UseLogLevelSwtich : BOOL := FALSE; 
 	// set level to log. Lower log level includes higher levels i.e. info does warning and Error. 
-	LogLevel : E_LogSeverity := E_LogSeverity.Error; // set lowest level
+	LogLevel : E_LogSeverity_Ish := E_LogSeverity_Ish.Error; // Turn messages off by default
 
 END_VAR]]></Declaration>
   </GVL>

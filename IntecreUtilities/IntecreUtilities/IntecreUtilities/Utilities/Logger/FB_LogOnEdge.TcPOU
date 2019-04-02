@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
   <POU Name="FB_LogOnEdge" Id="{6e4a6a66-0799-4176-b5cc-33fe22921921}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_LogOnEdge
 VAR_INPUT
 	Event : BOOL; // look for edge here to log.
 	Message : T_MaxString; // message
-	LogSeverity : E_LogSeverity; // severity
+	LogSeverity : E_LogSeverity_Ish; // severity
 	EventFallingEdge : BOOL := FALSE; // TRUE for falling edge, FALSE for rising edge.
 END_VAR
 VAR_OUTPUT
@@ -29,11 +29,11 @@ IF Q THEN
 	
 	CASE LogSeverity OF
 		
-		E_LogSeverity.Info : F_LogInfo(Message);
+		E_LogSeverity_Ish.Info : F_LogInfo(Message);
 			
-		E_LogSeverity.Warning :	F_LogWarning(Message);
+		E_LogSeverity_Ish.Warning :	F_LogWarning(Message);
 			
-		E_LogSeverity.Error : F_LogError(Message);
+		E_LogSeverity_Ish.Error : F_LogError(Message);
 	ELSE 
 		
 		F_LogError(

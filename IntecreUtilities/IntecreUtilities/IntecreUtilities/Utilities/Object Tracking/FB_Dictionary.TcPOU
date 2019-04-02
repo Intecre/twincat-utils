@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.9">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
   <POU Name="FB_Dictionary" Id="{c29a5ccc-af91-48ad-9b38-0f1964c51b1a}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_Dictionary EXTENDS TNamedBase
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Dictionary EXTENDS T_NamedBase
 VAR
 	Keys : FB_StringList;
 	Values : FB_TargList;

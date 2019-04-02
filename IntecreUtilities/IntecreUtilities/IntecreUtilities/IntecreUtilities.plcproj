@@ -31,29 +31,6 @@
     <Author>Mark Lazarides</Author>
     <Title>Intecre.Utilities</Title>
     <DefaultNamespace>Intecre.Utilities</DefaultNamespace>
-    <Description>2.1.1.5 Added distributed clock time in nano seconds to T_Task
-
-2.1.1.4 Added library category
-2.1.1.3 Added DateTimeString property to task
-2.1.1.2 Added CopyToList on string list to get the whole list.
-2.1.1.1 Correct bug in instance Name of TNamedBase.
-2.1.1.0 Added DateAndTimeFromDC to _task.
-2.1.0.0 Added Universal timer T_Timer
-2.0.6.1 - Adding T_Timer class. Testing.
-2.0.6.0 - Fix for dictionary tryget issue
-2.0.5.2 - Corrected bug in datetime
-2.0.5.1 - Added property to task for system time
-2.0.5.0 
-	-Adding Concatenations for WSTRINGS
-	-Adding some assert directly onto TTestBase
-2.0.4.2 - updated T_NamedBase to remove project name from the isntance name.
-2.0.4.1 Added parameterisable string length. Test mempy
-2.0.4.0 Added parameterisable string length
-2.0.3.1 Corercte PI Controller issue
-2.0.3.0 Added Terminal interfaces
-2.0.2.0 Added Testing base
-2.0.1.0 Added PI control loop
-2.0.0.0 Compiled against TC3.1.4022</Description>
     <DocFormat>reStructuredText</DocFormat>
     <LibraryCategories>
       <LibraryCategory>
@@ -65,7 +42,12 @@
     <SelectedLibraryCategories>
       <Id>{d7292350-a6c3-11e8-98d0-529269fb1459}</Id>
     </SelectedLibraryCategories>
-    <ProjectVersion>2.1.1.5</ProjectVersion>
+    <ProjectVersion>3.0.0.0</ProjectVersion>
+    <Description>3.0.0.0 
+- Renamed TNamedBase to T_NamedBase 
+- Added NONE level logging.
+- Logging is "NONE" by default.
+- Use something like "Intecre_Utilities.LogConfig.LogLevel := E_LogSeverity.Error; " to turn all on.</Description>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="GVLs\CollectionParameters.TcGVL">
@@ -150,7 +132,10 @@
     <Compile Include="Utilities\F_Gate.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utilities\Logger\E_LogSeverity.TcDUT">
+    <Compile Include="Utilities\IPC Diagnostics\T_MdpReadCpuTemp.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\Logger\E_LogSeverity_Ish.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\Logger\FB_LogErrorEdge.TcPOU">
@@ -266,7 +251,10 @@
     <Compile Include="Utilities\Timers\T_Timer.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utilities\TNamedBase.TcPOU">
+    <Compile Include="Utilities\T_NamedBase.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Utilities\Write persistent\T_WritePersistentData.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Version\Global_Version.TcGVL">
@@ -290,6 +278,8 @@
     <Folder Include="System" />
     <Folder Include="Utilities\Logger" />
     <Folder Include="Utilities\Conversion" />
+    <Folder Include="Utilities\IPC Diagnostics" />
+    <Folder Include="Utilities\Write persistent" />
     <Folder Include="Utilities\Timers" />
     <Folder Include="Utilities\PI Controller" />
     <Folder Include="Utilities\String\Large Concats" />
@@ -303,6 +293,10 @@
     <PlaceholderReference Include="Tc2_Math">
       <DefaultResolution>Tc2_Math, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_Math</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc2_MDP">
+      <DefaultResolution>Tc2_MDP, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_MDP</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc2_Standard">
       <DefaultResolution>Tc2_Standard, * (Beckhoff Automation GmbH)</DefaultResolution>
@@ -327,9 +321,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PinnedGlobalDataType Include="stTestGlobalLibExport" />
-  </ItemGroup>
-  <ItemGroup>
     <PlaceholderResolution Include="Tc2_Math">
       <Resolution>Tc2_Math, * (Beckhoff Automation GmbH)</Resolution>
     </PlaceholderResolution>
@@ -345,6 +336,18 @@
     <PlaceholderResolution Include="Tc3_Module">
       <Resolution>Tc3_Module, * (Beckhoff Automation GmbH)</Resolution>
     </PlaceholderResolution>
+  </ItemGroup>
+  <ItemGroup>
+    <SubObject Include="T_MdpReadCpuTemp.Busy" />
+    <SubObject Include="T_MdpReadCpuTemp.Busy.Get" />
+    <SubObject Include="T_MdpReadCpuTemp.CpuTemp" />
+    <SubObject Include="T_MdpReadCpuTemp.CpuTemp.Get" />
+    <SubObject Include="T_MdpReadCpuTemp.Error" />
+    <SubObject Include="T_MdpReadCpuTemp.Error.Get" />
+    <SubObject Include="T_MdpReadCpuTemp.ErrorId" />
+    <SubObject Include="T_MdpReadCpuTemp.ErrorId.Get" />
+    <SubObject Include="T_MdpReadCpuTemp.SetUpdateTimerValue" />
+    <SubObject Include="T_WritePersistentData.SetConfig" />
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>

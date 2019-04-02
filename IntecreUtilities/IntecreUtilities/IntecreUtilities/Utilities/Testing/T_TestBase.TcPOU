@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.3">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
   <POU Name="T_TestBase" Id="{cf43b595-fd8d-4755-bf5a-2fec59bd2fc0}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK T_TestBase EXTENDS TNamedBase
+    <Declaration><![CDATA[FUNCTION_BLOCK T_TestBase EXTENDS T_NamedBase
 VAR
 	_done : BOOL;
 	_testsPassed : BOOL;

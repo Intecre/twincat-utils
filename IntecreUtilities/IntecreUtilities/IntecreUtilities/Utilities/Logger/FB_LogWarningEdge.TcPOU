@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
   <POU Name="FB_LogWarningEdge" Id="{07beed0b-ff58-4e01-8d1d-4927c88129bb}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_LogWarningEdge
 VAR_INPUT
@@ -18,7 +18,7 @@ END_VAR
       <ST><![CDATA[fbLogEdge(
 	Event:= Event, 
 	Message:= Message, 
-	LogSeverity:= E_LogSeverity.Warning, 
+	LogSeverity:= E_LogSeverity_Ish.Warning, 
 	EventFallingEdge:= EventFallingEdge,
 	Q => Q
 );]]></ST>
