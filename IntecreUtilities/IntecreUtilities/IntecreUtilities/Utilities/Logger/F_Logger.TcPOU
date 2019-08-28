@@ -3,17 +3,21 @@
   <POU Name="F_Logger" Id="{852c98e6-427b-41a5-90fd-93ad32d4751e}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION F_Logger : STRING;
 VAR_INPUT
-	LogSeverity : E_LogSeverity_Ish;
+	LogSeverity : E_LogSeverity;
 	Message : T_MaxString;
 END_VAR
 
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF ( LogSeverity < E_LogSeverity_Ish.None ) 
+      <ST><![CDATA[IF ( LogSeverity < E_LogSeverity.None ) 
 	AND_THEN ( LogSeverity >= LogConfig.LogLevel ) THEN
 	
 	ADSLOGSTR(LogSeverity OR ADSLOG_MSGTYPE_LOG, Message, '');
 	F_Logger := Message;
+	
+	IF LogConfig.ExternalLogger <> 0 THEN
+		LogConfig.ExternalLogger.AddToLog( Message, LogSeverity );
+	END_IF
 	
 END_IF]]></ST>
     </Implementation>
@@ -22,6 +26,8 @@ END_IF]]></ST>
       <LineId Id="23" Count="1" />
       <LineId Id="16" Count="0" />
       <LineId Id="13" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="32" Count="2" />
       <LineId Id="25" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>

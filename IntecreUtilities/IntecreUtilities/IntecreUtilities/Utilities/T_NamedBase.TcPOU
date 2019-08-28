@@ -1,21 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.0">
   <POU Name="T_NamedBase" Id="{747db62b-b007-4b65-974e-3e30c9f6f818}" SpecialFunc="None">
     <Declaration><![CDATA[{attribute 'reflection'}
 FUNCTION_BLOCK T_NamedBase
 VAR
 	{attribute 'instance-path'}
     {attribute 'no_init'}
-	name : STRING;
-	_instanceName : STRING; // name minus project name etc.
+	name : T_MaxString;
+	_instanceName : T_MaxString; // name minus project name etc.
 	_instanceSet : BOOL;
+	_objectName : T_MaxString;
+	objectNameSet : BOOL;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
     <Property Name="InstanceName" Id="{b025274c-dbbe-41b4-9d4a-6b264880646b}">
-      <Declaration><![CDATA[PROPERTY FINAL InstanceName : T_MaxString;]]></Declaration>
+      <Declaration><![CDATA[PROPERTY FINAL InstanceName : T_MaxString; // returns the fully scoped variable name]]></Declaration>
       <Get Name="Get" Id="{c76f2db8-929e-42c3-879d-8eaff2d7bbd0}">
         <Declaration><![CDATA[]]></Declaration>
         <Implementation>
@@ -27,6 +29,18 @@ InstanceName := _instanceName;]]></ST>
         </Implementation>
       </Get>
     </Property>
+    <Method Name="LogDebug" Id="{31b79eed-4799-4981-9e9d-626d179f9576}">
+      <Declaration><![CDATA[METHOD LogDebug
+VAR_INPUT
+	Msg : T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[F_LogDebug(
+	F_Concat3(InstanceName , ': ', Msg)
+);]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="LogError" Id="{68460783-e2b1-4495-92bf-87f826bbe299}">
       <Declaration><![CDATA[METHOD LogError
 VAR_INPUT
@@ -63,6 +77,19 @@ END_VAR
 );]]></ST>
       </Implementation>
     </Method>
+    <Property Name="ObjectName" Id="{bf10d8fa-7c6e-4a21-8b30-5957246fcb63}">
+      <Declaration><![CDATA[PROPERTY PUBLIC ObjectName : T_MaxString // returns the name of the object nly, with no other scope.]]></Declaration>
+      <Get Name="Get" Id="{2b5f2c7b-21f4-4003-a16f-f1b823f11ad1}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[IF NOT objectNameSet THEN
+	setObjectName();
+END_IF
+
+ObjectName := _objectName;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Method Name="setInstanceName" Id="{d237b876-4874-4101-9aea-59f0ea3e9132}">
       <Declaration><![CDATA[METHOD PRIVATE setInstanceName 
 VAR
@@ -85,39 +112,28 @@ _instanceName := DELETE( _instanceName, charsToDeleteFromPath, 1 );
 _instanceSet := TRUE;]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="T_NamedBase">
-      <LineId Id="9" Count="0" />
-    </LineIds>
-    <LineIds Name="T_NamedBase.InstanceName.Get">
-      <LineId Id="5" Count="3" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="T_NamedBase.LogError">
-      <LineId Id="7" Count="1" />
-      <LineId Id="5" Count="0" />
-    </LineIds>
-    <LineIds Name="T_NamedBase.LogInfo">
-      <LineId Id="7" Count="1" />
-      <LineId Id="5" Count="0" />
-    </LineIds>
-    <LineIds Name="T_NamedBase.LogWarning">
-      <LineId Id="7" Count="1" />
-      <LineId Id="5" Count="0" />
-    </LineIds>
-    <LineIds Name="T_NamedBase.setInstanceName">
-      <LineId Id="11" Count="0" />
-      <LineId Id="30" Count="0" />
-      <LineId Id="23" Count="0" />
-      <LineId Id="21" Count="0" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="29" Count="0" />
-      <LineId Id="27" Count="0" />
-      <LineId Id="25" Count="0" />
-      <LineId Id="31" Count="0" />
-      <LineId Id="26" Count="0" />
-      <LineId Id="24" Count="0" />
-      <LineId Id="28" Count="0" />
-      <LineId Id="10" Count="0" />
-    </LineIds>
+    <Method Name="setObjectName" Id="{bcea741f-cc92-4b29-a807-8cf8573c28b4}">
+      <Declaration><![CDATA[METHOD PRIVATE setObjectName
+VAR
+	charsToRemove : INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// format is ProjectName.FirstDeclaredPOU.etc.etc... 
+IF NOT _instanceSet THEN
+	setInstanceName();
+END_IF
+
+_objectName := _instanceName;
+charsToRemove := FIND( _objectName, '.' );
+
+WHILE charsToRemove <> 0 DO
+	_objectName := DELETE( _objectName, charsToRemove, 1 );
+	charsToRemove := FIND( _objectName, '.' );
+
+END_WHILE
+
+objectNameSet := TRUE;]]></ST>
+      </Implementation>
+    </Method>
   </POU>
 </TcPlcObject>

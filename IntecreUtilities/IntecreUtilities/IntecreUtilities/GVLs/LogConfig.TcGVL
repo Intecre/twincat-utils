@@ -4,8 +4,8 @@
     <Declaration><![CDATA[{attribute 'qualified_only'}
 VAR_GLOBAL
 	// set level to log. Lower log level includes higher levels i.e. info does warning and Error. 
-	LogLevel : E_LogSeverity_Ish := E_LogSeverity_Ish.Error; // Turn messages off by default
-
+	LogLevel : E_LogSeverity := E_LogSeverity.None; // Turn messages off by default
+	ExternalLogger : I_ExternalLogger; // permit logging to something else
 END_VAR]]></Declaration>
   </GVL>
 </TcPlcObject>

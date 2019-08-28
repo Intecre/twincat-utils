@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{B1E792BE-AA5F-4E3C-8C82-674BF9C0715B}") = "IntecreUtilities", "IntecreUtilities\IntecreUtilities.tsproj", "{83E3C23D-9DEB-4EAD-91D6-1CD18FD375E1}"
 EndProject
@@ -64,9 +64,11 @@ Global
 		{654925C7-ABC9-4D59-BFEF-383AF8AA71D9}.Release|TwinCAT RT (x64).ActiveCfg = Release|TwinCAT RT (x64)
 		{654925C7-ABC9-4D59-BFEF-383AF8AA71D9}.Release|TwinCAT RT (x64).Build.0 = Release|TwinCAT RT (x64)
 		{654925C7-ABC9-4D59-BFEF-383AF8AA71D9}.Release|TwinCAT RT (x86).ActiveCfg = Release|TwinCAT RT (x86)
-		{654925C7-ABC9-4D59-BFEF-383AF8AA71D9}.Release|TwinCAT RT (x86).Build.0 = Release|TwinCAT RT (x86)
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {50925FC3-07A3-4F7B-8847-9336B0EC8236}
 	EndGlobalSection
 EndGlobal

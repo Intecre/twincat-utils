@@ -18,7 +18,7 @@ END_VAR
       <ST><![CDATA[fbLogEdge(
 	Event:= Event, 
 	Message:= Message, 
-	LogSeverity:= E_LogSeverity_Ish.Info, 
+	LogSeverity:= E_LogSeverity.Info, 
 	EventFallingEdge:= EventFallingEdge,
 	Q => Q
 );]]></ST>

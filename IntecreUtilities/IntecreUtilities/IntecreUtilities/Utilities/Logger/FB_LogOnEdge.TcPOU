@@ -5,7 +5,7 @@
 VAR_INPUT
 	Event : BOOL; // look for edge here to log.
 	Message : T_MaxString; // message
-	LogSeverity : E_LogSeverity_Ish; // severity
+	LogSeverity : E_LogSeverity; // severity
 	EventFallingEdge : BOOL := FALSE; // TRUE for falling edge, FALSE for rising edge.
 END_VAR
 VAR_OUTPUT
@@ -29,11 +29,11 @@ IF Q THEN
 	
 	CASE LogSeverity OF
 		
-		E_LogSeverity_Ish.Info : F_LogInfo(Message);
+		E_LogSeverity.Info : F_LogInfo(Message);
 			
-		E_LogSeverity_Ish.Warning :	F_LogWarning(Message);
+		E_LogSeverity.Warning :	F_LogWarning(Message);
 			
-		E_LogSeverity_Ish.Error : F_LogError(Message);
+		E_LogSeverity.Error : F_LogError(Message);
 	ELSE 
 		
 		F_LogError(

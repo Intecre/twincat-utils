@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+  <DUT Name="LongString" Id="{e3bc9b56-1be4-4f0f-be3f-b70797dd263e}">
+    <Declaration><![CDATA[TYPE LongString : STRING(StringsParams.MAX_STRING_LENGTH); END_TYPE // use StringsParams.MAX_STRING_LENGTH to adjust length
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

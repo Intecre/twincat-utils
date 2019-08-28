@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.6">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
   <POU Name="F_Concat6_Large" Id="{3877e970-03ef-4a02-a195-62ac08a0495d}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION F_Concat6_Large : STRING(StringsParams.MAX_STRING_LENGTH)
+    <Declaration><![CDATA[FUNCTION F_Concat6_Large : LongString
 VAR_IN_OUT CONSTANT
-	sOne : STRING(StringsParams.MAX_STRING_LENGTH);
-	sTwo : STRING(StringsParams.MAX_STRING_LENGTH);
-	sThree : STRING(StringsParams.MAX_STRING_LENGTH);
-	sFour : STRING(StringsParams.MAX_STRING_LENGTH);
-	sFive : STRING(StringsParams.MAX_STRING_LENGTH);
-	sSix : STRING(StringsParams.MAX_STRING_LENGTH);
+	sOne : LongString;
+	sTwo : LongString;
+	sThree : LongString;
+	sFour : LongString;
+	sFive : LongString;
+	sSix : LongString;
 END_VAR
 VAR
-	str : STRING(StringsParams.MAX_STRING_LENGTH);
+	str : LongString;
 END_VAR
 ]]></Declaration>
     <Implementation>

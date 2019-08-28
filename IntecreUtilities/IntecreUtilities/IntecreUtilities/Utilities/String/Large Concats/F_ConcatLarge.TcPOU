@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.9">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
   <POU Name="F_ConcatLarge" Id="{4db9989f-1492-47e5-8436-5fadffe0d25b}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION F_ConcatLarge : STRING(StringsParams.MAX_STRING_LENGTH)
+    <Declaration><![CDATA[FUNCTION F_ConcatLarge : LongString
 VAR_IN_OUT CONSTANT
-	StringOne 	: STRING(StringsParams.MAX_STRING_LENGTH);
-	StringTwo	: STRING(StringsParams.MAX_STRING_LENGTH);
+	StringOne 	: LongString;
+	StringTwo	: LongString;
 END_VAR
 VAR
 	i, sizeToCpy, teminatingCharPos, maxLen : DINT;
-	response : STRING(StringsParams.MAX_STRING_LENGTH);
+	response : LongString;
 END_VAR
 ]]></Declaration>
     <Implementation>

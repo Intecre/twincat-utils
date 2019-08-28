@@ -62,7 +62,7 @@
 			</Hides>
 		</DataType>
 	</DataTypes>
-	<Project ProjectGUID="{83E3C23D-9DEB-4EAD-91D6-1CD18FD375E1}" Target64Bit="true" ShowHideConfigurations="#x3c7">
+	<Project ProjectGUID="{83E3C23D-9DEB-4EAD-91D6-1CD18FD375E1}" ShowHideConfigurations="#x3c7">
 		<System>
 			<Settings MaxCpus="8" NonWinCpus="1">
 				<Cpu CpuId="7"/>
@@ -75,7 +75,7 @@
 		</System>
 		<Plc>
 			<Project File="IntecreUtilities.xti"/>
-			<Project GUID="{654925C7-ABC9-4D59-BFEF-383AF8AA71D9}" Name="Tests" PrjFilePath="Tests\Tests.plcproj" TmcFilePath="Tests\Tests.tmc" ReloadTmc="true" AmsPort="852" FileArchiveSettings="#x000e" SymbolicMapping="true">
+			<Project Disabled="true" GUID="{654925C7-ABC9-4D59-BFEF-383AF8AA71D9}" Name="Tests" PrjFilePath="Tests\Tests.plcproj" TmcFilePath="Tests\Tests.tmc" ReloadTmc="true" AmsPort="852" FileArchiveSettings="#x000e" SymbolicMapping="true">
 				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Tests\Tests.tmc">
 					<Name>Tests Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
