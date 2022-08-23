@@ -4,3 +4,7 @@
 *~u
 *Test Project/
 */IntecreUtilities/Tests*
+*.suo
+*.bak
+*LineIDs.dbg
+*.tmcRefac

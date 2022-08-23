@@ -12,7 +12,8 @@ This is a library of utility functions and classes for Beckhoff's TwinCAT.  They
     * Mimics C# TryParse, returns TRUE if successful, placeholder passed as VAR_IN_OUT
 * String and UDINT lists. 
     * Plan is to refactor a generic underlying list class for these
-* Assert class for basic PLC testing.
+* Assert class for basic PLC testing
+* Terminal Interfaces for simplified connectivity to IO.
 
 ### How do I get set up? ###
 
@@ -20,7 +21,7 @@ This is a library of utility functions and classes for Beckhoff's TwinCAT.  They
 * Either compile into a library and distribute.
 * OR
 * Include in the base code for the project.
-* Developed on TwinCAT 3.1.4020.28.
+* Developed on TwinCAT 3.1.4024.22.
 
 ### Contribution guidelines ###
 
