@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="FB_AlphaBetaFilter" Id="{c8a8ce16-0601-409d-961f-a19ac2732913}" SpecialFunc="None">
+    <Declaration><![CDATA[// https://en.wikipedia.org/wiki/Alpha_beta_filter
+FUNCTION_BLOCK FB_AlphaBetaFilter
+VAR_INPUT
+	measurement : LREAL; // raw value to filter
+	deltaInSecond : LREAL; // time between this and last cycle MAKE SURE > 0!
+	alpha : LREAL; // alpha value. 0 - 1.0 
+	beta : LREAL; // beta value. Use something low (0.001 < beta < 0.1)
+END_VAR
+VAR_OUTPUT
+	output : LREAL; // filtered output
+END_VAR
+VAR
+	measurementEstimate, velocityEstimate : LREAL := 0.0;
+	predictionError, measurementIntegrator, velocityIntegrator : LREAL; // overwritten each scan.
+	betaResidualByDelta : LREAL; // used to simplify code, protecting div by zero issues.
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[measurementIntegrator := measurementEstimate + ( velocityEstimate * deltaInSecond );
+velocityIntegrator := velocityEstimate;
+
+predictionError := measurement - measurementIntegrator;
+
+measurementIntegrator :=
+	measurementIntegrator + (alpha * predictionError);
+
+// div by zero protection for below
+betaResidualByDelta := 
+	SEL( deltaInSecond > 0,	0, (beta * predictionError) / deltaInSecond );
+	
+velocityIntegrator := velocityIntegrator + betaResidualByDelta;
+
+measurementEstimate := measurementIntegrator;
+velocityEstimate := velocityIntegrator;
+
+output := measurementEstimate;]]></ST>
+    </Implementation>
+    <LineIds Name="FB_AlphaBetaFilter">
+      <LineId Id="225" Count="16" />
+      <LineId Id="22" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
