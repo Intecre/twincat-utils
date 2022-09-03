@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <Itf Name="I_Logger" Id="{1ea0044c-39c3-48bb-a9e8-35f41537fade}">
+    <Declaration><![CDATA[INTERFACE I_Logger
+]]></Declaration>
+    <Method Name="ToLog" Id="{28178531-3da2-4371-affe-f7d8a3d8d2c9}">
+      <Declaration><![CDATA[METHOD ToLog
+VAR_INPUT
+	Msg : STRING(255);
+	LogLevel : DWORD; // generic level, can be mapped to logging framework
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

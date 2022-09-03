@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <Itf Name="I_Executable" Id="{7d8773d5-e876-4f78-9905-c5d210f35e64}">
+    <Declaration><![CDATA[INTERFACE I_Executable
+]]></Declaration>
+    <Property Name="Busy" Id="{069b28cd-cbe3-4765-b548-53c2c1d9227c}">
+      <Declaration><![CDATA[PROPERTY Busy : BOOL]]></Declaration>
+      <Get Name="Get" Id="{3a489874-eef1-4067-9f97-14425047b72a}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="Done" Id="{9bbb1ede-9281-4964-87b7-121c0199f566}">
+      <Declaration><![CDATA[PROPERTY Done : BOOL]]></Declaration>
+      <Get Name="Get" Id="{50597ffa-2458-437a-b778-4433b0e5fa37}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Property Name="Error" Id="{6f1ee52a-8f84-46c7-a74c-eb69d0afbd7c}">
+      <Declaration><![CDATA[PROPERTY Error : BOOL]]></Declaration>
+      <Get Name="Get" Id="{53b7d707-a5e7-4aca-af7b-42b96bd55bf9}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+  </Itf>
+</TcPlcObject>

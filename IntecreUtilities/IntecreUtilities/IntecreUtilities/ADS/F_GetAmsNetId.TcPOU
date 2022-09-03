@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="F_GetAmsNetId" Id="{45f5d539-a70c-4ea7-99e7-470e8263da9e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION F_GetAmsNetId : T_AmsNetId
+VAR_INPUT
+	amsNetIdArr : T_AmsNetIdArr;
+END_VAR
+VAR
+	temp : T_AmsNetID;
+END_VAR
+VAR CONSTANT
+	INVALID_LOCAL : T_AmsNetID := '0.0.0.0.0.0';
+	LOCAL_NETID : T_AmsNetID := '';
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[F_GetAmsNetId := F_CreateAmsNetId(amsNetIdArr);
+
+IF F_GetAmsNetId <> INVALID_LOCAL THEN
+	RETURN;
+END_IF
+
+F_GetAmsNetId := LOCAL_NETID;]]></ST>
+    </Implementation>
+    <LineIds Name="F_GetAmsNetId">
+      <LineId Id="7" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="21" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

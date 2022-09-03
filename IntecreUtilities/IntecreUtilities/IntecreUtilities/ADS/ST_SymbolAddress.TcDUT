@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <DUT Name="ST_SymbolAddress" Id="{58a2eb63-4323-4e73-aea2-a6816097b81a}">
+    <Declaration><![CDATA[// A symbol is unique by virtue of it's name and NetID/Port combination.
+TYPE ST_SymbolAddress :
+STRUCT
+	SymbolName : STRING(255); 
+	Ads : ST_AmsAddr;
+	WriteRef : T_Arg; // value to write to the symbol. Default if not needed.
+	ReadRef : T_Arg; // value to read from the symbol. Default if not needed.
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

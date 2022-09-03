@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="T_AdsReadWrite" Id="{9e332780-0c6d-4776-8b7a-c762dffc295f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK T_AdsReadWrite IMPLEMENTS I_Executable
+VAR
+   logger : I_Logger;
+	_readWriteOpts : ST_AdsReadWriteOptions;
+	
+   readWrite : ADSRDWRT;
+
+	{attribute 'to_String'}
+   state, prevState : (
+      IDLE,
+      REQUEST,
+      WAIT_FOR_RESPONSE,
+      DONE_STATE,
+      ERROR_STATE
+   );
+
+   lastErrorId : UDINT;
+
+END_VAR
+VAR CONSTANT
+   NO_ERR : UDINT := 0;
+   LOG_DEBUG : DWORD := 0;
+   LOG_INFO : DWORD := ADSLOG_MSGTYPE_HINT;
+   LOG_WARNING : DWORD := ADSLOG_MSGTYPE_WARN;
+   LOG_ERROR : DWORD := ADSLOG_MSGTYPE_ERROR;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[CASE state OF
+
+   IDlE:
+      IsEntryActionAndLog();
+
+   REQUEST:
+      IsEntryActionAndLog();
+		
+      lastErrorId := NO_ERR;
+      readWrite.WRTRD := TRUE;
+      state := WAIT_FOR_RESPONSE;
+
+   WAIT_FOR_RESPONSE:
+      IsEntryActionAndLog();
+
+      IF readWrite.ERR THEN
+         state := ERROR_STATE;
+
+      ELSIF NOT readWrite.BUSY THEN
+         state := DONE_STATE;
+
+      END_IF
+
+   DONE_STATE:
+      IsEntryActionAndLog();
+
+   ERROR_STATE:
+      IF IsEntryActionAndLog() THEN
+         lastErrorId := readWrite.ERRID;
+			
+      END_IF
+
+END_CASE
+
+readWrite.WRTRD R= NOT Busy;
+readWrite();]]></ST>
+    </Implementation>
+    <Property Name="Busy" Id="{b532a871-df3e-4141-8e14-4ecf6fc04f0d}">
+      <Declaration><![CDATA[PROPERTY Busy : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{9c3b3619-f8b0-4210-ab35-a9e3fdd54faa}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Busy := 
+	NOT Done 
+	AND NOT Error 
+	AND state <> IDLE;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Done" Id="{c64c9238-f6d1-4626-8cce-31f6f5c94936}">
+      <Declaration><![CDATA[PROPERTY Done : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{265a5a66-9a59-4b7e-b132-dd6369ae7cfe}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Done := state = DONE_STATE;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Error" Id="{92c5d5bf-0374-4ca5-ad14-dfacf66780c5}">
+      <Declaration><![CDATA[PROPERTY Error : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{8275ad9a-0b78-4d5b-bd8d-7fe1b2124449}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Error := state = ERROR_STATE;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="IsEntryActionAndLog" Id="{6dfd938b-ee7d-4b0f-a850-c29f6b8ffda3}">
+      <Declaration><![CDATA[METHOD PRIVATE IsEntryActionAndLog : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IsEntryActionAndLog := prevState <> state;
+
+IF NOT IsEntryActionAndLog THEN
+   RETURN;
+END_IF
+
+// useful to debug state transitions. to avoid "chatter" LogFramework should have runtime log level switches 
+// i.e. https://github.com/Intecre/twincat-utils/tree/master/IntecreUtilities/IntecreUtilities/IntecreUtilities/Utilities/Logger
+// see also https://github.com/Intecre/twincat-utils/blob/master/IntecreUtilities/IntecreUtilities/IntecreUtilities/Utilities/T_NamedBase.TcPOU
+
+ToLog(
+   Msg := CONCAT(CONCAT(TO_STRING(prevState), ' transition to state '), TO_STRING(state)),
+   LogLevel := LOG_DEBUG
+);
+
+prevState := state;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetLogger" Id="{8f9a6c80-acd6-46c2-ad3f-f984d96aeb61}">
+      <Declaration><![CDATA[METHOD PUBLIC SetLogger
+VAR_INPUT
+	logger : I_Logger;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.logger := logger;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ToLog" Id="{3345ce33-591b-47dc-9154-285ecdd50956}">
+      <Declaration><![CDATA[METHOD PRIVATE ToLog
+VAR_INPUT
+	Msg : STRING(255);
+	LogLevel : DWORD; // generic level, can be mapped to logging framework
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF logger = 0 THEN
+	RETURN;
+	
+END_IF
+
+logger.ToLog(Msg, LogLevel);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TryRequest" Id="{2347141d-ee4b-4e78-a06d-f5c6ab63ca1b}">
+      <Declaration><![CDATA[METHOD TryRequest : BOOL
+VAR_INPUT
+	readWriteOptions : ST_AdsReadWriteOptions;
+END_VAR
+VAR_OUTPUT
+	status : I_Executable;
+END_VAR
+VAR CONSTANT
+	NO_HANDLE : DWORD := 0;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF Busy THEN
+	ToLog('Cannot TryRequest as Busy', LOG_WARNING);
+	RETURN;
+	
+END_IF
+
+_readWriteOpts := readWriteOptions;
+readWrite(
+	NETID := F_GetAmsNetId(_readWriteOpts.AdsAddress.netId),
+	PORT := _readWriteOpts.AdsAddress.port,
+	IDXGRP := _readWriteOpts.IndexGroup,
+	IDXOFFS := _readWriteOpts.IndexOffset,
+	WRITELEN := _readWriteOpts.WriteParams.cbLen,
+	SRCADDR := _readWriteOpts.WriteParams.pData,
+	READLEN := _readWriteOpts.ReadParams.cbLen,
+	DESTADDR := _readWriteOpts.ReadParams.pData,
+	TMOUT := _readWriteOpts.Timeout
+);
+
+state := REQUEST;
+
+TryRequest := TRUE;
+status := THIS^;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="T_AdsReadWrite">
+      <LineId Id="464" Count="34" />
+      <LineId Id="67" Count="0" />
+    </LineIds>
+    <LineIds Name="T_AdsReadWrite.Busy.Get">
+      <LineId Id="2" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="T_AdsReadWrite.Done.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_AdsReadWrite.Error.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_AdsReadWrite.IsEntryActionAndLog">
+      <LineId Id="21" Count="15" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+    <LineIds Name="T_AdsReadWrite.SetLogger">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="T_AdsReadWrite.ToLog">
+      <LineId Id="5" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="9" Count="1" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="12" Count="0" />
+    </LineIds>
+    <LineIds Name="T_AdsReadWrite.TryRequest">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="32" Count="3" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="39" Count="1" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="26" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,259 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="T_InvokeRpcMethod" Id="{61e4e0cc-2491-4f76-aa9c-716399cb6a5e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK T_InvokeRpcMethod IMPLEMENTS I_Executable;
+VAR
+   logger : I_Logger;
+   getHandle : T_GetHandle;
+   callMethod : T_CallMethod;
+   releaseHandle : T_ReleaseHandle;
+   _symbolHandle : ST_SymbolHandle;
+	
+	{attribute 'to_String'}
+   state, prevState : (
+      IDLE,
+      GET_HANDLE,
+      CALL_METHOD,
+      RELEASE_HANDLE,
+		DONE_STATE,
+		ERROR_STATE
+   ) := IDLE;
+END_VAR
+
+VAR CONSTANT
+   LOG_DEBUG : DWORD := 0;
+   LOG_INFO : DWORD := ADSLOG_MSGTYPE_HINT;
+   LOG_WARNING : DWORD := ADSLOG_MSGTYPE_WARN;
+   LOG_ERROR : DWORD := ADSLOG_MSGTYPE_ERROR;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[CASE state OF
+   IDLE:
+		IsEntryActionAndLog();	
+
+   GET_HANDLE:
+	
+      IF IsEntryActionAndLog() THEN
+         getHandle.TryGetHandle(_symbolHandle, DEFAULT_ADS_TIMEOUT);
+      ELSE
+			
+			IF getHandle.Error THEN
+				state := ERROR_STATE;
+         ELSIF getHandle.Done THEN
+            state := CALL_METHOD;
+         END_IF
+
+      END_IF
+
+   CALL_METHOD:
+
+      IF IsEntryActionAndLog() THEN
+         callMethod.TryMethodCall(_symbolHandle, DEFAULT_ADS_TIMEOUT);
+
+      ELSE
+         IF callMethod.Error THEN
+				state := ERROR_STATE;
+         ELSIF callMethod.Done THEN
+            state := RELEASE_HANDLE;
+         END_IF
+
+      END_IF
+
+   RELEASE_HANDLE:
+
+      IF IsEntryActionAndLog() THEN
+         releaseHandle.TryReleaseHandle(_symbolHandle, DEFAULT_ADS_TIMEOUT);
+
+      ELSE
+         IF releaseHandle.Error THEN
+				state := ERROR_STATE;
+         ELSIF releaseHandle.Done THEN
+            state := DONE_STATE;
+         END_IF
+
+      END_IF
+		
+	 DONE_STATE:
+      IsEntryActionAndLog();
+
+   ERROR_STATE:
+      IsEntryActionAndLog();
+
+END_CASE
+
+getHandle();
+callMethod();
+releaseHandle();]]></ST>
+    </Implementation>
+    <Property Name="Busy" Id="{6147b952-046e-4443-8220-3418a1c38776}">
+      <Declaration><![CDATA[PROPERTY Busy : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{31d184c0-f09b-4316-9bad-6261f4eebd55}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Busy := 
+	NOT Done 
+	AND NOT Error 
+	AND state <> IDLE;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Done" Id="{fcd35eda-910e-47d6-b084-820a9f79e69b}">
+      <Declaration><![CDATA[PROPERTY Done : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{7d99f295-0f60-4c6f-9910-bb67993f1cc8}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Done := state = DONE_STATE;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Error" Id="{8837bed8-5d83-48f7-b658-46e981fa964e}">
+      <Declaration><![CDATA[PROPERTY Error : BOOL
+]]></Declaration>
+      <Get Name="Get" Id="{82bc3cd1-37c6-471e-8ee7-950c427b1040}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Error := state = ERROR_STATE;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="IsEntryActionAndLog" Id="{08b65b38-e3f4-4857-b621-2bcdf600d448}">
+      <Declaration><![CDATA[METHOD PRIVATE IsEntryActionAndLog : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IsEntryActionAndLog := prevState <> state;
+
+IF NOT IsEntryActionAndLog THEN
+   RETURN;
+END_IF
+
+// useful to debug state transitions. to avoid "chatter" LogFramework should have runtime log level switches 
+// i.e. https://github.com/Intecre/twincat-utils/tree/master/IntecreUtilities/IntecreUtilities/IntecreUtilities/Utilities/Logger
+// see also https://github.com/Intecre/twincat-utils/blob/master/IntecreUtilities/IntecreUtilities/IntecreUtilities/Utilities/T_NamedBase.TcPOU
+
+ToLog(
+   Msg := CONCAT(CONCAT(TO_STRING(prevState), ' transition to state '), TO_STRING(state)),
+   LogLevel := LOG_DEBUG
+);
+
+prevState := state;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetLogger" Id="{981f1e48-10c0-415f-b5f9-86b8749e86af}">
+      <Declaration><![CDATA[METHOD PUBLIC SetLogger
+VAR_INPUT
+	logger : I_Logger;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.logger := logger;
+getHandle.SetLogger(logger);
+callMethod.SetLogger(logger);
+releaseHandle.SetLogger(logger);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ToLog" Id="{f130daa6-1ed6-4b19-8478-ffb2844774b6}">
+      <Declaration><![CDATA[METHOD PRIVATE ToLog
+VAR_INPUT
+	Msg : STRING(255);
+	LogLevel : DWORD; // generic level, can be mapped to logging framework
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF logger = 0 THEN
+	RETURN;
+	
+END_IF
+
+logger.ToLog(Msg, LogLevel);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="TryInvokeMethodCall" Id="{d6e47d1f-b9b8-482a-84db-5235826b8885}">
+      <Declaration><![CDATA[METHOD TryInvokeMethodCall : BOOL
+VAR_INPUT
+	symbolHandle : ST_SymbolHandle;
+	adsTimeout : TIME := DEFAULT_ADS_TIMEOUT; // DEFAULT_ADS_TIMEOUT is T#5s;
+END_VAR
+VAR_OUTPUT
+	status : I_Executable;
+END_VAR
+VAR CONSTANT
+	NO_HANDLE : DWORD := 0;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF Busy THEN
+	ToLog('Cannot TryGetHandle as Busy', LOG_WARNING);
+	RETURN;
+	
+END_IF
+
+_symbolHandle := symbolHandle;
+state := GET_HANDLE;
+
+status := THIS^;
+TryInvokeMethodCall := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="T_InvokeRpcMethod">
+      <LineId Id="615" Count="2" />
+      <LineId Id="640" Count="1" />
+      <LineId Id="702" Count="0" />
+      <LineId Id="642" Count="0" />
+      <LineId Id="645" Count="1" />
+      <LineId Id="701" Count="0" />
+      <LineId Id="699" Count="1" />
+      <LineId Id="647" Count="9" />
+      <LineId Id="658" Count="1" />
+      <LineId Id="703" Count="1" />
+      <LineId Id="660" Count="9" />
+      <LineId Id="671" Count="1" />
+      <LineId Id="705" Count="1" />
+      <LineId Id="673" Count="4" />
+      <LineId Id="683" Count="0" />
+      <LineId Id="685" Count="3" />
+      <LineId Id="684" Count="0" />
+      <LineId Id="678" Count="4" />
+      <LineId Id="151" Count="0" />
+    </LineIds>
+    <LineIds Name="T_InvokeRpcMethod.Busy.Get">
+      <LineId Id="2" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="T_InvokeRpcMethod.Done.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_InvokeRpcMethod.Error.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_InvokeRpcMethod.IsEntryActionAndLog">
+      <LineId Id="47" Count="15" />
+    </LineIds>
+    <LineIds Name="T_InvokeRpcMethod.SetLogger">
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="1" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="T_InvokeRpcMethod.ToLog">
+      <LineId Id="5" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="9" Count="1" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="12" Count="0" />
+    </LineIds>
+    <LineIds Name="T_InvokeRpcMethod.TryInvokeMethodCall">
+      <LineId Id="47" Count="4" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="26" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

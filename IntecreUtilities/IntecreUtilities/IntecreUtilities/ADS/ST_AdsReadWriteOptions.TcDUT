@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <DUT Name="ST_AdsReadWriteOptions" Id="{799e4954-ab66-41cb-a1b2-356a605c1c7b}">
+    <Declaration><![CDATA[TYPE
+   ST_AdsReadWriteOptions :
+   STRUCT
+      AdsAddress : ST_AmsAddr;
+      IndexGroup : UDINT;
+      IndexOffset : UDINT;
+      WriteParams : T_Arg; // value to write to the symbol. Default if not needed.
+      ReadParams : T_Arg; // value to read from the symbol. Default if not needed.
+      Timeout : TIME := DEFAULT_ADS_TIMEOUT;
+   END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
