@@ -3,24 +3,25 @@
   <DUT Name="stKL33xx_ChannelStatus" Id="{3bc609b1-6ad0-4634-9eff-b101a55be8e5}">
     <Declaration><![CDATA[//https://infosys.beckhoff.com/english.php?content=../content/1033/kl331x_kl3302/4368512395.html&id=7403995456365736182
 {attribute 'pack_mode' := '1'}
-TYPE stKL33xx_ChannelStatus:
-STRUCT
-	Underrange 	: BIT;
-	Overrange 	: BIT;
-	{attribute 'hide'}
-	pack_0_2	: BIT;
-	{attribute 'hide'}
-	pack_0_3	: BIT;
-	{attribute 'hide'}
-	pack_0_4	: BIT;
-	{attribute 'hide'}
-	pack_0_5	: BIT;
-	Error		: BIT;
-	{attribute 'hide'}	
-	pack_0_7	: BIT;
-	{attribute 'hide'}
-END_STRUCT
-END_TYPE;
+TYPE
+   stKL33xx_ChannelStatus :
+   STRUCT
+      Underrange : BIT;
+      Overrange : BIT;
+      {attribute 'hide'}
+      pack_0_2 : BIT;
+      {attribute 'hide'}
+      pack_0_3 : BIT;
+      {attribute 'hide'}
+      pack_0_4 : BIT;
+      {attribute 'hide'}
+      pack_0_5 : BIT;
+      Error : BIT;
+      {attribute 'hide'}
+      pack_0_7 : BIT;
+   {attribute 'hide'}
+   END_STRUCT
+END_TYPE
 ]]></Declaration>
   </DUT>
 </TcPlcObject>

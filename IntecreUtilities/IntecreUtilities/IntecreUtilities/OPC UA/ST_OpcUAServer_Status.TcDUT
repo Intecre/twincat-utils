@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <DUT Name="ST_OpcUAServer_Status" Id="{8142c9ad-9f8f-48c7-9a8e-d42a83857ddc}">
+    <Declaration><![CDATA[{attribute 'pack_mode' := '1'}
+TYPE
+  ST_OpcUAServer_Status :
+  STRUCT
+    Connected : BIT;
+    ReadBusy : BIT;
+    {attribute 'hide'}
+    bit_0_2 : BIT;
+    {attribute 'hide'}
+    bit_0_3 : BIT;
+    KeepAlives_Bit0 : BIT;
+    KeepAlives_Bit1 : BIT;
+    KeepAlives_Bit2 : BIT;
+    KeepAlives_Bit3 : BIT;
+    StmState : BYTE; (*client statemachine state
+                      0 = init  |  1 = connect
+                      2 = resolve namespace
+                      3 = get node handles
+                      4 = polling mode
+                      5 = triggered mode
+                      6 = awaiting data change notifications (subscriptions)
+                      7 = disconnect  |  8 = reset*)
+  END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

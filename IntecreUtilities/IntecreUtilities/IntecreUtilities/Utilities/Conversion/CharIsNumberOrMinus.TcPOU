@@ -1,16 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.0">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="CharIsNumberOrMinus" Id="{3170bf1e-f55e-4533-a163-a665e60a5864}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION CharIsNumberOrMinus : BOOL
 VAR_INPUT
-	Char : BYTE; // char to check
+   Char : BYTE; // char to check
 END_VAR
 VAR CONSTANT
-	MINUS_ASCII : BYTE := 45;
+   MINUS_ASCII : BYTE := 45;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[// check bChar is in numbr range of ascii
-CharIsNumberOrMinus := CharIsNumber( Char ) OR_ELSE ( Char = MINUS_ASCII );]]></ST>
+CharIsNumberOrMinus := CharIsNumber(Char) OR_ELSE (Char = MINUS_ASCII);]]></ST>
     </Implementation>
+    <LineIds Name="CharIsNumberOrMinus">
+      <LineId Id="30" Count="0" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
   </POU>
 </TcPlcObject>

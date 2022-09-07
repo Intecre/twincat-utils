@@ -1,9 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="T_GetHandle" Id="{0d283210-5f29-4d37-a1f8-b0443bbf3140}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK T_GetHandle IMPLEMENTS I_Executable
+    <Declaration><![CDATA[FUNCTION_BLOCK T_GetHandle EXTENDS T_NamedBase IMPLEMENTS I_TaskState;
 VAR
-   logger : I_Logger;
    _symbolHandle : REFERENCE TO ST_SymbolHandle; // just for debug
    readWrite : T_AdsReadWrite;
 
@@ -50,55 +49,28 @@ END_VAR]]></Declaration>
         </Implementation>
       </Get>
     </Property>
-    <Method Name="SetLogger" Id="{813599d6-b67b-4084-a890-21e5407d8539}">
-      <Declaration><![CDATA[METHOD PUBLIC SetLogger
-VAR_INPUT
-	logger : I_Logger;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[THIS^.logger := logger;
-]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="ToLog" Id="{04be1afe-58ec-478b-9b0d-4ee650082211}">
-      <Declaration><![CDATA[METHOD PRIVATE ToLog
-VAR_INPUT
-	Msg : STRING(255);
-	LogLevel : DWORD; // generic level, can be mapped to logging framework
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[IF logger = 0 THEN
-	RETURN;
-	
-END_IF
-
-logger.ToLog(Msg, LogLevel);]]></ST>
-      </Implementation>
-    </Method>
     <Method Name="TryGetHandle" Id="{27b2eda7-b141-42d9-96ab-bdcec3e2ab6a}">
       <Declaration><![CDATA[METHOD TryGetHandle : BOOL
 VAR_IN_OUT
-	symbolHandle : ST_SymbolHandle; // This handle object will be used in the next step.
+   symbolHandle : ST_SymbolHandle; // This handle object will be used in the next step.
 END_VAR
 VAR_INPUT
-	adsTimeout : TIME := DEFAULT_ADS_TIMEOUT; // DEFAULT_ADS_TIMEOUT is T#5s;
+   adsTimeout : TIME := DEFAULT_ADS_TIMEOUT; // DEFAULT_ADS_TIMEOUT is T#5s;
 END_VAR
 VAR_OUTPUT
-	status : I_Executable;
+   status : I_TaskState;
 END_VAR
 VAR
-	readWriteOpts : ST_AdsReadWriteOptions;
+   readWriteOpts : ST_AdsReadWriteOptions;
 END_VAR
 VAR CONSTANT
-	NO_HANDLE : DWORD := 0;
+   NO_HANDLE : DWORD := 0;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF Busy THEN
-	ToLog('Cannot TryGetHandle as Busy', LOG_WARNING);
-	RETURN;
-	
+   LogWarning('Cannot TryGetHandle as Busy');
+   RETURN;
+
 END_IF
 
 _symbolHandle REF= symbolHandle;
@@ -110,16 +82,16 @@ readWriteOpts.WriteParams := F_STRING(symbolHandle.SymbolAddress.SymbolName);
 readWriteOpts.ReadParams := F_DWORD(symbolHandle.Handle);
 readWriteOpts.Timeout := adsTimeout;
 
-TryGetHandle := readWrite.TryRequest( readWriteOpts, status => status );
+TryGetHandle := readWrite.TryRequest(readWriteOpts, status => status);
 ]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="T_GetHandle">
-      <LineId Id="408" Count="0" />
+      <LineId Id="473" Count="0" />
       <LineId Id="67" Count="0" />
     </LineIds>
     <LineIds Name="T_GetHandle.Busy.Get">
-      <LineId Id="8" Count="0" />
+      <LineId Id="12" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="T_GetHandle.Done.Get">
@@ -128,27 +100,8 @@ TryGetHandle := readWrite.TryRequest( readWriteOpts, status => status );
     <LineIds Name="T_GetHandle.Error.Get">
       <LineId Id="2" Count="0" />
     </LineIds>
-    <LineIds Name="T_GetHandle.SetLogger">
-      <LineId Id="5" Count="0" />
-      <LineId Id="7" Count="0" />
-    </LineIds>
-    <LineIds Name="T_GetHandle.ToLog">
-      <LineId Id="5" Count="0" />
-      <LineId Id="11" Count="0" />
-      <LineId Id="9" Count="1" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="12" Count="0" />
-    </LineIds>
     <LineIds Name="T_GetHandle.TryGetHandle">
-      <LineId Id="5" Count="0" />
-      <LineId Id="12" Count="0" />
-      <LineId Id="10" Count="0" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="11" Count="0" />
-      <LineId Id="14" Count="0" />
-      <LineId Id="16" Count="0" />
-      <LineId Id="30" Count="7" />
-      <LineId Id="29" Count="0" />
+      <LineId Id="161" Count="15" />
       <LineId Id="26" Count="0" />
     </LineIds>
   </POU>

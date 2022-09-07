@@ -1,117 +1,92 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="F_TargToString" Id="{fcd364ef-c3a6-4bc2-be3d-0916a6eabe92}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION F_TargToString : T_MaxString
 VAR_INPUT
-	Targ : T_ARG;
+   Targ : T_ARG;
 END_VAR
 VAR
-	b : POINTER TO BOOL;
-	b8 : POINTER TO BYTE;
-	w : POINTER TO WORD;
-	dw : POINTER TO DWORD; 
-	usi : POINTER TO USINT;
-	si : POINTER TO SINT;
-	ui : POINTER TO UINT;
-	i : POINTER TO INT;
-	udi : POINTER TO UDINT;
-	di : POINTER TO DINT;
-	str : POINTER TO STRING;
-	re : POINTER TO REAL;
-	lr : POINTER TO LREAL;
+   b : POINTER TO BOOL;
+   b8 : POINTER TO BYTE;
+   w : POINTER TO WORD;
+   dw : POINTER TO DWORD;
+   usi : POINTER TO USINT;
+   si : POINTER TO SINT;
+   ui : POINTER TO UINT;
+   i : POINTER TO INT;
+   udi : POINTER TO UDINT;
+   di : POINTER TO DINT;
+   str : POINTER TO STRING;
+   re : POINTER TO REAL;
+   lr : POINTER TO LREAL;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[CASE Targ.eType OF
-	
-	E_ArgType.ARGTYPE_BOOL : 
-		b := Targ.pData;
-		F_TargToString := TO_STRING(b^);
-		
-	E_ArgType.ARGTYPE_BYTE : 
-		b8 := Targ.pData;
-		F_TargToString := TO_STRING(b8^);
-		
-	E_ArgType.ARGTYPE_WORD :
-		w := Targ.pData;
-		F_TargToString := TO_STRING(w^);
-	
-	E_ArgType.ARGTYPE_DWORD :
-		dw := Targ.pData;
-		F_TargToString := TO_STRING(dw^);
-		
-	E_ArgType.ARGTYPE_USINT :
-		usi := Targ.pData;
-		F_TargToString := TO_STRING(usi^);
-		
-	E_ArgType.ARGTYPE_SINT :
-		si := Targ.pData;
-		F_TargToString := TO_STRING(si^);
-	
-	E_ArgType.ARGTYPE_UINT :
-		ui := Targ.pData;
-		F_TargToString := TO_STRING(ui^);
-		
-	E_ArgType.ARGTYPE_INT :
-		i := Targ.pData;
-		F_TargToString := TO_STRING(i^);
-		
-	E_ArgType.ARGTYPE_UDINT :
-		udi := Targ.pData;
-		F_TargToString := TO_STRING(udi^);
-		
-	E_ArgType.ARGTYPE_DINT :
-		di := Targ.pData;
-		F_TargToString := TO_STRING(di^);	
-		
-	E_ArgType.ARGTYPE_STRING :
-		str := Targ.pData;
-		F_TargToString := TO_STRING(str^);			
-		
-	E_ArgType.ARGTYPE_REAL :
-		re := Targ.pData;
-		F_TargToString := TO_STRING(re^);	
-		
-	E_ArgType.ARGTYPE_LREAL :
-		lr := Targ.pData;
-		F_TargToString := TO_STRING(lr^);	
-	
-	ELSE
-		F_LogWarning(
-			CONCAT(
-				'Unsupported type in Targ for string conversion: ',
-				TO_STRING(Targ.eType)
-			)
-		);
+
+   E_ArgType.ARGTYPE_BOOL:
+      b := Targ.pData;
+      F_TargToString := TO_STRING(b^);
+
+   E_ArgType.ARGTYPE_BYTE:
+      b8 := Targ.pData;
+      F_TargToString := TO_STRING(b8^);
+
+   E_ArgType.ARGTYPE_WORD:
+      w := Targ.pData;
+      F_TargToString := TO_STRING(w^);
+
+   E_ArgType.ARGTYPE_DWORD:
+      dw := Targ.pData;
+      F_TargToString := TO_STRING(dw^);
+
+   E_ArgType.ARGTYPE_USINT:
+      usi := Targ.pData;
+      F_TargToString := TO_STRING(usi^);
+
+   E_ArgType.ARGTYPE_SINT:
+      si := Targ.pData;
+      F_TargToString := TO_STRING(si^);
+
+   E_ArgType.ARGTYPE_UINT:
+      ui := Targ.pData;
+      F_TargToString := TO_STRING(ui^);
+
+   E_ArgType.ARGTYPE_INT:
+      i := Targ.pData;
+      F_TargToString := TO_STRING(i^);
+
+   E_ArgType.ARGTYPE_UDINT:
+      udi := Targ.pData;
+      F_TargToString := TO_STRING(udi^);
+
+   E_ArgType.ARGTYPE_DINT:
+      di := Targ.pData;
+      F_TargToString := TO_STRING(di^);
+
+   E_ArgType.ARGTYPE_STRING:
+      str := Targ.pData;
+      F_TargToString := TO_STRING(str^);
+
+   E_ArgType.ARGTYPE_REAL:
+      re := Targ.pData;
+      F_TargToString := TO_STRING(re^);
+
+   E_ArgType.ARGTYPE_LREAL:
+      lr := Targ.pData;
+      F_TargToString := TO_STRING(lr^);
+
+ELSE
+   F_LogWarning(
+      CONCAT(
+         'Unsupported type in Targ for string conversion: ',
+         TO_STRING(Targ.eType)
+      )
+   );
 END_CASE]]></ST>
     </Implementation>
     <LineIds Name="F_TargToString">
-      <LineId Id="37" Count="0" />
-      <LineId Id="9" Count="0" />
-      <LineId Id="14" Count="0" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="36" Count="0" />
-      <LineId Id="15" Count="2" />
-      <LineId Id="35" Count="0" />
-      <LineId Id="20" Count="0" />
-      <LineId Id="32" Count="1" />
-      <LineId Id="38" Count="3" />
-      <LineId Id="44" Count="0" />
-      <LineId Id="31" Count="0" />
-      <LineId Id="43" Count="0" />
-      <LineId Id="45" Count="0" />
-      <LineId Id="47" Count="3" />
-      <LineId Id="42" Count="0" />
-      <LineId Id="51" Count="0" />
-      <LineId Id="53" Count="5" />
-      <LineId Id="52" Count="0" />
-      <LineId Id="59" Count="21" />
-      <LineId Id="84" Count="0" />
-      <LineId Id="81" Count="0" />
-      <LineId Id="86" Count="0" />
-      <LineId Id="85" Count="0" />
-      <LineId Id="83" Count="0" />
-      <LineId Id="10" Count="0" />
+      <LineId Id="285" Count="60" />
       <LineId Id="7" Count="0" />
     </LineIds>
   </POU>

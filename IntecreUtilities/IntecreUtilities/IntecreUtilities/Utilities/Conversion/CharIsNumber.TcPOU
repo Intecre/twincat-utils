@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="CharIsNumber" Id="{d8360be8-ce72-4bcc-bb95-e4c62b585976}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION CharIsNumber : BOOL
 VAR_INPUT
-	bChar : BYTE; // char to check
+   bChar : BYTE; // char to check
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[// check bChar is in numbr range of ascii
-CharIsNumber := (bChar >= 48 AND bChar <=57);]]></ST>
+CharIsNumber := (bChar >= 48 AND bChar <= 57);]]></ST>
     </Implementation>
     <LineIds Name="CharIsNumber">
-      <LineId Id="12" Count="0" />
+      <LineId Id="27" Count="0" />
       <LineId Id="7" Count="0" />
     </LineIds>
   </POU>

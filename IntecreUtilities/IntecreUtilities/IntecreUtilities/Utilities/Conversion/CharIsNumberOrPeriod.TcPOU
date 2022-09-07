@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="CharIsNumberOrPeriod" Id="{3d88a1e5-09f2-473b-9457-e0e61ca45782}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION CharIsNumberOrPeriod : BOOL
 VAR_INPUT
-	bChar : BYTE; // char to check
+   bChar : BYTE; // char to check
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[// check is bChar in number range of ascii, or a period (full-stop).
-CharIsNumberOrPeriod := CharIsNumber( bChar ) OR_ELSE (bChar = 46); ]]></ST>
+CharIsNumberOrPeriod := CharIsNumber(bChar) OR_ELSE (bChar = 46);]]></ST>
     </Implementation>
     <LineIds Name="CharIsNumberOrPeriod">
-      <LineId Id="12" Count="0" />
+      <LineId Id="27" Count="0" />
       <LineId Id="7" Count="0" />
     </LineIds>
   </POU>

@@ -1,46 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="F_ConcatLarge" Id="{4db9989f-1492-47e5-8436-5fadffe0d25b}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION F_ConcatLarge : LongString
 VAR_IN_OUT CONSTANT
-	StringOne 	: LongString;
-	StringTwo	: LongString;
+   StringOne : LongString;
+   StringTwo : LongString;
 END_VAR
 VAR
-	i, sizeToCpy, teminatingCharPos, maxLen : DINT;
-	response : LongString;
+   i, sizeToCpy, teminatingCharPos, maxLen : DINT;
+   response : LongString;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[maxLen := TO_DINT(StringsParams.MAX_STRING_LENGTH) - 1; // - 1 allows for terminating character in last position.
 
 IF LEN(stringOne) + LEN(StringTwo) > maxLen THEN
-	sizeToCpy := maxLen - LEN(StringTwo); //need room for the terminating character
-	teminatingCharPos := maxLen; // this is the index position for utf-8 string as byte array
+   sizeToCpy := maxLen - LEN(StringTwo); //need room for the terminating character
+   teminatingCharPos := maxLen; // this is the index position for utf-8 string as byte array
 
 ELSE
-	sizeToCpy := LEN(StringOne);
-	teminatingCharPos := LEN(StringOne) + LEN(StringTwo);
-	
+   sizeToCpy := LEN(StringOne);
+   teminatingCharPos := LEN(StringOne) + LEN(StringTwo);
+
 END_IF
 
 // copy strings into response
-MEMCPY( ADR(response), ADR(StringOne), TO_UDINT(sizeToCpy) );
-MEMCPY( ADR(response[sizeToCpy]), ADR(StringTwo), TO_UDINT( LEN(StringTwo) ) );
+MEMCPY(ADR(response), ADR(StringOne), TO_UDINT(sizeToCpy));
+MEMCPY(ADR(response[sizeToCpy]), ADR(StringTwo), TO_UDINT(LEN(StringTwo)));
 
 response[teminatingCharPos] := 16#0; // string terminating character
 F_ConcatLarge := response;]]></ST>
     </Implementation>
     <LineIds Name="F_ConcatLarge">
-      <LineId Id="28" Count="0" />
-      <LineId Id="58" Count="8" />
-      <LineId Id="18" Count="0" />
-      <LineId Id="74" Count="0" />
-      <LineId Id="68" Count="0" />
-      <LineId Id="67" Count="0" />
-      <LineId Id="69" Count="0" />
-      <LineId Id="72" Count="0" />
-      <LineId Id="30" Count="0" />
+      <LineId Id="145" Count="16" />
       <LineId Id="29" Count="0" />
     </LineIds>
   </POU>

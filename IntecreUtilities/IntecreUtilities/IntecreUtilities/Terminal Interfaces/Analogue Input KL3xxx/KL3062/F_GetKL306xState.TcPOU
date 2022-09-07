@@ -4,22 +4,21 @@
     <Declaration><![CDATA[// Some of the bits are 
 FUNCTION F_GetKL306xState
 VAR_INPUT
-	KL306xState : stKL306x_ChannelStatus;
+   KL306xState : stKL306x_ChannelStatus;
 END_VAR
 VAR_OUTPUT
-	Underrange : BOOL;
-	Overrange : BOOL;
-	ProcessData_EQ_Limit1 : BOOL;
-	ProcessData_GT_Limit1 : BOOL;
-	ProcessData_LT_Limit1 : BOOL;
-	Limit1NotEnabled : BOOL;
-	ProcessData_EQ_Limit2 : BOOL;
-	ProcessData_GT_Limit2 : BOOL;
-	ProcessData_LT_Limit2 : BOOL;
-	Limit2NotEnabled : BOOL;
-	Error : BOOL;
+   Underrange : BOOL;
+   Overrange : BOOL;
+   ProcessData_EQ_Limit1 : BOOL;
+   ProcessData_GT_Limit1 : BOOL;
+   ProcessData_LT_Limit1 : BOOL;
+   Limit1NotEnabled : BOOL;
+   ProcessData_EQ_Limit2 : BOOL;
+   ProcessData_GT_Limit2 : BOOL;
+   ProcessData_LT_Limit2 : BOOL;
+   Limit2NotEnabled : BOOL;
+   Error : BOOL;
 END_VAR
-
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[Underrange := KL306xState.Underrange;
@@ -38,13 +37,7 @@ Limit2NotEnabled := NOT KL306xState.Limit2Bit_1 AND NOT KL306xState.Limit2Bit_0;
 Error := KL306xState.Error;]]></ST>
     </Implementation>
     <LineIds Name="F_GetKL306xState">
-      <LineId Id="7" Count="0" />
-      <LineId Id="24" Count="0" />
-      <LineId Id="26" Count="3" />
-      <LineId Id="25" Count="0" />
-      <LineId Id="33" Count="3" />
-      <LineId Id="31" Count="0" />
-      <LineId Id="38" Count="0" />
+      <LineId Id="138" Count="12" />
       <LineId Id="37" Count="0" />
     </LineIds>
   </POU>

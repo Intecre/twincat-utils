@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="F_GetCompany" Id="{9a530cd9-4cff-460f-8baf-2eb690114078}" SpecialFunc="None">
     <Declaration><![CDATA[// This function has been automatically generated from the project information.
 {attribute 'signature_flag' := '1073741824'}
@@ -14,7 +14,7 @@ END_VAR]]></Declaration>
 ]]></ST>
     </Implementation>
     <LineIds Name="F_GetCompany">
-      <LineId Id="23" Count="0" />
+      <LineId Id="77" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>
   </POU>

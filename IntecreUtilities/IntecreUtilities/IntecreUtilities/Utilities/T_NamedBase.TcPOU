@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.0">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="T_NamedBase" Id="{747db62b-b007-4b65-974e-3e30c9f6f818}" SpecialFunc="None">
     <Declaration><![CDATA[{attribute 'reflection'}
 FUNCTION_BLOCK T_NamedBase
 VAR
-	{attribute 'instance-path'}
-    {attribute 'no_init'}
-	name : T_MaxString;
-	_instanceName : T_MaxString; // name minus project name etc.
-	_instanceSet : BOOL;
-	_objectName : T_MaxString;
-	objectNameSet : BOOL;
+   {attribute 'instance-path'}
+   {attribute 'no_init'}
+   name : T_MaxString;
+   _instanceName : T_MaxString; // name minus project name etc.
+   _instanceSet : BOOL;
+   _objectName : T_MaxString;
+   objectNameSet : BOOL;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -22,7 +22,7 @@ END_VAR
         <Declaration><![CDATA[]]></Declaration>
         <Implementation>
           <ST><![CDATA[IF NOT _instanceSet THEN
-	setInstanceName();
+   setInstanceName();
 END_IF
 
 InstanceName := _instanceName;]]></ST>
@@ -32,48 +32,48 @@ InstanceName := _instanceName;]]></ST>
     <Method Name="LogDebug" Id="{31b79eed-4799-4981-9e9d-626d179f9576}">
       <Declaration><![CDATA[METHOD LogDebug
 VAR_INPUT
-	Msg : T_MaxString;
+   Msg : T_MaxString;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[F_LogDebug(
-	F_Concat3(InstanceName , ': ', Msg)
+   F_Concat3(InstanceName, ': ', Msg)
 );]]></ST>
       </Implementation>
     </Method>
     <Method Name="LogError" Id="{68460783-e2b1-4495-92bf-87f826bbe299}">
       <Declaration><![CDATA[METHOD LogError
 VAR_INPUT
-	Msg : T_MaxString;
+   Msg : T_MaxString;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[F_LogError(
-	F_Concat3(InstanceName , ': ', Msg)
+   F_Concat3(InstanceName, ': ', Msg)
 );]]></ST>
       </Implementation>
     </Method>
     <Method Name="LogInfo" Id="{d072dd6f-6f37-41d6-8089-6cac6bd97a28}">
       <Declaration><![CDATA[METHOD LogInfo
 VAR_INPUT
-	Msg : T_MaxString;
+   Msg : T_MaxString;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[F_LogInfo(
-	F_Concat3(InstanceName , ': ', Msg)
+   F_Concat3(InstanceName, ': ', Msg)
 );]]></ST>
       </Implementation>
     </Method>
     <Method Name="LogWarning" Id="{6676ad4f-087f-4dd6-bf57-0b34c5abe60e}">
       <Declaration><![CDATA[METHOD LogWarning
 VAR_INPUT
-	Msg : T_MaxString;
+   Msg : T_MaxString;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[F_LogWarning(
-	F_Concat3(InstanceName , ': ', Msg)
+   F_Concat3(InstanceName, ': ', Msg)
 );]]></ST>
       </Implementation>
     </Method>
@@ -83,7 +83,7 @@ END_VAR
         <Declaration><![CDATA[]]></Declaration>
         <Implementation>
           <ST><![CDATA[IF NOT objectNameSet THEN
-	setObjectName();
+   setObjectName();
 END_IF
 
 ObjectName := _objectName;]]></ST>
@@ -91,23 +91,23 @@ ObjectName := _objectName;]]></ST>
       </Get>
     </Property>
     <Method Name="setInstanceName" Id="{d237b876-4874-4101-9aea-59f0ea3e9132}">
-      <Declaration><![CDATA[METHOD PRIVATE setInstanceName 
+      <Declaration><![CDATA[METHOD PRIVATE setInstanceName
 VAR
-	charsToDeleteFromPath : INT;
+   charsToDeleteFromPath : INT;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[// format is  Solution_Name.ProjectName.FirstDeclaredPOU.etc.etc... 
 
 //Remove Solution_Name
-charsToDeleteFromPath := FIND( name, '.' );
-_instanceName := DELETE( name, charsToDeleteFromPath, 1 );
+charsToDeleteFromPath := FIND(name, '.');
+_instanceName := DELETE(name, charsToDeleteFromPath, 1);
 
 //Remove ProjectName
-charsToDeleteFromPath := FIND( _instanceName, '.' );
+charsToDeleteFromPath := FIND(_instanceName, '.');
 
 //gives us just "FirstDeclaredPOU.etc.etc..." from above.
-_instanceName := DELETE( _instanceName, charsToDeleteFromPath, 1 );
+_instanceName := DELETE(_instanceName, charsToDeleteFromPath, 1);
 
 _instanceSet := TRUE;]]></ST>
       </Implementation>
@@ -115,25 +115,60 @@ _instanceSet := TRUE;]]></ST>
     <Method Name="setObjectName" Id="{bcea741f-cc92-4b29-a807-8cf8573c28b4}">
       <Declaration><![CDATA[METHOD PRIVATE setObjectName
 VAR
-	charsToRemove : INT;
+   charsToRemove : INT;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// format is ProjectName.FirstDeclaredPOU.etc.etc... 
 IF NOT _instanceSet THEN
-	setInstanceName();
+   setInstanceName();
 END_IF
 
 _objectName := _instanceName;
-charsToRemove := FIND( _objectName, '.' );
+charsToRemove := FIND(_objectName, '.');
 
 WHILE charsToRemove <> 0 DO
-	_objectName := DELETE( _objectName, charsToRemove, 1 );
-	charsToRemove := FIND( _objectName, '.' );
+   _objectName := DELETE(_objectName, charsToRemove, 1);
+   charsToRemove := FIND(_objectName, '.');
 
 END_WHILE
 
 objectNameSet := TRUE;]]></ST>
       </Implementation>
     </Method>
+    <LineIds Name="T_NamedBase">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_NamedBase.InstanceName.Get">
+      <LineId Id="23" Count="3" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_NamedBase.LogDebug">
+      <LineId Id="31" Count="1" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_NamedBase.LogError">
+      <LineId Id="31" Count="1" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_NamedBase.LogInfo">
+      <LineId Id="31" Count="1" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_NamedBase.LogWarning">
+      <LineId Id="31" Count="1" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_NamedBase.ObjectName.Get">
+      <LineId Id="19" Count="3" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_NamedBase.setInstanceName">
+      <LineId Id="71" Count="11" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="T_NamedBase.setObjectName">
+      <LineId Id="74" Count="13" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
   </POU>
 </TcPlcObject>

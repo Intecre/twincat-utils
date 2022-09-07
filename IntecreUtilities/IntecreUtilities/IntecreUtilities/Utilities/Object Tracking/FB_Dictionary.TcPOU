@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="FB_Dictionary" Id="{c29a5ccc-af91-48ad-9b38-0f1964c51b1a}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Dictionary EXTENDS T_NamedBase
 VAR
-	Keys : FB_StringList;
-	Values : FB_TargList;
+   Keys : FB_StringList;
+   Values : FB_TargList;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -14,50 +14,57 @@ END_VAR
       <Declaration><![CDATA[// Add item to list. TRUE if successful. 
 METHOD PUBLIC AddItem : BOOL
 VAR_INPUT
-	Key : T_MaxString; // item key to add.
-	Value : T_Arg;
+   Key : T_MaxString; // item key to add.
+   Value : T_Arg;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF Keys.Count <> Values.Count THEN
-	LogWarning('Missmatch keys and values count. Clearing dictionary.');
-	THIS^.Clear();
-	RETURN;
+   LogWarning('Missmatch keys and values count. Clearing dictionary.');
+   THIS^.Clear();
+   RETURN;
 END_IF
+
 IF Keys.Count = GVL_List.LIST_SIZE THEN
-	F_LogWarning(
-		CONCAT(InstanceName, 'Dictionary is full.')
-	);
-	RETURN;
+   F_LogWarning(
+      CONCAT(InstanceName, 'Dictionary is full.')
+   );
+
+   RETURN;
 END_IF
+
 IF Key = '' THEN
-	LogWarning('key is null.');
-	RETURN;
+   LogWarning('key is null.');
+   RETURN;
 END_IF
-IF Contains( Key )  THEN
-	LogWarning('Key already exists in dictionary.');
-	RETURN;
+
+IF Contains(Key) THEN
+   LogWarning('Key already exists in dictionary.');
+   RETURN;
 END_IF
 
 IF Value.cbLen <= 0 THEN
-	LogWarning('Value has no length.');
-	RETURN;
+   LogWarning('Value has no length.');
+   RETURN;
 END_IF
 
 // Add the key.
-IF NOT Keys.AddItem( Key ) THEN
-	F_LogWarning(
-		CONCAT(InstanceName, ' error adding key.')
-	);
-	RETURN;
+IF NOT Keys.AddItem(Key) THEN
+   F_LogWarning(
+      CONCAT(InstanceName, ' error adding key.')
+   );
+
+   RETURN;
 END_IF
+
 // add the value.
-IF NOT Values.AddItem( Value ) THEN // if this fails, remove the key.
-	LogWarning('Error adding value.');
-	Keys.RemoveIndex( 
-		INT_TO_UDINT( Keys.FindIndex( Key ) )
-	);
-	RETURN;
+IF NOT Values.AddItem(Value) THEN // if this fails, remove the key.
+   LogWarning('Error adding value.');
+   Keys.RemoveIndex(
+      INT_TO_UDINT(Keys.FindIndex(Key))
+   );
+
+   RETURN;
 END_IF
 
 AddItem := TRUE;]]></ST>
@@ -75,13 +82,13 @@ Values.Clear();]]></ST>
       <Declaration><![CDATA[// TRUE if Item is in FB_List.
 METHOD PUBLIC Contains : BOOL
 VAR_INPUT
-	Key : T_MaxString; // Item to check.
+   Key : T_MaxString; // Item to check.
 END_VAR
 VAR
-	i : UINT := 0;
+   i : UINT := 0;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[Contains := Keys.Contains ( Key );
+        <ST><![CDATA[Contains := Keys.Contains(Key);
 ]]></ST>
       </Implementation>
     </Method>
@@ -100,7 +107,7 @@ PROPERTY PUBLIC Count : UDINT]]></Declaration>
       <Declaration><![CDATA[// Return item in dictionary base on key.
 METHOD PUBLIC Get : T_Arg
 VAR_INPUT
-	Key : T_MaxString;
+   Key : T_MaxString;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[THIS^.TryGet(Key, Get);]]></ST>
@@ -119,20 +126,20 @@ END_VAR]]></Declaration>
       <Declaration><![CDATA[//Remove the specified index. Shuffle remaining so list is intact.
 METHOD PUBLIC Remove : BOOL
 VAR_INPUT
-	Key : T_MaxString;
+   Key : T_MaxString;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF Keys.Contains( Key ) THEN // invalid index request.
-	LogWarning('Cannot remove key as not in dictionary.');
-	RETURN;
+        <ST><![CDATA[IF Keys.Contains(Key) THEN // invalid index request.
+   LogWarning('Cannot remove key as not in dictionary.');
+   RETURN;
 END_IF
 
 Values.RemoveIndex(
-	INT_TO_UDINT( Keys.FindIndex( Key ) ) 
+   INT_TO_UDINT(Keys.FindIndex(Key))
 );
 
-Keys.RemoveIndex( 
-	INT_TO_UDINT( Keys.FindIndex( Key ) ) 
+Keys.RemoveIndex(
+   INT_TO_UDINT(Keys.FindIndex(Key))
 );
 
 Remove := TRUE;]]></ST>
@@ -142,17 +149,18 @@ Remove := TRUE;]]></ST>
       <Declaration><![CDATA[// TRUE if successful and list item in sItem
 METHOD PUBLIC TryGet : BOOL
 VAR_INPUT
-	Key : T_MaxString;
+   Key : T_MaxString;
 END_VAR
 VAR_IN_OUT
-	Value : T_Arg;
+   Value : T_Arg;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF Keys.Contains( Key ) THEN
-	Value := Values.GetIndex( 
-				INT_TO_UDINT( Keys.FindIndex( Key ) ) 
-			);
-	TryGet := TRUE;
+        <ST><![CDATA[IF Keys.Contains(Key) THEN
+   Value := Values.GetIndex(
+      INT_TO_UDINT(Keys.FindIndex(Key))
+   );
+
+   TryGet := TRUE;
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -160,17 +168,17 @@ END_IF]]></ST>
       <Declaration><![CDATA[// TRUE if successful and list item in sItem
 METHOD PUBLIC TryGetIndex : BOOL
 VAR_INPUT
-	Index : UDINT;
+   Index : UDINT;
 END_VAR
 VAR_IN_OUT
-	Key : T_MaxString;
-	Value : T_Arg;
+   Key : T_MaxString;
+   Value : T_Arg;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF Index < Keys.Count THEN
-	Key := Keys.GetIndex( Index );
-	Value := Values.GetIndex( Index );
-	TryGetIndex := TRUE;
+   Key := Keys.GetIndex(Index);
+   Value := Values.GetIndex(Index);
+   TryGetIndex := TRUE;
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -178,17 +186,18 @@ END_IF]]></ST>
       <Declaration><![CDATA[// TRUE if successful. Returns value associated with first key that provides partial match
 METHOD PUBLIC TryGetPartialKey : BOOL
 VAR_IN_OUT CONSTANT
-	PartialKey : T_MaxString;
+   PartialKey : T_MaxString;
 END_VAR
 VAR_IN_OUT
-	Value : T_Arg;
+   Value : T_Arg;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF Keys.ContainsPartial( PartialKey ) THEN
-	Value := Values.GetIndex( 
-				INT_TO_UDINT( Keys.FindIndexPartialKey( PartialKey ) ) 
-			);
-	TryGetPartialKey := TRUE;
+        <ST><![CDATA[IF Keys.ContainsPartial(PartialKey) THEN
+   Value := Values.GetIndex(
+      INT_TO_UDINT(Keys.FindIndexPartialKey(PartialKey))
+   );
+
+   TryGetPartialKey := TRUE;
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -196,45 +205,15 @@ END_IF]]></ST>
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_Dictionary.AddItem">
-      <LineId Id="19" Count="0" />
-      <LineId Id="23" Count="1" />
-      <LineId Id="20" Count="0" />
-      <LineId Id="47" Count="1" />
-      <LineId Id="50" Count="2" />
-      <LineId Id="49" Count="0" />
-      <LineId Id="25" Count="1" />
-      <LineId Id="31" Count="0" />
-      <LineId Id="27" Count="0" />
-      <LineId Id="33" Count="1" />
-      <LineId Id="38" Count="1" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="40" Count="0" />
-      <LineId Id="42" Count="0" />
-      <LineId Id="46" Count="0" />
-      <LineId Id="43" Count="0" />
-      <LineId Id="53" Count="0" />
-      <LineId Id="66" Count="0" />
-      <LineId Id="54" Count="0" />
-      <LineId Id="68" Count="2" />
-      <LineId Id="57" Count="1" />
-      <LineId Id="67" Count="0" />
-      <LineId Id="59" Count="0" />
-      <LineId Id="71" Count="0" />
-      <LineId Id="60" Count="0" />
-      <LineId Id="63" Count="0" />
-      <LineId Id="62" Count="0" />
-      <LineId Id="64" Count="0" />
-      <LineId Id="61" Count="0" />
-      <LineId Id="65" Count="0" />
-      <LineId Id="56" Count="0" />
+      <LineId Id="192" Count="47" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Dictionary.Clear">
-      <LineId Id="9" Count="0" />
+      <LineId Id="16" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Dictionary.Contains">
-      <LineId Id="20" Count="0" />
+      <LineId Id="51" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Dictionary.Count.Get">
@@ -247,32 +226,19 @@ END_IF]]></ST>
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_Dictionary.Remove">
-      <LineId Id="45" Count="0" />
-      <LineId Id="48" Count="0" />
-      <LineId Id="9" Count="2" />
-      <LineId Id="49" Count="5" />
-      <LineId Id="38" Count="1" />
+      <LineId Id="97" Count="12" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Dictionary.TryGet">
-      <LineId Id="10" Count="0" />
-      <LineId Id="23" Count="1" />
-      <LineId Id="22" Count="0" />
-      <LineId Id="11" Count="0" />
+      <LineId Id="65" Count="5" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Dictionary.TryGetIndex">
-      <LineId Id="10" Count="0" />
-      <LineId Id="24" Count="0" />
-      <LineId Id="23" Count="0" />
-      <LineId Id="11" Count="0" />
+      <LineId Id="65" Count="3" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Dictionary.TryGetPartialKey">
-      <LineId Id="10" Count="0" />
-      <LineId Id="23" Count="1" />
-      <LineId Id="22" Count="0" />
-      <LineId Id="11" Count="0" />
+      <LineId Id="65" Count="5" />
       <LineId Id="5" Count="0" />
     </LineIds>
   </POU>

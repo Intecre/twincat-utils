@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="T_TestBase" Id="{cf43b595-fd8d-4755-bf5a-2fec59bd2fc0}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK T_TestBase EXTENDS T_NamedBase
 VAR
-	_done : BOOL;
-	_testsPassed : BOOL;
-	_reset : BOOL;
-	_startTests : BOOL;
-	_task : T_Task;
-	_startTime : LINT; // ms
+   _done : BOOL;
+   _testsPassed : BOOL;
+   _reset : BOOL;
+   _startTests : BOOL;
+   _task : T_Task;
+   _startTime : LINT; // ms
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -21,11 +21,11 @@ END_VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[Done := _done; ]]></ST>
+          <ST><![CDATA[Done := _done;]]></ST>
         </Implementation>
       </Get>
       <Set Name="Set" Id="{cd6bb8e0-1035-4620-99d7-fe63791219ff}">
-        <Declaration><![CDATA[ ]]></Declaration>
+        <Declaration><![CDATA[]]></Declaration>
         <Implementation>
           <ST><![CDATA[_done := Done;]]></ST>
         </Implementation>
@@ -35,11 +35,11 @@ END_VAR
       <Declaration><![CDATA[{attribute 'monitoring' := 'call'} PROPERTY DonePulse : BOOL]]></Declaration>
       <Get Name="Get" Id="{bb5d7734-e305-4edc-91b9-025e213ca3a1}">
         <Declaration><![CDATA[VAR_INST
-	pulse : R_TRIG;
+   pulse : R_TRIG;
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[pulse( CLK := Done );
+          <ST><![CDATA[pulse(CLK := Done);
 DonePulse := pulse.Q;]]></ST>
         </Implementation>
       </Get>
@@ -104,7 +104,7 @@ _startTime := _task.DistributedClockTimeInMs;]]></ST>
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="T_TestBase.DonePulse.Get">
-      <LineId Id="3" Count="0" />
+      <LineId Id="22" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="T_TestBase.nElapsedTimeInMs.Get">
@@ -117,11 +117,11 @@ _startTime := _task.DistributedClockTimeInMs;]]></ST>
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="T_TestBase.Start">
-      <LineId Id="8" Count="0" />
+      <LineId Id="17" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="T_TestBase.StartTimer">
-      <LineId Id="6" Count="0" />
+      <LineId Id="10" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="T_TestBase.tElapsedTimeInMs.Get">

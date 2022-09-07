@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.17">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="T_Timer" Id="{c856fe31-e123-4b16-a6bb-15d98c82e22c}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK T_Timer // a timer block. Will start timing as soon as T_Timer.Signal is present. 
 VAR_INPUT
 END_VAR
 VAR
-	task : T_Task;
-	startTime : LINT; // ms
-	_elapsedTimeInMs : LINT;
-	_duration : LINT := 1;
-	_signal : BOOL;
-	_offSignal : BOOL;
+   task : T_Task;
+   startTime : LINT; // ms
+   _elapsedTimeInMs : LINT;
+   _duration : LINT := 1;
+   _signal : BOOL;
+   _offSignal : BOOL;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -21,7 +21,7 @@ END_VAR
       <Get Name="Get" Id="{488b6893-b0d4-43d1-9238-e2400fb8eeb8}">
         <Declaration><![CDATA[]]></Declaration>
         <Implementation>
-          <ST><![CDATA[ElapsedTime := LINT_TO_TIME( ElapsedTimeInMs );]]></ST>
+          <ST><![CDATA[ElapsedTime := LINT_TO_TIME(ElapsedTimeInMs);]]></ST>
         </Implementation>
       </Get>
     </Property>
@@ -30,8 +30,8 @@ END_VAR
       <Get Name="Get" Id="{d3f3f543-20a9-47bf-a9e3-ec99c7f0ed86}">
         <Declaration><![CDATA[]]></Declaration>
         <Implementation>
-          <ST><![CDATA[ElapsedTimeInMs := 
-	SEL(_signal, 0,  task.DistributedClockTimeInMs - startTime);]]></ST>
+          <ST><![CDATA[ElapsedTimeInMs :=
+   SEL(_signal, 0, task.DistributedClockTimeInMs - startTime);]]></ST>
         </Implementation>
       </Get>
     </Property>
@@ -42,8 +42,7 @@ END_VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[Q_Off := _offSignal AND_THEN
-			( ( task.DistributedClockTimeInMs - startTime ) > _duration );]]></ST>
+          <ST><![CDATA[Q_Off := _offSignal AND_THEN ((task.DistributedClockTimeInMs - startTime) > _duration);]]></ST>
         </Implementation>
       </Get>
     </Property>
@@ -54,8 +53,7 @@ END_VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[Q_On := _signal AND_THEN
-			( ( task.DistributedClockTimeInMs - startTime ) > _duration );]]></ST>
+          <ST><![CDATA[Q_On := _signal AND_THEN ((task.DistributedClockTimeInMs - startTime) > _duration);]]></ST>
         </Implementation>
       </Get>
     </Property>
@@ -66,8 +64,7 @@ END_VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[Q_PulseTrain := _signal AND_THEN
-			( ( task.DistributedClockTimeInMs - startTime ) MOD _duration > ( _duration / 2 ) );]]></ST>
+          <ST><![CDATA[Q_PulseTrain := _signal AND_THEN ((task.DistributedClockTimeInMs - startTime) MOD _duration > (_duration / 2));]]></ST>
         </Implementation>
       </Get>
     </Property>
@@ -78,7 +75,7 @@ END_VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[SetPeriod := LINT_TO_TIME( _duration );]]></ST>
+          <ST><![CDATA[SetPeriod := LINT_TO_TIME(_duration);]]></ST>
         </Implementation>
       </Get>
       <Set Name="Set" Id="{bb954fa6-c7bf-4921-8824-f6432d76b967}">
@@ -86,7 +83,7 @@ END_VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[_duration := MAX( TIME_TO_LINT( SetPeriod ), 1);]]></ST>
+          <ST><![CDATA[_duration := MAX(TIME_TO_LINT(SetPeriod), 1);]]></ST>
         </Implementation>
       </Set>
     </Property>
@@ -108,9 +105,9 @@ END_VAR
 ]]></Declaration>
         <Implementation>
           <ST><![CDATA[IF Signal <> _signal THEN
-	startTime := task.DistributedClockTimeInMs;
-	_signal := Signal;
-	_offSignal := NOT _signal;
+   startTime := task.DistributedClockTimeInMs;
+   _signal := Signal;
+   _offSignal := NOT _signal;
 END_IF]]></ST>
         </Implementation>
       </Set>
@@ -122,18 +119,16 @@ END_IF]]></ST>
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="T_Timer.ElapsedTimeInMs.Get">
-      <LineId Id="2" Count="1" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="T_Timer.Q_Off.Get">
-      <LineId Id="2" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="T_Timer.Q_On.Get">
-      <LineId Id="2" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="T_Timer.Q_PulseTrain.Get">
-      <LineId Id="2" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="T_Timer.SetPeriod.Get">
@@ -143,12 +138,11 @@ END_IF]]></ST>
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="T_Timer.Signal.Get">
-      <LineId Id="2" Count="0" />
+      <LineId Id="19" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="T_Timer.Signal.Set">
-      <LineId Id="7" Count="1" />
-      <LineId Id="11" Count="1" />
+      <LineId Id="40" Count="3" />
       <LineId Id="9" Count="0" />
     </LineIds>
   </POU>

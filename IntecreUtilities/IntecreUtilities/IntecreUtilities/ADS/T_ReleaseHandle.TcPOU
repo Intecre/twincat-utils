@@ -1,11 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="T_ReleaseHandle" Id="{49329f98-259a-474e-af2a-fecd84d47943}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK T_ReleaseHandle IMPLEMENTS I_Executable
+    <Declaration><![CDATA[FUNCTION_BLOCK T_ReleaseHandle EXTENDS T_NamedBase IMPLEMENTS I_TaskState;
 VAR
-   logger : I_Logger;
-	_symbolHandle : ST_SymbolHandle;
-	write : T_AdsWrite;
+   _symbolHandle : ST_SymbolHandle;
+   write : T_AdsWrite;
 END_VAR
 VAR CONSTANT
    LOG_DEBUG : DWORD := 0;
@@ -48,74 +47,46 @@ END_VAR]]></Declaration>
         </Implementation>
       </Get>
     </Property>
-    <Method Name="SetLogger" Id="{c2aee71b-6242-41bd-ad56-2f80a205093c}">
-      <Declaration><![CDATA[METHOD PUBLIC SetLogger
-VAR_INPUT
-	logger : I_Logger;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[THIS^.logger := logger;
-]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="ToLog" Id="{00a93180-ffe4-4f97-a177-e40759de868d}">
-      <Declaration><![CDATA[METHOD PRIVATE ToLog
-VAR_INPUT
-	Msg : STRING(255);
-	LogLevel : DWORD; // generic level, can be mapped to logging framework
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[IF logger = 0 THEN
-	RETURN;
-	
-END_IF
-
-logger.ToLog(Msg, LogLevel);]]></ST>
-      </Implementation>
-    </Method>
     <Method Name="TryReleaseHandle" Id="{85758502-e02a-404f-bb25-1758ae1cc940}">
       <Declaration><![CDATA[METHOD TryReleaseHandle : BOOL
 VAR_INPUT
-	symbolHandle : ST_SymbolHandle;
-	adsTimeout : TIME := DEFAULT_ADS_TIMEOUT; // DEFAULT_ADS_TIMEOUT is T#5s;
+   symbolHandle : ST_SymbolHandle;
+   adsTimeout : TIME := DEFAULT_ADS_TIMEOUT; // DEFAULT_ADS_TIMEOUT is T#5s;
 END_VAR
 VAR_OUTPUT
-	status : I_Executable;
+   status : I_TaskState;
 END_VAR
 VAR
-	readWriteOpts : ST_AdsReadWriteOptions;
+   readWriteOpts : ST_AdsReadWriteOptions;
 END_VAR
 VAR CONSTANT
-	EMPTY_TARG : T_Arg;
-	NO_HANDLE : DWORD := 0;
+   NO_HANDLE : DWORD := 0;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF Busy THEN
-	ToLog('Cannot TryReleaseHandle as Busy', LOG_WARNING);
-	RETURN;
-	
+   LogWarning('Cannot TryReleaseHandle as Busy');
+   RETURN;
+
 END_IF
 
 _symbolHandle := symbolHandle;
 
 readWriteOpts.AdsAddress := _symbolHandle.SymbolAddress.Ads;
 readWriteOpts.IndexGroup := ADSIGRP_SYM_RELEASEHND;
-readWriteOpts.IndexOffset := _symbolHandle.Handle;
-readWriteOpts.WriteParams := EMPTY_TARG;
-readWriteOpts.ReadParams := EMPTY_TARG;
+readWriteOpts.IndexOffset := 0;
+readWriteOpts.WriteParams := F_DWORD(_symbolHandle.Handle);
+readWriteOpts.ReadParams := EMPTY_ARG_VALUE;
 readWriteOpts.Timeout := adsTimeout;
 
-TryReleaseHandle := write.TryRequest( readWriteOpts, status => status );]]></ST>
+TryReleaseHandle := write.TryRequest(readWriteOpts, status => status);]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="T_ReleaseHandle">
-      <LineId Id="412" Count="0" />
+      <LineId Id="467" Count="0" />
       <LineId Id="67" Count="0" />
     </LineIds>
     <LineIds Name="T_ReleaseHandle.Busy.Get">
-      <LineId Id="8" Count="0" />
+      <LineId Id="12" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="T_ReleaseHandle.Done.Get">
@@ -124,26 +95,8 @@ TryReleaseHandle := write.TryRequest( readWriteOpts, status => status );]]></ST>
     <LineIds Name="T_ReleaseHandle.Error.Get">
       <LineId Id="2" Count="0" />
     </LineIds>
-    <LineIds Name="T_ReleaseHandle.SetLogger">
-      <LineId Id="5" Count="0" />
-      <LineId Id="7" Count="0" />
-    </LineIds>
-    <LineIds Name="T_ReleaseHandle.ToLog">
-      <LineId Id="5" Count="0" />
-      <LineId Id="11" Count="0" />
-      <LineId Id="9" Count="1" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="12" Count="0" />
-    </LineIds>
     <LineIds Name="T_ReleaseHandle.TryReleaseHandle">
-      <LineId Id="47" Count="4" />
-      <LineId Id="64" Count="0" />
-      <LineId Id="52" Count="3" />
-      <LineId Id="61" Count="0" />
-      <LineId Id="63" Count="0" />
-      <LineId Id="62" Count="0" />
-      <LineId Id="56" Count="0" />
-      <LineId Id="66" Count="0" />
+      <LineId Id="182" Count="14" />
       <LineId Id="26" Count="0" />
     </LineIds>
   </POU>

@@ -1,33 +1,37 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="F_Concat7_Large" Id="{55de9d64-fb93-4bfb-95dd-a0921848ec99}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION F_Concat7_Large : LongString
 VAR_IN_OUT CONSTANT
-	sOne : LongString;
-	sTwo : LongString;
-	sThree : LongString;
-	sFour : LongString;
-	sFive : LongString;
-	sSix : LongString;
-	sSeven : LongString;
+   sOne : LongString;
+   sTwo : LongString;
+   sThree : LongString;
+   sFour : LongString;
+   sFive : LongString;
+   sSix : LongString;
+   sSeven : LongString;
 END_VAR
 VAR
-	str : LongString;
+   str : LongString;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[str := F_Concat6_Large( sTwo, sThree, sFour, sFive, sSix, sSeven);
-F_Concat7_Large := 
-	F_ConcatLarge(
-		sOne,
-		str
-	);]]></ST>
+      <ST><![CDATA[str := F_Concat6_Large(
+   sTwo,
+   sThree,
+   sFour,
+   sFive,
+   sSix,
+   sSeven
+);
+
+F_Concat7_Large :=
+   F_ConcatLarge(
+      sOne,
+      str
+   );]]></ST>
     </Implementation>
     <LineIds Name="F_Concat7_Large">
-      <LineId Id="39" Count="0" />
-      <LineId Id="18" Count="0" />
-      <LineId Id="33" Count="0" />
-      <LineId Id="22" Count="0" />
-      <LineId Id="17" Count="0" />
+      <LineId Id="114" Count="12" />
       <LineId Id="2" Count="0" />
     </LineIds>
   </POU>

@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="FB_LongStringList" Id="{6333a25e-a629-45cc-8282-40085d67c3f6}" SpecialFunc="None">
     <Declaration><![CDATA[// List of Strings.
 FUNCTION_BLOCK FB_LongStringList
 VAR
-	List : ARRAY[ 0 .. GVL_List.LIST_SIZE - 1 ] OF LongString; // hold list
-	_Count : UDINT := 0; // number of items.
+   List : ARRAY[0..GVL_List.LIST_SIZE - 1] OF LongString; // hold list
+   _Count : UDINT := 0; // number of items.
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -15,14 +15,14 @@ END_VAR
       <Declaration><![CDATA[// Add item to list. TRUE if successful. 
 METHOD PUBLIC AddItem : BOOL
 VAR_INPUT
-	Item : LongString; // item to add.
+   Item : LongString; // item to add.
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF _Count < GVL_List.LIST_SIZE THEN
-	List[_Count] := Item; // list is zero indexed, so number of items points at next free space.
-	_Count := _Count + 1; 
-	AddItem := TRUE;
+   List[_Count] := Item; // list is zero indexed, so number of items points at next free space.
+   _Count := _Count + 1;
+   AddItem := TRUE;
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -38,7 +38,7 @@ _Count := 0;]]></ST>
       <Declaration><![CDATA[// TRUE if Item is in FB_List.
 METHOD PUBLIC Contains : BOOL
 VAR_INPUT
-	Item : LongString; // Item to check.
+   Item : LongString; // Item to check.
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[Contains := FindIndex(Item) >= 0;
@@ -49,7 +49,7 @@ END_VAR]]></Declaration>
       <Declaration><![CDATA[// TRUE if supplied key part is in any entry
 METHOD PUBLIC ContainsPartial : BOOL
 VAR_INPUT
-	PartialItem : LongString;
+   PartialItem : LongString;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -59,7 +59,7 @@ END_VAR
     <Method Name="CopyList" Id="{8b104ccb-382b-483e-ba85-1021b4e261da}">
       <Declaration><![CDATA[METHOD CopyList
 VAR_IN_OUT
-	ListToCopyTo : ARRAY[ 0 .. GVL_List.LIST_SIZE - 1 ] OF LongString; // hold list
+   ListToCopyTo : ARRAY[0..GVL_List.LIST_SIZE - 1] OF LongString; // hold list
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -69,11 +69,11 @@ END_VAR
     <Method Name="CopyListAndClear" Id="{486bfd6f-4bd8-4ffd-8dbd-2e418e677e6d}">
       <Declaration><![CDATA[METHOD CopyListAndClear
 VAR_IN_OUT
-	ListToCopyTo : ARRAY[ 0 .. GVL_List.LIST_SIZE - 1 ] OF LongString; // hold list
+   ListToCopyTo : ARRAY[0..GVL_List.LIST_SIZE - 1] OF LongString; // hold list
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[THIS^.CopyList( ListToCopyTo );
+        <ST><![CDATA[THIS^.CopyList(ListToCopyTo);
 THIS^.Clear();]]></ST>
       </Implementation>
     </Method>
@@ -91,20 +91,21 @@ PROPERTY PUBLIC Count : UDINT]]></Declaration>
     <Method Name="FindIndex" Id="{31ec6181-37e6-4510-900f-a9fd5567b870}">
       <Declaration><![CDATA[METHOD PUBLIC FindIndex : INT
 VAR_INPUT
-	Item : LongString; // Item to check.
+   Item : LongString; // Item to check.
 END_VAR
 VAR
-	i : UINT := 0;
+   i : UINT := 0;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[FindIndex := -1;
 i := 0;
-WHILE ( (FindIndex < 0) AND (i < _Count) ) DO
-	
-	FindIndex := SEL(Item = List[i], FindIndex, TO_INT(i) ); // if it matches, return the position.
-	i := i + 1;
-	
+
+WHILE ((FindIndex < 0) AND (i < _Count)) DO
+
+   FindIndex := SEL(Item = List[i], FindIndex, TO_INT(i)); // if it matches, return the position.
+   i := i + 1;
+
 END_WHILE]]></ST>
       </Implementation>
     </Method>
@@ -112,23 +113,24 @@ END_WHILE]]></ST>
       <Declaration><![CDATA[// Find first index where list entry contains supplied key.
 METHOD PUBLIC FindIndexPartialKey : INT
 VAR_INPUT
-	PartialKey : LongString; // Item to check.
+   PartialKey : LongString; // Item to check.
 END_VAR
 VAR
-	i : UINT := 0;
+   i : UINT := 0;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[FindIndexPartialKey := -1;
 i := 0;
-WHILE ( (FindIndexPartialKey < 0) AND (i < _Count) ) DO
-	
-	IF FIND(List[i],PartialKey) > 0 THEN
-		FindIndexPartialKey := TO_INT(i);
-	END_IF
 
-	i := i + 1;
-	
+WHILE ((FindIndexPartialKey < 0) AND (i < _Count)) DO
+
+   IF FIND(List[i], PartialKey) > 0 THEN
+      FindIndexPartialKey := TO_INT(i);
+   END_IF
+
+   i := i + 1;
+
 END_WHILE]]></ST>
       </Implementation>
     </Method>
@@ -136,31 +138,31 @@ END_WHILE]]></ST>
       <Declaration><![CDATA[// Return item in list at index position. Returns empty string if invalid index.
 METHOD PUBLIC GetIndex : LongString
 VAR_INPUT
-	Index : UDINT;
+   Index : UDINT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[THIS^.TryGetIndex(Index,  GetIndex);]]></ST>
+        <ST><![CDATA[THIS^.TryGetIndex(Index, GetIndex);]]></ST>
       </Implementation>
     </Method>
     <Method Name="RemoveIndex" Id="{a7f9c6cc-277e-4084-b359-437c6f70b552}">
       <Declaration><![CDATA[//Remove the specified index. Shuffle remaining so list is intact.
 METHOD PUBLIC RemoveIndex : BOOL
 VAR_INPUT
-	Index : UDINT;
+   Index : UDINT;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF Index >= _Count THEN // invalid index request.
-	RETURN;
+   RETURN;
 END_IF
 
 IF Index < _Count - 1 THEN // If Index = _Count -1, last two lines sufficient.
 
-	MEMMOVE( 
-		destAddr := ADR( List[Index] ), 
-		srcAddr := ADR( List[Index + 1] ), 
-		n := SIZEOF(List[0]) * (_Count - Index - 1)
-	);
-	
+   MEMMOVE(
+      destAddr := ADR(List[Index]),
+      srcAddr := ADR(List[Index + 1]),
+      n := SIZEOF(List[0]) * (_Count - Index - 1)
+   );
+
 END_IF
 
 RemoveIndex := TRUE;
@@ -173,15 +175,15 @@ _Count := _Count - 1; // reduce count.]]></ST>
       <Declaration><![CDATA[// TRUE if successful and list item in sItem
 METHOD PUBLIC TryGetIndex : BOOL
 VAR_INPUT
-	Index : UDINT;
+   Index : UDINT;
 END_VAR
 VAR_IN_OUT
-	Item : LongString;
+   Item : LongString;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF Index < _Count THEN
-	TryGetIndex := TRUE;
-	Item := List[Index];
+   TryGetIndex := TRUE;
+   Item := List[Index];
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -189,17 +191,15 @@ END_IF]]></ST>
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_LongStringList.AddItem">
-      <LineId Id="8" Count="0" />
-      <LineId Id="10" Count="1" />
-      <LineId Id="9" Count="0" />
+      <LineId Id="40" Count="3" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_LongStringList.Clear">
-      <LineId Id="7" Count="0" />
+      <LineId Id="14" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_LongStringList.Contains">
-      <LineId Id="20" Count="0" />
+      <LineId Id="39" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_LongStringList.ContainsPartial">
@@ -209,40 +209,29 @@ END_IF]]></ST>
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_LongStringList.CopyListAndClear">
-      <LineId Id="5" Count="0" />
+      <LineId Id="27" Count="0" />
       <LineId Id="8" Count="0" />
     </LineIds>
     <LineIds Name="FB_LongStringList.Count.Get">
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_LongStringList.FindIndex">
-      <LineId Id="6" Count="6" />
+      <LineId Id="57" Count="7" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_LongStringList.FindIndexPartialKey">
-      <LineId Id="6" Count="2" />
-      <LineId Id="21" Count="2" />
-      <LineId Id="9" Count="3" />
+      <LineId Id="78" Count="10" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_LongStringList.GetIndex">
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_LongStringList.RemoveIndex">
-      <LineId Id="8" Count="4" />
-      <LineId Id="16" Count="0" />
-      <LineId Id="24" Count="3" />
-      <LineId Id="36" Count="0" />
-      <LineId Id="17" Count="0" />
-      <LineId Id="38" Count="2" />
-      <LineId Id="14" Count="0" />
-      <LineId Id="37" Count="0" />
+      <LineId Id="91" Count="16" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_LongStringList.TryGetIndex">
-      <LineId Id="10" Count="0" />
-      <LineId Id="12" Count="0" />
-      <LineId Id="11" Count="0" />
+      <LineId Id="47" Count="2" />
       <LineId Id="5" Count="0" />
     </LineIds>
   </POU>

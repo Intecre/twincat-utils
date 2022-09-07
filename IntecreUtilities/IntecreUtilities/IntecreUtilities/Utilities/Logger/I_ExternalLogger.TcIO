@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <Itf Name="I_ExternalLogger" Id="{c359840c-cfe2-45ce-9a5a-254a11158f8f}">
     <Declaration><![CDATA[INTERFACE I_ExternalLogger
 ]]></Declaration>
     <Method Name="AddToLog" Id="{61706da7-0ed7-45c8-b0e5-d47f4fea8c64}">
       <Declaration><![CDATA[METHOD AddToLog
 VAR_IN_OUT
-	Message : T_MaxString;
+   Message : T_MaxString;
 END_VAR
 VAR_INPUT
-	LogSeverity : E_LogSeverity;
+   LogSeverity : E_LogSeverity;
 END_VAR
 ]]></Declaration>
     </Method>

@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="F_Gate" Id="{97b3a654-cb47-4f65-b0a1-b8a5603611a0}" SpecialFunc="None">
     <Declaration><![CDATA[// return the bIn as passed. set the value to FALSE.
 FUNCTION F_Gate : BOOL
 VAR_IN_OUT
-	bIn : BOOL;
+   bIn : BOOL;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[F_Gate := bIn;
@@ -12,8 +12,7 @@ END_VAR]]></Declaration>
 bIn := FALSE;]]></ST>
     </Implementation>
     <LineIds Name="F_Gate">
-      <LineId Id="21" Count="0" />
-      <LineId Id="16" Count="0" />
+      <LineId Id="48" Count="1" />
       <LineId Id="7" Count="0" />
     </LineIds>
   </POU>

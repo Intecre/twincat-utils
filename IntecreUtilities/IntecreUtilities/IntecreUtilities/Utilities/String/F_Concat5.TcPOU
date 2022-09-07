@@ -1,25 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.9">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="F_Concat5" Id="{c4214e05-45b2-4d5c-bfe6-cf52d2c16559}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION F_Concat5 : T_MaxString
 VAR_INPUT
-	sOne : STRING;
-	sTwo : STRING;
-	sThree : STRING;
-	sFour : STRING;
-	sFive : STRING;
+   sOne : STRING;
+   sTwo : STRING;
+   sThree : STRING;
+   sFour : STRING;
+   sFive : STRING;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[F_Concat5 := CONCAT(
-					sOne,
-					F_Concat4( sTwo, sThree, sFour, sFive )
-				);]]></ST>
+   sOne,
+   F_Concat4(sTwo, sThree, sFour, sFive)
+);]]></ST>
     </Implementation>
     <LineIds Name="F_Concat5">
-      <LineId Id="18" Count="0" />
-      <LineId Id="22" Count="0" />
-      <LineId Id="17" Count="0" />
+      <LineId Id="61" Count="2" />
       <LineId Id="2" Count="0" />
     </LineIds>
   </POU>

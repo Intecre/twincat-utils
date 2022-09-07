@@ -1,22 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.18">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="F_LogDebug" Id="{adfe7a24-b378-4ac2-8722-b990d3e39262}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION F_LogDebug : STRING;
 VAR_INPUT
-	Message : T_MaxString;
+   Message : T_MaxString;
 END_VAR
-
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[F_LogDebug := 
-	F_Logger( 
-		E_LogSeverity.Debug, 
-		CONCAT( 'DEBUG ' , Message ) 
-	);]]></ST>
+      <ST><![CDATA[F_LogDebug :=
+   F_Logger(
+      E_LogSeverity.Debug,
+      CONCAT('DEBUG ', Message)
+   );]]></ST>
     </Implementation>
     <LineIds Name="F_LogDebug">
-      <LineId Id="2" Count="0" />
-      <LineId Id="8" Count="3" />
+      <LineId Id="37" Count="3" />
+      <LineId Id="11" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

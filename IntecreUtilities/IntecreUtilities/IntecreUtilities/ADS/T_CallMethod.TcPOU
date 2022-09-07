@@ -1,11 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="T_CallMethod" Id="{43800a14-cbe5-47c9-ba5a-eb02060ebed4}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK T_CallMethod IMPLEMENTS I_Executable
+    <Declaration><![CDATA[FUNCTION_BLOCK T_CallMethod EXTENDS T_NamedBase IMPLEMENTS I_TaskState;
 VAR
-   logger : I_Logger;
-	_symbolHandle : ST_SymbolHandle;
-	readWrite : T_AdsReadWrite;
+   _symbolHandle : ST_SymbolHandle;
+   readWrite : T_AdsReadWrite;
 END_VAR
 VAR CONSTANT
    LOG_DEBUG : DWORD := 0;
@@ -48,53 +47,26 @@ END_VAR]]></Declaration>
         </Implementation>
       </Get>
     </Property>
-    <Method Name="SetLogger" Id="{d1d3a7cd-3600-43b1-ac6f-498d2468a79a}">
-      <Declaration><![CDATA[METHOD PUBLIC SetLogger
-VAR_INPUT
-	logger : I_Logger;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[THIS^.logger := logger;
-]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="ToLog" Id="{0937adbe-d5e3-4e76-944f-dcf1f4b30465}">
-      <Declaration><![CDATA[METHOD PRIVATE ToLog
-VAR_INPUT
-	Msg : STRING(255);
-	LogLevel : DWORD; // generic level, can be mapped to logging framework
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[IF logger = 0 THEN
-	RETURN;
-	
-END_IF
-
-logger.ToLog(Msg, LogLevel);]]></ST>
-      </Implementation>
-    </Method>
     <Method Name="TryMethodCall" Id="{5e373b87-5ead-4214-80c5-acfc0021609b}">
       <Declaration><![CDATA[METHOD TryMethodCall : BOOL
 VAR_INPUT
-	symbolHandle : ST_SymbolHandle;
-	adsTimeout : TIME := DEFAULT_ADS_TIMEOUT; // DEFAULT_ADS_TIMEOUT is T#5s;
+   symbolHandle : ST_SymbolHandle;
+   adsTimeout : TIME := DEFAULT_ADS_TIMEOUT; // DEFAULT_ADS_TIMEOUT is T#5s;
 END_VAR
 VAR_OUTPUT
-	status : I_Executable;
+   status : I_TaskState;
 END_VAR
 VAR
-	readWriteOpts : ST_AdsReadWriteOptions;
+   readWriteOpts : ST_AdsReadWriteOptions;
 END_VAR
 VAR CONSTANT
-	NO_HANDLE : DWORD := 0;
+   NO_HANDLE : DWORD := 0;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF Busy THEN
-	ToLog('Cannot TryGetHandle as Busy', LOG_WARNING);
-	RETURN;
-	
+   LogWarning('Cannot TryGetHandle as Busy');
+   RETURN;
+
 END_IF
 
 _symbolHandle := symbolHandle;
@@ -106,15 +78,15 @@ readWriteOpts.WriteParams := _symbolHandle.SymbolAddress.WriteRef;
 readWriteOpts.ReadParams := _symbolHandle.SymbolAddress.ReadRef;
 readWriteOpts.Timeout := adsTimeout;
 
-TryMethodCall := readWrite.TryRequest( readWriteOpts, status => status );]]></ST>
+TryMethodCall := readWrite.TryRequest(readWriteOpts, status => status);]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="T_CallMethod">
-      <LineId Id="412" Count="0" />
+      <LineId Id="467" Count="0" />
       <LineId Id="67" Count="0" />
     </LineIds>
     <LineIds Name="T_CallMethod.Busy.Get">
-      <LineId Id="8" Count="0" />
+      <LineId Id="12" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="T_CallMethod.Done.Get">
@@ -123,26 +95,8 @@ TryMethodCall := readWrite.TryRequest( readWriteOpts, status => status );]]></ST
     <LineIds Name="T_CallMethod.Error.Get">
       <LineId Id="2" Count="0" />
     </LineIds>
-    <LineIds Name="T_CallMethod.SetLogger">
-      <LineId Id="5" Count="0" />
-      <LineId Id="7" Count="0" />
-    </LineIds>
-    <LineIds Name="T_CallMethod.ToLog">
-      <LineId Id="5" Count="0" />
-      <LineId Id="11" Count="0" />
-      <LineId Id="9" Count="1" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="12" Count="0" />
-    </LineIds>
     <LineIds Name="T_CallMethod.TryMethodCall">
-      <LineId Id="47" Count="4" />
-      <LineId Id="64" Count="0" />
-      <LineId Id="52" Count="3" />
-      <LineId Id="61" Count="0" />
-      <LineId Id="63" Count="0" />
-      <LineId Id="62" Count="0" />
-      <LineId Id="56" Count="0" />
-      <LineId Id="66" Count="0" />
+      <LineId Id="177" Count="14" />
       <LineId Id="26" Count="0" />
     </LineIds>
   </POU>

@@ -1,86 +1,86 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4022.17">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="T_MdpReadCpuTemp" Id="{e0065e76-d33a-4e1b-a8bc-52fca8279681}" SpecialFunc="None">
     <Declaration><![CDATA[/// cyclically reads the  cpu temp at specified update period. Default is 500ms.
 {attribute 'contains_implicit_enum'}
 FUNCTION_BLOCK T_MdpReadCpuTemp
 VAR
-	/// local read                
-	amsNetId: STRING := '';
-	mdpAddr: ST_MDP_Addr;
-	updateTimer: TON := (PT := TIME#500ms);
-	readMdpElement: FB_MDP_ReadElement;
-	/// returned from MDP read element 
-	rawData: UINT;
-	_cpuTemp: INT;
-	{attribute 'implicit_enum_type' := ''}
-	state:(
-		mrctInit  := 0,     // initiate state machine (set parameters)
-		mrctReadCpuTemp,
-		mrctWaitForReadComplete,
-		mrctProcessCpuTemp
-	);   
+   /// local read                
+   amsNetId : STRING := '';
+   mdpAddr : ST_MDP_Addr;
+   updateTimer : TON := (PT := TIME#500ms);
+   readMdpElement : FB_MDP_ReadElement;
+   /// returned from MDP read element 
+   rawData : UINT;
+   _cpuTemp : INT;
+   {attribute 'implicit_enum_type' := ''}
+   state : (
+      mrctInit := 0, // initiate state machine (set parameters)
+      mrctReadCpuTemp,
+      mrctWaitForReadComplete,
+      mrctProcessCpuTemp
+   );
 END_VAR
 VAR CONSTANT
-	/// from IPC Diagnostics Manual V1.8, p63 
-	CPU_PROPERTIES_TABLE_NUMBER: BYTE := 1;
-	/// from IPC Diagnostics Manual V1.8, p63 
-	CPU_TEMP_SUB_INDEX_OF_CPU_PROPS_TABLE: BYTE := 3;
+   /// from IPC Diagnostics Manual V1.8, p63 
+   CPU_PROPERTIES_TABLE_NUMBER : BYTE := 1;
+   /// from IPC Diagnostics Manual V1.8, p63 
+   CPU_TEMP_SUB_INDEX_OF_CPU_PROPS_TABLE : BYTE := 3;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[CASE state OF
 
-	mrctInit : 
-		
-		// timer starts the read process.
-		state := 
-			SEL ( updateTimer.Q, state, mrctReadCpuTemp );
-		
-	mrctReadCpuTemp :    
-      
-		state := mrctWaitForReadComplete;  
-            
-	mrctWaitForReadComplete :    
+   mrctInit:
 
-		IF NOT readMdpElement.bBusy THEN
-			
-			state := mrctProcessCpuTemp;
-			
-		END_IF
-	
-	mrctProcessCpuTemp :              
+      // timer starts the read process.
+      state :=
+         SEL(updateTimer.Q, state, mrctReadCpuTemp);
 
-		IF NOT readMdpElement.bError THEN
-			MEMCPY( ADR( _cpuTemp ), ADR( rawData ), SIZEOF( rawData ) );
-			
-		END_IF
-		
-		state    := mrctInit; 
-		
+   mrctReadCpuTemp:
+
+      state := mrctWaitForReadComplete;
+
+   mrctWaitForReadComplete:
+
+      IF NOT readMdpElement.bBusy THEN
+
+         state := mrctProcessCpuTemp;
+
+      END_IF
+
+   mrctProcessCpuTemp:
+
+      IF NOT readMdpElement.bError THEN
+         MEMCPY(ADR(_cpuTemp), ADR(rawData), SIZEOF(rawData));
+
+      END_IF
+
+      state := mrctInit;
+
 ELSE
-	
-    state := mrctInit;   
-	 
-END_CASE 
 
-updateTimer( 
-	IN := state = mrctInit
+   state := mrctInit;
+
+END_CASE
+
+updateTimer(
+   IN := state = mrctInit
 );
-		
-mdpAddr.nArea := INT_TO_BYTE(eMDP_Area_ConfigArea); 
-mdpAddr.nTableId := CPU_PROPERTIES_TABLE_NUMBER;            
-mdpAddr.nSubIdx := CPU_TEMP_SUB_INDEX_OF_CPU_PROPS_TABLE;   
+
+mdpAddr.nArea := INT_TO_BYTE(eMDP_Area_ConfigArea);
+mdpAddr.nTableId := CPU_PROPERTIES_TABLE_NUMBER;
+mdpAddr.nSubIdx := CPU_TEMP_SUB_INDEX_OF_CPU_PROPS_TABLE;
 
 readMdpElement(
-	bExecute	:= state = mrctReadCpuTemp,               
-	eModuleType	:= E_MDP_ModuleType.eMDP_ModT_CPU,         
-	stMDP_Addr := mdpAddr,          
-	iModIdx := 0,                   
-	pDstBuf := ADR(rawData),         
-	cbDstBufLen := SIZEOF(rawData),  
-	sAmsNetId := amsNetId,        
-);  ]]></ST>
+   bExecute := state = mrctReadCpuTemp,
+   eModuleType := E_MDP_ModuleType.eMDP_ModT_CPU,
+   stMDP_Addr := mdpAddr,
+   iModIdx := 0,
+   pDstBuf := ADR(rawData),
+   cbDstBufLen := SIZEOF(rawData),
+   sAmsNetId := amsNetId,
+);]]></ST>
     </Implementation>
     <Property Name="Busy" Id="{fdefc8c5-2d51-4f3f-b7dc-6050cfc8022e}">
       <Declaration><![CDATA[{attribute 'monitoring' := 'variable'}
@@ -122,25 +122,25 @@ PROPERTY ErrorId : UDINT
       <Get Name="Get" Id="{416a38a4-c638-4f00-a26b-9c06c0826534}">
         <Declaration><![CDATA[]]></Declaration>
         <Implementation>
-          <ST><![CDATA[ErrorId := SEL( Busy, readMdpElement.nErrID, 0 );]]></ST>
+          <ST><![CDATA[ErrorId := SEL(Busy, readMdpElement.nErrID, 0);]]></ST>
         </Implementation>
       </Get>
     </Property>
     <Method Name="SetUpdateTimerValue" Id="{ec3d15a0-c102-46bf-a9be-641e6336c5c8}">
-      <Declaration><![CDATA[METHOD SetUpdateTimerValue 
-VAR_INPUT	
-	UpdatePeriod: TIME;
+      <Declaration><![CDATA[METHOD SetUpdateTimerValue
+VAR_INPUT
+   UpdatePeriod : TIME;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF UpdatePeriod > T#1MS THEN
-	THIS^.updateTimer.PT := UpdatePeriod;
+   THIS^.updateTimer.PT := UpdatePeriod;
 END_IF
 ]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="T_MdpReadCpuTemp">
-      <LineId Id="3" Count="50" />
+      <LineId Id="260" Count="50" />
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="T_MdpReadCpuTemp.Busy.Get">
@@ -156,7 +156,7 @@ END_IF
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="T_MdpReadCpuTemp.SetUpdateTimerValue">
-      <LineId Id="3" Count="2" />
+      <LineId Id="28" Count="2" />
       <LineId Id="2" Count="0" />
     </LineIds>
   </POU>

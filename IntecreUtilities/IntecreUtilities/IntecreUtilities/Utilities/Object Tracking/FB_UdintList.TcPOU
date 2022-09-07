@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="FB_UdintList" Id="{61129f84-6c4b-4e65-842c-5f111d53a85c}" SpecialFunc="None">
     <Declaration><![CDATA[// List of UDINTs.
 FUNCTION_BLOCK FB_UdintList
 VAR
-	List : ARRAY[ 0 .. GVL_List.LIST_SIZE - 1 ] OF UDINT; // hold list
-	_Count : UDINT := 0; // number of items.
+   List : ARRAY[0..GVL_List.LIST_SIZE - 1] OF UDINT; // hold list
+   _Count : UDINT := 0; // number of items.
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -15,14 +15,14 @@ END_VAR
       <Declaration><![CDATA[// Add item to list. TRUE if successful. 
 METHOD PUBLIC AddItem : BOOL
 VAR_INPUT
-	Item : UDINT; // item to add.
+   Item : UDINT; // item to add.
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF _Count < GVL_List.LIST_SIZE THEN
-	List[_Count] := Item; // list is zero indexed, so number of items points at next free space.
-	_Count := _Count + 1; 
-	AddItem := TRUE;
+   List[_Count] := Item; // list is zero indexed, so number of items points at next free space.
+   _Count := _Count + 1;
+   AddItem := TRUE;
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -38,7 +38,7 @@ _Count := 0;]]></ST>
       <Declaration><![CDATA[// TRUE if sItem is in FB_List.
 METHOD PUBLIC Contains : BOOL
 VAR_INPUT
-	Item : UDINT; // Item to check.
+   Item : UDINT; // Item to check.
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[Contains := FindIndex(Item) >= 0;]]></ST>
@@ -58,20 +58,21 @@ PROPERTY PUBLIC Count : UDINT]]></Declaration>
     <Method Name="FindIndex" Id="{d36aca7f-5d3e-44c1-b668-4ccb65770ee0}">
       <Declaration><![CDATA[METHOD PUBLIC FindIndex : INT
 VAR_INPUT
-	Item : UDINT; // Item to check.
+   Item : UDINT; // Item to check.
 END_VAR
 VAR
-	i : UINT := 0;
+   i : UINT := 0;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[FindIndex := -1;
 i := 0;
-WHILE ( (FindIndex < 0) AND (i < _Count) ) DO
-	
-	FindIndex := SEL(Item = List[i], FindIndex, TO_INT(i) ); // if it matches, return the position.
-	i := i + 1;
-	
+
+WHILE ((FindIndex < 0) AND (i < _Count)) DO
+
+   FindIndex := SEL(Item = List[i], FindIndex, TO_INT(i)); // if it matches, return the position.
+   i := i + 1;
+
 END_WHILE]]></ST>
       </Implementation>
     </Method>
@@ -79,31 +80,31 @@ END_WHILE]]></ST>
       <Declaration><![CDATA[// Return item in list at index position. Returns empty string if invalid index.
 METHOD PUBLIC GetIndex : UDINT
 VAR_INPUT
-	Index : UDINT;
+   Index : UDINT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[THIS^.TryGetIndex(Index,  GetIndex);]]></ST>
+        <ST><![CDATA[THIS^.TryGetIndex(Index, GetIndex);]]></ST>
       </Implementation>
     </Method>
     <Method Name="RemoveIndex" Id="{a8897e84-e02c-4c96-9331-58101fc33cdd}">
       <Declaration><![CDATA[//Remove the specified index. Shuffle remaining so list is intact.
 METHOD PUBLIC RemoveIndex : BOOL
 VAR_INPUT
-	Index : UDINT;
+   Index : UDINT;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF Index >= _Count THEN // invalid index request.
-	RETURN;
+   RETURN;
 END_IF
 
 IF Index < _Count - 1 THEN // If Index = _Count -1, last two lines sufficient.
 
-	MEMMOVE( 
-		destAddr := ADR( List[Index] ), 
-		srcAddr := ADR( List[Index + 1] ), 
-		n := SIZEOF(List[0]) * (_Count - Index - 1)
-	);
-	
+   MEMMOVE(
+      destAddr := ADR(List[Index]),
+      srcAddr := ADR(List[Index + 1]),
+      n := SIZEOF(List[0]) * (_Count - Index - 1)
+   );
+
 END_IF
 
 RemoveIndex := TRUE;
@@ -116,17 +117,17 @@ _Count := _Count - 1; // reduce count.]]></ST>
       <Declaration><![CDATA[// TRUE if successful and list item in sItem
 METHOD PUBLIC TryGetIndex : BOOL
 VAR_INPUT
-	Index : UDINT;
+   Index : UDINT;
 END_VAR
 VAR_IN_OUT
-	Item : UDINT;
+   Item : UDINT;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF Index < _Count THEN
-	TryGetIndex := TRUE;
-	Item := List[Index];
+   TryGetIndex := TRUE;
+   Item := List[Index];
 ELSE
-	Item := 0;
+   Item := 0;
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -134,13 +135,11 @@ END_IF]]></ST>
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_UdintList.AddItem">
-      <LineId Id="8" Count="0" />
-      <LineId Id="10" Count="1" />
-      <LineId Id="9" Count="0" />
+      <LineId Id="40" Count="3" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_UdintList.Clear">
-      <LineId Id="7" Count="0" />
+      <LineId Id="14" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_UdintList.Contains">
@@ -150,27 +149,18 @@ END_IF]]></ST>
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_UdintList.FindIndex">
-      <LineId Id="6" Count="6" />
+      <LineId Id="57" Count="7" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_UdintList.GetIndex">
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_UdintList.RemoveIndex">
-      <LineId Id="8" Count="4" />
-      <LineId Id="16" Count="0" />
-      <LineId Id="24" Count="3" />
-      <LineId Id="36" Count="0" />
-      <LineId Id="17" Count="0" />
-      <LineId Id="38" Count="2" />
-      <LineId Id="14" Count="0" />
-      <LineId Id="37" Count="0" />
+      <LineId Id="91" Count="16" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_UdintList.TryGetIndex">
-      <LineId Id="10" Count="0" />
-      <LineId Id="12" Count="2" />
-      <LineId Id="11" Count="0" />
+      <LineId Id="53" Count="4" />
       <LineId Id="5" Count="0" />
     </LineIds>
   </POU>

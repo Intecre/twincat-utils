@@ -1,96 +1,70 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="TryStringToLreal" Id="{2ad12ec6-cb3e-4f28-85e9-3cc8749a0d37}" SpecialFunc="None">
     <Declaration><![CDATA[// Returns TRUE if possible. sVal will hold value if passes.
-FUNCTION TryStringToLreal : BOOL 
+FUNCTION TryStringToLreal : BOOL
 VAR_INPUT
-	sStringToParse : STRING; // String to try
+   sStringToParse : STRING; // String to try
 END_VAR
 VAR_IN_OUT
-	sVal : LREAL; // 0.0 (zero) if fails, parsed value if passes.
+   sVal : LREAL; // 0.0 (zero) if fails, parsed value if passes.
 END_VAR
 VAR
-	i : INT;
-	n : INT; // position of full stop (if at all).
-	intPart : DINT; // integer part of the number.
-	decPart : UDINT; // decimal part of the number.
-	decPartAsLreal : LREAL;
-	decimalPlaces : INT; // number of dps.
-	isMinus : BOOL;
+   i : INT;
+   n : INT; // position of full stop (if at all).
+   intPart : DINT; // integer part of the number.
+   decPart : UDINT; // decimal part of the number.
+   decPartAsLreal : LREAL;
+   decimalPlaces : INT; // number of dps.
+   isMinus : BOOL;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[IF LEN(sStringToParse) > 0 THEN
 
-	FOR i := 0 TO LEN(sStringToParse) - 1 DO	
-		
-		IF i = 0 AND_THEN sStringToParse[i] = 45 THEN // accept "minus" sign for first digit
-			isMinus := TRUE;
-		ELSIF i = 1 AND isMinus THEN // if first char is "-", second must be digit.
-			IF NOT CharIsNumberOrPeriod( sStringToParse[i] ) THEN
-				sVal := 0;
-				RETURN;
-			END_IF
-		ELSIF NOT CharIsNumberOrPeriod( sStringToParse[i] ) THEN
-			sVal := 0;
-			RETURN;
-		END_IF	
-	END_FOR
-	
-	n := FIND(sStringToParse, '.');
-	
-	IF n > 0 THEN // full stop is in the string.
-		// get integer part.
-		intPart := STRING_TO_DINT(LEFT(sStringToParse, n - 1));
-		decimalPlaces := LEN(sStringToParse) - n;
-		// get decimal part as integer.
-		decPart := STRING_TO_UDINT( RIGHT(sStringToParse, decimalPlaces) );
-		// convert to LREAL, includng rolling decimal places.
-		decPartAsLreal := UDINT_TO_LREAL(decPart)/EXPT(10,decimalPlaces);
-		// handle sign change.
-		IF isMinus THEN
-			decPartAsLreal := decPartAsLreal * -1;
-		END_IF
-		
-		//combine them
-		sVal := DINT_TO_LREAL(intPart);
-		sVal := sVal + decPartAsLreal;
-	ELSE
-		sVal := STRING_TO_LREAL(sStringToParse);
-	END_IF
-	
-	TryStringToLreal := TRUE;
-	
+   FOR i := 0 TO LEN(sStringToParse) - 1 DO
+
+      IF i = 0 AND_THEN sStringToParse[i] = 45 THEN // accept "minus" sign for first digit
+         isMinus := TRUE;
+      ELSIF i = 1 AND isMinus THEN // if first char is "-", second must be digit.
+         IF NOT CharIsNumberOrPeriod(sStringToParse[i]) THEN
+            sVal := 0;
+            RETURN;
+         END_IF
+      ELSIF NOT CharIsNumberOrPeriod(sStringToParse[i]) THEN
+         sVal := 0;
+         RETURN;
+      END_IF
+   END_FOR
+
+   n := FIND(sStringToParse, '.');
+
+   IF n > 0 THEN // full stop is in the string.
+      // get integer part.
+      intPart := STRING_TO_DINT(LEFT(sStringToParse, n - 1));
+      decimalPlaces := LEN(sStringToParse) - n;
+      // get decimal part as integer.
+      decPart := STRING_TO_UDINT(RIGHT(sStringToParse, decimalPlaces));
+      // convert to LREAL, includng rolling decimal places.
+      decPartAsLreal := UDINT_TO_LREAL(decPart) / EXPT(10, decimalPlaces);
+
+      // handle sign change.
+      IF isMinus THEN
+         decPartAsLreal := decPartAsLreal * -1;
+      END_IF
+
+      //combine them
+      sVal := DINT_TO_LREAL(intPart);
+      sVal := sVal + decPartAsLreal;
+   ELSE
+      sVal := STRING_TO_LREAL(sStringToParse);
+   END_IF
+
+   TryStringToLreal := TRUE;
+
 END_IF]]></ST>
     </Implementation>
     <LineIds Name="TryStringToLreal">
-      <LineId Id="65" Count="1" />
-      <LineId Id="119" Count="0" />
-      <LineId Id="107" Count="0" />
-      <LineId Id="113" Count="0" />
-      <LineId Id="121" Count="2" />
-      <LineId Id="125" Count="0" />
-      <LineId Id="124" Count="0" />
-      <LineId Id="67" Count="0" />
-      <LineId Id="108" Count="0" />
-      <LineId Id="69" Count="2" />
-      <LineId Id="88" Count="0" />
-      <LineId Id="72" Count="0" />
-      <LineId Id="89" Count="0" />
-      <LineId Id="73" Count="0" />
-      <LineId Id="90" Count="0" />
-      <LineId Id="74" Count="1" />
-      <LineId Id="91" Count="0" />
-      <LineId Id="76" Count="0" />
-      <LineId Id="131" Count="0" />
-      <LineId Id="127" Count="0" />
-      <LineId Id="132" Count="0" />
-      <LineId Id="128" Count="2" />
-      <LineId Id="133" Count="0" />
-      <LineId Id="92" Count="0" />
-      <LineId Id="84" Count="1" />
-      <LineId Id="77" Count="0" />
-      <LineId Id="86" Count="1" />
-      <LineId Id="80" Count="3" />
+      <LineId Id="282" Count="41" />
       <LineId Id="7" Count="0" />
     </LineIds>
   </POU>

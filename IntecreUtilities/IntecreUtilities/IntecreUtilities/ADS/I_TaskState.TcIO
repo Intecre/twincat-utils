@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
-  <Itf Name="I_Executable" Id="{7d8773d5-e876-4f78-9905-c5d210f35e64}">
-    <Declaration><![CDATA[INTERFACE I_Executable
+  <Itf Name="I_TaskState" Id="{7d8773d5-e876-4f78-9905-c5d210f35e64}">
+    <Declaration><![CDATA[INTERFACE I_TaskState
 ]]></Declaration>
     <Property Name="Busy" Id="{069b28cd-cbe3-4765-b548-53c2c1d9227c}">
       <Declaration><![CDATA[PROPERTY Busy : BOOL]]></Declaration>

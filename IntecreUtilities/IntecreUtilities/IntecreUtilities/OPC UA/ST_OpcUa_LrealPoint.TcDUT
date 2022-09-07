@@ -1,13 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
-  <DUT Name="stEL3058_Channel" Id="{538fc2bc-f8d9-43cb-bcb0-ccf5729b907a}">
+  <DUT Name="ST_OpcUa_LrealPoint" Id="{a5014129-d7e3-4112-8513-2048ff39cac2}">
     <Declaration><![CDATA[{attribute 'pack_mode' := '1'}
 TYPE
-   stEL3058_Channel :
-   STRUCT
-      Status AT %I* : stEL3058_ChannelStatus;
-      Value AT %I* : WORD;
-   END_STRUCT
+  ST_OpcUa_LrealPoint EXTENDS ST_OpcUa_PointBase :
+  STRUCT
+    Value : LREAL;
+  END_STRUCT
 END_TYPE
 ]]></Declaration>
   </DUT>

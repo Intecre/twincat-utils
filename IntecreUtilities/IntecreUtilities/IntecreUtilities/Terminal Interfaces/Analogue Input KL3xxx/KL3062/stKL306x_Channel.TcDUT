@@ -2,12 +2,13 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <DUT Name="stKL306x_Channel" Id="{a08c09fb-1429-486d-b2a3-d327c6899174}">
     <Declaration><![CDATA[{attribute 'pack_mode' := '2'}
-TYPE stKL306x_Channel:
-STRUCT
-	State 	AT %I* : stKL306x_ChannelStatus;	 
-	DataIn 	AT %I* : INT;  
-END_STRUCT
-END_TYPE;
+TYPE
+   stKL306x_Channel :
+   STRUCT
+      State AT %I* : stKL306x_ChannelStatus;
+      DataIn AT %I* : INT;
+   END_STRUCT
+END_TYPE
 ]]></Declaration>
   </DUT>
 </TcPlcObject>

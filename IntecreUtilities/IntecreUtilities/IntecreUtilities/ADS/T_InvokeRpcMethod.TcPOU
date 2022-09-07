@@ -1,22 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="T_InvokeRpcMethod" Id="{61e4e0cc-2491-4f76-aa9c-716399cb6a5e}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK T_InvokeRpcMethod IMPLEMENTS I_Executable;
+    <Declaration><![CDATA[FUNCTION_BLOCK T_InvokeRpcMethod EXTENDS T_NamedBase IMPLEMENTS I_TaskState;
 VAR
-   logger : I_Logger;
    getHandle : T_GetHandle;
    callMethod : T_CallMethod;
    releaseHandle : T_ReleaseHandle;
    _symbolHandle : ST_SymbolHandle;
-	
-	{attribute 'to_String'}
+
+   {attribute 'to_String'}
    state, prevState : (
       IDLE,
       GET_HANDLE,
       CALL_METHOD,
       RELEASE_HANDLE,
-		DONE_STATE,
-		ERROR_STATE
+      DONE_STATE,
+      ERROR_STATE
    ) := IDLE;
 END_VAR
 
@@ -30,18 +29,22 @@ END_VAR
     <Implementation>
       <ST><![CDATA[CASE state OF
    IDLE:
-		IsEntryActionAndLog();	
+      IsEntryActionAndLog();
 
    GET_HANDLE:
-	
+
       IF IsEntryActionAndLog() THEN
          getHandle.TryGetHandle(_symbolHandle, DEFAULT_ADS_TIMEOUT);
       ELSE
-			
-			IF getHandle.Error THEN
-				state := ERROR_STATE;
+
+         IF getHandle.Error THEN
+            LogError(CONCAT('Error gettng symbol handle for method ', _symbolHandle.SymbolAddress.SymbolName));
+            state := ERROR_STATE;
+
          ELSIF getHandle.Done THEN
+            LogDebug(CONCAT('Get handle success for method ', _symbolHandle.SymbolAddress.SymbolName));
             state := CALL_METHOD;
+
          END_IF
 
       END_IF
@@ -53,8 +56,11 @@ END_VAR
 
       ELSE
          IF callMethod.Error THEN
-				state := ERROR_STATE;
+            LogError(CONCAT('Error calling method ', _symbolHandle.SymbolAddress.SymbolName));
+            state := ERROR_STATE;
+
          ELSIF callMethod.Done THEN
+            LogDebug(CONCAT('Call method done for  ', _symbolHandle.SymbolAddress.SymbolName));
             state := RELEASE_HANDLE;
          END_IF
 
@@ -67,18 +73,26 @@ END_VAR
 
       ELSE
          IF releaseHandle.Error THEN
-				state := ERROR_STATE;
+            LogError(CONCAT('Error releasing handle for ', _symbolHandle.SymbolAddress.SymbolName));
+            state := ERROR_STATE;
+
          ELSIF releaseHandle.Done THEN
+            LogDebug(CONCAT('Release handle done for  ', _symbolHandle.SymbolAddress.SymbolName));
             state := DONE_STATE;
+
          END_IF
 
       END_IF
-		
-	 DONE_STATE:
+
+   DONE_STATE:
       IsEntryActionAndLog();
 
    ERROR_STATE:
-      IsEntryActionAndLog();
+
+      IF IsEntryActionAndLog() THEN
+         LogError(CONCAT('Error during InvokeMethod of ', _symbolHandle.SymbolAddress.SymbolName));
+
+      END_IF
 
 END_CASE
 
@@ -92,10 +106,10 @@ releaseHandle();]]></ST>
       <Get Name="Get" Id="{31d184c0-f09b-4316-9bad-6261f4eebd55}">
         <Declaration><![CDATA[]]></Declaration>
         <Implementation>
-          <ST><![CDATA[Busy := 
-	NOT Done 
-	AND NOT Error 
-	AND state <> IDLE;
+          <ST><![CDATA[Busy :=
+   NOT Done
+   AND NOT Error
+   AND state <> IDLE;
 ]]></ST>
         </Implementation>
       </Get>
@@ -120,7 +134,7 @@ releaseHandle();]]></ST>
         </Implementation>
       </Get>
     </Property>
-    <Method Name="IsEntryActionAndLog" Id="{08b65b38-e3f4-4857-b621-2bcdf600d448}">
+    <Method Name="IsEntryActionAndLog" Id="{d8187eaa-c32c-484b-98f3-752337347e09}">
       <Declaration><![CDATA[METHOD PRIVATE IsEntryActionAndLog : BOOL
 ]]></Declaration>
       <Implementation>
@@ -130,64 +144,31 @@ IF NOT IsEntryActionAndLog THEN
    RETURN;
 END_IF
 
-// useful to debug state transitions. to avoid "chatter" LogFramework should have runtime log level switches 
-// i.e. https://github.com/Intecre/twincat-utils/tree/master/IntecreUtilities/IntecreUtilities/IntecreUtilities/Utilities/Logger
-// see also https://github.com/Intecre/twincat-utils/blob/master/IntecreUtilities/IntecreUtilities/IntecreUtilities/Utilities/T_NamedBase.TcPOU
-
-ToLog(
-   Msg := CONCAT(CONCAT(TO_STRING(prevState), ' transition to state '), TO_STRING(state)),
-   LogLevel := LOG_DEBUG
+LogDebug(
+   Msg := F_Concat3(TO_STRING(prevState), ' transition to state ', TO_STRING(state))
 );
 
-prevState := state;]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="SetLogger" Id="{981f1e48-10c0-415f-b5f9-86b8749e86af}">
-      <Declaration><![CDATA[METHOD PUBLIC SetLogger
-VAR_INPUT
-	logger : I_Logger;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[THIS^.logger := logger;
-getHandle.SetLogger(logger);
-callMethod.SetLogger(logger);
-releaseHandle.SetLogger(logger);]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="ToLog" Id="{f130daa6-1ed6-4b19-8478-ffb2844774b6}">
-      <Declaration><![CDATA[METHOD PRIVATE ToLog
-VAR_INPUT
-	Msg : STRING(255);
-	LogLevel : DWORD; // generic level, can be mapped to logging framework
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[IF logger = 0 THEN
-	RETURN;
-	
-END_IF
-
-logger.ToLog(Msg, LogLevel);]]></ST>
+prevState := state;
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="TryInvokeMethodCall" Id="{d6e47d1f-b9b8-482a-84db-5235826b8885}">
       <Declaration><![CDATA[METHOD TryInvokeMethodCall : BOOL
 VAR_INPUT
-	symbolHandle : ST_SymbolHandle;
-	adsTimeout : TIME := DEFAULT_ADS_TIMEOUT; // DEFAULT_ADS_TIMEOUT is T#5s;
+   symbolHandle : ST_SymbolHandle;
+   adsTimeout : TIME := DEFAULT_ADS_TIMEOUT; // DEFAULT_ADS_TIMEOUT is T#5s;
 END_VAR
 VAR_OUTPUT
-	status : I_Executable;
+   status : I_TaskState;
 END_VAR
 VAR CONSTANT
-	NO_HANDLE : DWORD := 0;
+   NO_HANDLE : DWORD := 0;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF Busy THEN
-	ToLog('Cannot TryGetHandle as Busy', LOG_WARNING);
-	RETURN;
-	
+   LogWarning('Cannot TryGetHandle as Busy');
+   RETURN;
+
 END_IF
 
 _symbolHandle := symbolHandle;
@@ -198,31 +179,11 @@ TryInvokeMethodCall := TRUE;]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="T_InvokeRpcMethod">
-      <LineId Id="615" Count="2" />
-      <LineId Id="640" Count="1" />
-      <LineId Id="702" Count="0" />
-      <LineId Id="642" Count="0" />
-      <LineId Id="645" Count="1" />
-      <LineId Id="701" Count="0" />
-      <LineId Id="699" Count="1" />
-      <LineId Id="647" Count="9" />
-      <LineId Id="658" Count="1" />
-      <LineId Id="703" Count="1" />
-      <LineId Id="660" Count="9" />
-      <LineId Id="671" Count="1" />
-      <LineId Id="705" Count="1" />
-      <LineId Id="673" Count="4" />
-      <LineId Id="683" Count="0" />
-      <LineId Id="685" Count="3" />
-      <LineId Id="684" Count="0" />
-      <LineId Id="678" Count="4" />
+      <LineId Id="1126" Count="70" />
       <LineId Id="151" Count="0" />
     </LineIds>
     <LineIds Name="T_InvokeRpcMethod.Busy.Get">
-      <LineId Id="2" Count="0" />
-      <LineId Id="7" Count="0" />
-      <LineId Id="6" Count="0" />
-      <LineId Id="8" Count="0" />
+      <LineId Id="21" Count="3" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="T_InvokeRpcMethod.Done.Get">
@@ -232,27 +193,11 @@ TryInvokeMethodCall := TRUE;]]></ST>
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="T_InvokeRpcMethod.IsEntryActionAndLog">
-      <LineId Id="47" Count="15" />
-    </LineIds>
-    <LineIds Name="T_InvokeRpcMethod.SetLogger">
-      <LineId Id="5" Count="0" />
-      <LineId Id="8" Count="1" />
-      <LineId Id="7" Count="0" />
-    </LineIds>
-    <LineIds Name="T_InvokeRpcMethod.ToLog">
-      <LineId Id="5" Count="0" />
+      <LineId Id="75" Count="10" />
       <LineId Id="11" Count="0" />
-      <LineId Id="9" Count="1" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="12" Count="0" />
     </LineIds>
     <LineIds Name="T_InvokeRpcMethod.TryInvokeMethodCall">
-      <LineId Id="47" Count="4" />
-      <LineId Id="64" Count="0" />
-      <LineId Id="52" Count="0" />
-      <LineId Id="80" Count="0" />
-      <LineId Id="82" Count="0" />
-      <LineId Id="56" Count="0" />
+      <LineId Id="163" Count="9" />
       <LineId Id="26" Count="0" />
     </LineIds>
   </POU>

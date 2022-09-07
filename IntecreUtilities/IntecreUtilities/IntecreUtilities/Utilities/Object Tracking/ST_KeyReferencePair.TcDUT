@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <DUT Name="ST_KeyReferencePair" Id="{9d97e60a-2e9c-48d4-962f-a5efb98bf77e}">
-    <Declaration><![CDATA[TYPE ST_KeyReferencePair :
-STRUCT
-	Key : T_MaxString;
-	Ref : T_Arg;
-END_STRUCT
+    <Declaration><![CDATA[TYPE
+   ST_KeyReferencePair :
+   STRUCT
+      Key : T_MaxString;
+      Ref : T_Arg;
+   END_STRUCT
 END_TYPE
 ]]></Declaration>
   </DUT>

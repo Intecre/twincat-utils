@@ -1,22 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <DUT Name="stKL306x_ChannelStatus" Id="{1e39f747-96b4-45aa-b1cb-cc2a68ffd10c}">
-    <Declaration><![CDATA[//https://infosys.beckhoff.com/english.php?content=../content/1033/kl331x_kl3302/4368512395.html&id=7403995456365736182
-{attribute 'pack_mode' := '1'}
-TYPE stKL306x_ChannelStatus:
-STRUCT
-	Underrange 	: BIT;
-	Overrange 	: BIT;
-	Limit1Bit_0 : BIT;
-	Limit1Bit_1 : BIT;
-	Limit2Bit_0 : BIT;
-	Limit2Bit_1 : BIT;
-	Error		: BIT;
-	{attribute 'hide'}	
-	pack_0_7	: BIT;
-	{attribute 'hide'}
-END_STRUCT
-END_TYPE;
+    <Declaration><![CDATA[{attribute 'pack_mode' := '1'}
+TYPE
+   stKL306x_ChannelStatus :
+   STRUCT
+      Underrange : BIT;
+      Overrange : BIT;
+      Limit1Bit_0 : BIT;
+      Limit1Bit_1 : BIT;
+      Limit2Bit_0 : BIT;
+      Limit2Bit_1 : BIT;
+      Error : BIT;
+      {attribute 'hide'}
+      pack_0_7 : BIT;
+   END_STRUCT
+END_TYPE
 ]]></Declaration>
   </DUT>
 </TcPlcObject>

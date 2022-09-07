@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4020.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <GVL Name="CollectionParameters" Id="{86369202-86a7-4fbe-8930-f6f12b29a3f7}" ParameterList="True">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 VAR_GLOBAL CONSTANT
-	MAX_BYTE_SIZE : UDINT := 1000;
+   MAX_BYTE_SIZE : UDINT := 1000;
 END_VAR]]></Declaration>
   </GVL>
 </TcPlcObject>
