@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <DUT Name="ST_OpcUAServer_Control" Id="{ee232699-257a-465a-8836-78a4b6cddef0}">
+    <Declaration><![CDATA[{attribute 'pack_mode' := '1'}
+TYPE
+  ST_OpcUAServer_Control :
+  STRUCT
+    ResetStm : BIT; // resetting client by setting bit true
+    Execute : BIT; // in triggered mode set bit true to execute a read/write operation
+    WriteEnable : BIT; //enable client wide write operations by setting bit to true
+    {attribute 'hide'}
+    bit_0_3 : BIT;
+    {attribute 'hide'}
+    bit_0_4 : BIT;
+    {attribute 'hide'}
+    bit_0_5 : BIT;
+    {attribute 'hide'}
+    bit_0_6 : BIT;
+    {attribute 'hide'}
+    bit_0_7 : BIT;
+    {attribute 'hide'}
+    _dummy_byte_1 : BYTE; 
+  END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

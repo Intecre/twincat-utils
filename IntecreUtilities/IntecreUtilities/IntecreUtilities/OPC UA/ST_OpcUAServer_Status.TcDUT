@@ -5,8 +5,8 @@
 TYPE
   ST_OpcUAServer_Status :
   STRUCT
-    Connected : BIT;
-    ReadBusy : BIT;
+    Connected : BIT; // connection status 1 = TRUE | 0 = FALSE
+    ReadBusy : BIT; // only active in triggered mode 1 = TRUE | 0 = FALSE
     {attribute 'hide'}
     bit_0_2 : BIT;
     {attribute 'hide'}
