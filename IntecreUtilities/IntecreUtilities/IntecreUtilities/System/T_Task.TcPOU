@@ -230,5 +230,20 @@ TimeString := temp;]]></ST>
         </Implementation>
       </Get>
     </Property>
+    <Property Name="TimeString_1" Id="{86346e14-dc31-4d14-80c3-9ec12ab6ed96}" FolderPath="Properties\">
+      <Declaration><![CDATA[PROPERTY TimeString_1 : STRING]]></Declaration>
+      <Get Name="Get" Id="{21fd6666-0ff7-4cd4-acc6-f988456cc04f}">
+        <Declaration><![CDATA[VAR
+   temp : STRING;
+END_VAR]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[// remove the leading date 2018-07-30_09-23-47
+temp := DELETE(TO_STRING(DateTimeString), 11, 1);
+
+// 09-23-47
+TimeString := temp;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
   </POU>
 </TcPlcObject>

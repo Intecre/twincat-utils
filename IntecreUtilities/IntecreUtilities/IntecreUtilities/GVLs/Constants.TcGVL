@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <GVL Name="Constants" Id="{eef88d9a-bb0c-4a22-9393-3a929d0f7a35}">
+    <Declaration><![CDATA[VAR_GLOBAL
+  NULL : PVOID := 0;
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

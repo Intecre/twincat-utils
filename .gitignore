@@ -8,3 +8,5 @@
 *.bak
 *LineIDs.dbg
 *.tmcRefac
+/IntecreUtilities/.vs/*
+/Enable-Ports.ps1

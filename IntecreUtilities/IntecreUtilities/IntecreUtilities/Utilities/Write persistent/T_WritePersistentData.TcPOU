@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1">
   <POU Name="T_WritePersistentData" Id="{aa72b121-3a3c-4ff2-ba14-086414842741}" SpecialFunc="None">
     <Declaration><![CDATA[/// default is port 851, every 10s.
 FUNCTION_BLOCK T_WritePersistentData
@@ -8,12 +8,14 @@ VAR
    writePeriod : TIME := TIME#10s0ms;
    adsPort : UINT := 851;
    writePersistTimer : TON;
+   _log : T_NamedBase;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[// periodic force write of persistant variables.
 writePersistTimer(IN := NOT writePersistTimer.Q, PT := writePeriod);
-writePersistent(PORT := adsPort, START := writePersistTimer.Q);]]></ST>
+writePersistent(PORT := adsPort, START := writePersistTimer.Q);
+]]></ST>
     </Implementation>
     <Method Name="SetConfig" Id="{e23e2b4c-1218-4ac3-a464-3a4fddad8077}">
       <Declaration><![CDATA[METHOD SetConfig : BOOL
@@ -28,12 +30,5 @@ END_VAR
         <ST><![CDATA[]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="T_WritePersistentData">
-      <LineId Id="51" Count="1" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="T_WritePersistentData.SetConfig">
-      <LineId Id="2" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>
