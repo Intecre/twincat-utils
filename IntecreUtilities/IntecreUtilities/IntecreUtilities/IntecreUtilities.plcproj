@@ -42,8 +42,9 @@
     <SelectedLibraryCategories>
       <Id>{d7292350-a6c3-11e8-98d0-529269fb1459}</Id>
     </SelectedLibraryCategories>
-    <Description>3.4.2.0 - recovered from another lib.
+    <Description>3.4.3.0 - corrects Task.TimeString bug
 
+3.4.2.0 - recovered from another lib.
 3.4.1.0 - adds attribute to_string to E_LogSeverity
 3.4.0.0 - adds Constants GVL with NULL 
 3.2.2.2 - Write points added
@@ -57,7 +58,7 @@
 3.1.5.0 Adding KL33xx to Terminal Interfaces
 3.1.4.0 Adding TryStringToDint
 3.1.3.0 Adding ObjectName to T_NamedBase</Description>
-    <ProjectVersion>3.4.2.0</ProjectVersion>
+    <ProjectVersion>3.4.3.0</ProjectVersion>
     <POUsForPropertyAccessIncluded>true</POUsForPropertyAccessIncluded>
     <GlobalVersionStructureIncluded>true</GlobalVersionStructureIncluded>
   </PropertyGroup>
