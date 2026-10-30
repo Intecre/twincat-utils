@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="TryStringToWord_Tests" Id="{6bcaefd3-c0aa-4eb3-bd3c-e89753b7ccf4}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK TryStringToWord_Tests EXTENDS TcUnit.FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_ParsesValue();
+Test_ParsesMaxValue();
+Test_RejectsOverflow();
+Test_RejectsLetters();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_ParsesValue" Id="{ea107314-bc5c-44b6-a6f5-1d20f1450630}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ParsesValue
+VAR
+  value : WORD;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// act
+ok := TryStringToWord('7', value);
+
+// assert
+AssertTrue(Condition := ok, Message := '7 parses');
+AssertEquals_WORD(Expected := 7, Actual := value, Message := 'parsed value');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ParsesMaxValue" Id="{9030ab3a-e2e2-45af-aab3-3cf6b0ddb9d7}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ParsesMaxValue
+VAR
+  value : WORD;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// act
+ok := TryStringToWord('65535', value);
+
+// assert
+AssertTrue(Condition := ok, Message := 'WORD max parses');
+AssertEquals_WORD(Expected := 65535, Actual := value, Message := 'parsed value');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RejectsOverflow" Id="{d93db104-2a52-4ae3-a76e-f34f129cacaf}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RejectsOverflow
+VAR
+  value : WORD;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+value := 99;
+
+// act
+ok := TryStringToWord('65536', value);
+
+// assert
+AssertFalse(Condition := ok, Message := '65536 does not fit a WORD');
+AssertEquals_WORD(Expected := 0, Actual := value, Message := 'value cleared on failure');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RejectsLetters" Id="{48ed21c7-1e93-4d0d-98c6-677348c66d35}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RejectsLetters
+VAR
+  value : WORD;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// act
+ok := TryStringToWord('abc', value);
+
+// assert
+AssertFalse(Condition := ok, Message := 'letters rejected');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

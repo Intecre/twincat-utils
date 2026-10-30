@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="F_Concat_Tests" Id="{d21c9e8d-b8fd-4e4a-b543-1180e84d90a6}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK F_Concat_Tests EXTENDS TcUnit.FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_Concat3();
+Test_Concat4();
+Test_Concat5();
+Test_Concat6();
+Test_Concat7();
+Test_EmptyPartsAreSkipped();
+Test_ResultLimitedToMaxString();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_Concat3" Id="{2441c1cd-bd4d-44c6-a97f-c8219faf81d1}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_Concat3
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertEquals_STRING(Expected := 'abc', Actual := F_Concat3('a', 'b', 'c'), Message := 'three parts joined');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Concat4" Id="{5eb7d0fd-c52b-4901-a872-3a8507937325}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_Concat4
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertEquals_STRING(Expected := 'abcd', Actual := F_Concat4('a', 'b', 'c', 'd'), Message := 'four parts joined');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Concat5" Id="{7883ccc4-0d28-4ae2-b09e-287e348d4b43}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_Concat5
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertEquals_STRING(Expected := 'abcde', Actual := F_Concat5('a', 'b', 'c', 'd', 'e'), Message := 'five parts joined');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Concat6" Id="{284ee546-71f7-4740-83e4-3ac8c6281749}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_Concat6
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertEquals_STRING(Expected := 'abcdef', Actual := F_Concat6('a', 'b', 'c', 'd', 'e', 'f'), Message := 'six parts joined');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Concat7" Id="{6f7ae99e-475f-4863-b29e-b22c36af9eaa}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_Concat7
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertEquals_STRING(Expected := 'abcdefg', Actual := F_Concat7('a', 'b', 'c', 'd', 'e', 'f', 'g'), Message := 'seven parts joined');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_EmptyPartsAreSkipped" Id="{103788f2-9614-472e-8298-a3fee5b01895}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_EmptyPartsAreSkipped
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertEquals_STRING(Expected := 'x', Actual := F_Concat3('', 'x', ''), Message := 'empty parts contribute nothing');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ResultLimitedToMaxString" Id="{dc12d384-7b9f-4215-a3fe-95b4a2ac5f92}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ResultLimitedToMaxString
+VAR
+  part : STRING;
+  i : INT;
+  result : T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+FOR i := 1 TO 80 DO
+  part := CONCAT(part, 'x');
+END_FOR
+
+// act
+result := F_Concat4(part, part, part, part);
+
+// assert
+AssertEquals_INT(Expected := 255, Actual := LEN(result), Message := '4 x 80 characters truncate to T_MaxString');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

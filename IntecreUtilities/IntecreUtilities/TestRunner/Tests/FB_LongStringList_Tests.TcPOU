@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="FB_LongStringList_Tests" Id="{f63a04f7-47ca-4b7f-acae-a64054fb2b57}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_LongStringList_Tests EXTENDS TcUnit.FB_TestSuite
+VAR
+  list : FB_LongStringList;
+  item : LongString;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_AddAndContains();
+Test_FindIndexAndGetIndex();
+Test_ContainsPartialMatchesSubstring();
+Test_RemoveIndexShiftsItems();
+Test_ClearEmptiesList();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_AddAndContains" Id="{b4632ff3-6e71-4ba6-b1f6-b436ccdaddca}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_AddAndContains
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem('alpha');
+list.AddItem('beta');
+AssertEquals_UDINT(Expected := 2, Actual := list.Count, Message := 'count after two adds');
+AssertTrue(Condition := list.Contains('beta'), Message := 'added item found');
+AssertFalse(Condition := list.Contains('gamma'), Message := 'missing item not found');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_FindIndexAndGetIndex" Id="{fc6fe914-8e3c-4b83-8daa-ffa590d20e0e}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_FindIndexAndGetIndex
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem('alpha');
+list.AddItem('beta');
+item := list.GetIndex(0);
+AssertEquals_INT(Expected := 1, Actual := list.FindIndex('beta'), Message := 'index of the second item');
+AssertTrue(Condition := item = 'alpha', Message := 'item at index 0');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ContainsPartialMatchesSubstring" Id="{d0da0de2-7b8f-47f9-b1e6-62a013d466ce}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ContainsPartialMatchesSubstring
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem('alpha');
+AssertTrue(Condition := list.ContainsPartial('lph'), Message := 'substring found');
+AssertFalse(Condition := list.ContainsPartial('xyz'), Message := 'missing substring not found');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RemoveIndexShiftsItems" Id="{e1fce275-c717-4723-9787-ec9ab726c8c4}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RemoveIndexShiftsItems
+VAR
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem('alpha');
+list.AddItem('beta');
+ok := list.RemoveIndex(0);
+item := list.GetIndex(0);
+AssertTrue(Condition := ok, Message := 'remove succeeds');
+AssertEquals_UDINT(Expected := 1, Actual := list.Count, Message := 'count after remove');
+AssertTrue(Condition := item = 'beta', Message := 'remaining item shifted down');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ClearEmptiesList" Id="{88b76cc1-a8eb-4a86-bfa5-eb2f7dbe5483}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ClearEmptiesList
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem('alpha');
+list.Clear();
+AssertEquals_UDINT(Expected := 0, Actual := list.Count, Message := 'count after clear');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

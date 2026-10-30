@@ -1,12 +1,17 @@
+# TwinCAT build artefacts
 *compileinfo
 *_Boot*
 *TrialLicense.tclrs
 *~u
-*Test Project/
-*/IntecreUtilities/Tests*
 *.suo
 *.bak
 *LineIDs.dbg
 *.tmcRefac
 /IntecreUtilities/.vs/*
 /Enable-Ports.ps1
+
+# tclib publish: earlier library files moved aside on each publish
+/archive/
+
+# XAE solution upgrade report
+UpgradeLog*.htm

@@ -129,7 +129,7 @@ VAR_INPUT
    Key : T_MaxString;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF Keys.Contains(Key) THEN // invalid index request.
+        <ST><![CDATA[IF NOT Keys.Contains(Key) THEN
    LogWarning('Cannot remove key as not in dictionary.');
    RETURN;
 END_IF

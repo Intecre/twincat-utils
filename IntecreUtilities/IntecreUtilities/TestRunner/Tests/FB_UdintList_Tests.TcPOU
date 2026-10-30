@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="FB_UdintList_Tests" Id="{8edf910c-c239-48b0-8bb5-ad9d56aa0cb0}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_UdintList_Tests EXTENDS TcUnit.FB_TestSuite
+VAR
+  list : FB_UdintList;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_AddItemIncrementsCount();
+Test_ContainsFindsAddedItem();
+Test_FindIndexReturnsPosition();
+Test_GetIndexReturnsItem();
+Test_TryGetIndexClearsItemOnFailure();
+Test_RemoveIndexShiftsItems();
+Test_ClearEmptiesList();
+Test_RejectsAddWhenFull();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_AddItemIncrementsCount" Id="{ed5b3ce3-dda8-4647-b288-751bd124cd84}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_AddItemIncrementsCount
+VAR
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+ok := list.AddItem(10);
+AssertTrue(Condition := ok, Message := 'add succeeds');
+AssertEquals_UDINT(Expected := 1, Actual := list.Count, Message := 'count after one add');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ContainsFindsAddedItem" Id="{2f7e3bb2-f8ec-4349-a0bd-7d80641fc695}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ContainsFindsAddedItem
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem(10);
+list.AddItem(20);
+AssertTrue(Condition := list.Contains(20), Message := 'added item found');
+AssertFalse(Condition := list.Contains(30), Message := 'missing item not found');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_FindIndexReturnsPosition" Id="{721b2a39-af0a-4652-926c-870be122b8ee}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_FindIndexReturnsPosition
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem(10);
+list.AddItem(20);
+list.AddItem(30);
+AssertEquals_INT(Expected := 2, Actual := list.FindIndex(30), Message := 'index of the third item');
+AssertEquals_INT(Expected := -1, Actual := list.FindIndex(99), Message := 'missing item gives -1');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_GetIndexReturnsItem" Id="{4e66eec0-0b1e-402c-a479-3896b9da4025}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_GetIndexReturnsItem
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem(10);
+list.AddItem(20);
+AssertEquals_UDINT(Expected := 20, Actual := list.GetIndex(1), Message := 'item at index 1');
+AssertEquals_UDINT(Expected := 0, Actual := list.GetIndex(9), Message := 'out of range gives 0');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_TryGetIndexClearsItemOnFailure" Id="{a6af25e4-acef-4b9c-8840-f7b4cad94e15}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_TryGetIndexClearsItemOnFailure
+VAR
+  ok : BOOL;
+  item : UDINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem(10);
+item := 5;
+ok := list.TryGetIndex(9, item);
+AssertFalse(Condition := ok, Message := 'out of range fails');
+AssertEquals_UDINT(Expected := 0, Actual := item, Message := 'item cleared to 0');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RemoveIndexShiftsItems" Id="{5c9335ad-6833-4bf9-8d12-37570a1484fe}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RemoveIndexShiftsItems
+VAR
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem(10);
+list.AddItem(20);
+list.AddItem(30);
+ok := list.RemoveIndex(1);
+AssertTrue(Condition := ok, Message := 'remove succeeds');
+AssertEquals_UDINT(Expected := 2, Actual := list.Count, Message := 'count after remove');
+AssertEquals_UDINT(Expected := 10, Actual := list.GetIndex(0), Message := 'first item kept');
+AssertEquals_UDINT(Expected := 30, Actual := list.GetIndex(1), Message := 'last item shifted down');
+AssertFalse(Condition := list.RemoveIndex(7), Message := 'out of range rejected');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ClearEmptiesList" Id="{30f23acd-0516-4043-8057-35a09bd325c9}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ClearEmptiesList
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem(10);
+list.Clear();
+AssertEquals_UDINT(Expected := 0, Actual := list.Count, Message := 'count after clear');
+AssertFalse(Condition := list.Contains(10), Message := 'items gone after clear');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RejectsAddWhenFull" Id="{1b9e93c9-e47c-4ba5-988a-be1e3a588381}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RejectsAddWhenFull
+VAR
+  i : UINT;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+FOR i := 1 TO GVL_List.LIST_SIZE DO
+  list.AddItem(i);
+END_FOR
+ok := list.AddItem(9999);
+AssertEquals_UDINT(Expected := TO_UDINT(GVL_List.LIST_SIZE), Actual := list.Count, Message := 'list holds LIST_SIZE items');
+AssertFalse(Condition := ok, Message := 'add rejected when full');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

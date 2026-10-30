@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="FB_TargList_Tests" Id="{5d50e414-2ca7-4789-887f-cda8a983a46f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_TargList_Tests EXTENDS TcUnit.FB_TestSuite
+VAR
+  list : FB_TargList;
+  a : INT := 1;
+  b : INT := 2;
+  c : INT := 3;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_AddAndContainsByValue();
+Test_FindIndexReturnsPosition();
+Test_GetIndexReturnsStoredArg();
+Test_RemoveIndexShiftsItems();
+Test_ClearEmptiesList();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_AddAndContainsByValue" Id="{ed82f898-6ab4-4baf-afc1-a41bd0af5164}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_AddAndContainsByValue
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem(F_INT(a));
+list.AddItem(F_INT(b));
+AssertEquals_UDINT(Expected := 2, Actual := list.Count, Message := 'count after two adds');
+AssertTrue(Condition := list.Contains(F_INT(b)), Message := 'stored value found');
+AssertFalse(Condition := list.Contains(F_INT(c)), Message := 'other value not found');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_FindIndexReturnsPosition" Id="{b84694f5-b8f1-493f-9042-0eb6402acd73}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_FindIndexReturnsPosition
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem(F_INT(a));
+list.AddItem(F_INT(b));
+AssertEquals_INT(Expected := 1, Actual := list.FindIndex(F_INT(b)), Message := 'index of the second value');
+AssertEquals_INT(Expected := -1, Actual := list.FindIndex(F_INT(c)), Message := 'missing value gives -1');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_GetIndexReturnsStoredArg" Id="{2f68b50f-20bb-42de-a130-419b234a8114}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_GetIndexReturnsStoredArg
+VAR
+  arg : T_Arg;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem(F_INT(a));
+list.AddItem(F_INT(b));
+arg := list.GetIndex(1);
+AssertEquals_UDINT(Expected := SIZEOF(b), Actual := arg.cbLen, Message := 'length of the stored argument');
+AssertTrue(Condition := arg.pData = ADR(b), Message := 'stored argument points at the variable');
+AssertTrue(Condition := arg.eType = E_ArgType.ARGTYPE_INT, Message := 'type recorded');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RemoveIndexShiftsItems" Id="{8f1ec5bb-b99b-4f25-844f-8b18597c3b93}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RemoveIndexShiftsItems
+VAR
+  ok : BOOL;
+  arg : T_Arg;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem(F_INT(a));
+list.AddItem(F_INT(b));
+list.AddItem(F_INT(c));
+ok := list.RemoveIndex(0);
+arg := list.GetIndex(0);
+AssertTrue(Condition := ok, Message := 'remove succeeds');
+AssertEquals_UDINT(Expected := 2, Actual := list.Count, Message := 'count after remove');
+AssertTrue(Condition := arg.pData = ADR(b), Message := 'second argument shifted to the front');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ClearEmptiesList" Id="{15194657-6f27-4b3f-a747-c6cf90bfc245}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ClearEmptiesList
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem(F_INT(a));
+list.Clear();
+AssertEquals_UDINT(Expected := 0, Actual := list.Count, Message := 'count after clear');
+AssertFalse(Condition := list.Contains(F_INT(a)), Message := 'values gone after clear');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="MAIN" Id="{3fe7187a-47b7-444a-b848-6b7b4cf98bd6}" SpecialFunc="None">
+    <Declaration><![CDATA[// Runs every TcUnit suite of the Intecre.Utilities library, one suite at a time.
+PROGRAM MAIN
+VAR
+  suiteCharIsNumber        : CharIsNumber_Tests;
+  suiteTryStringToDint     : TryStringToDint_Tests;
+  suiteTryStringToUdint    : TryStringToUdint_Tests;
+  suiteTryStringToWord     : TryStringToWord_Tests;
+  suiteTryStringToLreal    : TryStringToLreal_Tests;
+  suiteConcat              : F_Concat_Tests;
+  suiteConcatLarge         : F_ConcatLarge_Tests;
+  suiteGate                : F_Gate_Tests;
+  suiteStringList          : FB_StringList_Tests;
+  suiteUdintList           : FB_UdintList_Tests;
+  suitePointerList         : FB_PointerList_Tests;
+  suiteLongStringList      : FB_LongStringList_Tests;
+  suiteTargList            : FB_TargList_Tests;
+  suiteDictionary          : FB_Dictionary_Tests;
+  suiteDictionaryValuesCrc : F_DictionaryValuesCrc_Tests;
+  suiteAlphaBetaFilter     : FB_AlphaBetaFilter_Tests;
+  suiteP_Control           : FB_P_Control_Tests;
+  suiteI_Controller        : FB_I_Controller_Tests;
+  suitePI_Controller       : FB_PI_Controller_Tests;
+  suiteTask                : T_Task_Tests;
+  suiteNamedBase           : T_NamedBase_Tests;
+  suiteLogger              : Logger_Tests;
+  suiteAssert              : FB_Assert_Tests;
+  suiteGetKL306xState      : F_GetKL306xState_Tests;
+  suiteProjectInformation  : ProjectInformation_Tests;
+  suiteTargToString        : F_TargToString_Tests;
+  suiteStringToTarg        : F_StringToTarg_Tests;
+  suiteGetAmsNetId         : F_GetAmsNetId_Tests;
+  suiteTimer               : T_Timer_Tests;
+  suiteGetHandle           : T_GetHandle_Tests;
+  suiteInvokeRpc           : T_InvokeRpcMethod_Tests;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TcUnit.RUN_IN_SEQUENCE();
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="FB_PI_Controller_Tests" Id="{64e85ef2-1068-4d81-9e39-ee7c784040f8}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_PI_Controller_Tests EXTENDS TcUnit.FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_ProportionalOnlyWithBias();
+Test_OutputClampedToMax();
+Test_OutputClampedToMin();
+Test_IntegralInRepeatsPerMinute();
+Test_IntegralInRepeatsPerSecond();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_ProportionalOnlyWithBias" Id="{cd21461c-a771-480f-9b38-caf06491bc0a}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ProportionalOnlyWithBias
+VAR
+  pi : FB_PI_Controller;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+pi(ProcessVariable := 4.0, Setpoint := 10.0, Kp := 2.0, IntegralConstant := 0.0, MaxLoopOutput := 100.0, MinLoopOutput := -100.0, Bias := 1.0);
+AssertEquals_LREAL(Expected := 13.0, Actual := pi.Output, Delta := 1.0E-9, Message := 'Kp * error + bias');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_OutputClampedToMax" Id="{b33ce352-b16b-4762-acc8-ec222d717a77}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_OutputClampedToMax
+VAR
+  pi : FB_PI_Controller;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+pi(ProcessVariable := 4.0, Setpoint := 10.0, Kp := 2.0, IntegralConstant := 0.0, MaxLoopOutput := 5.0, MinLoopOutput := -100.0, Bias := 0.0);
+AssertEquals_LREAL(Expected := 5.0, Actual := pi.Output, Delta := 1.0E-9, Message := 'output held at the maximum');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_OutputClampedToMin" Id="{531a44cf-2575-4534-80f4-5228eaefdb1f}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_OutputClampedToMin
+VAR
+  pi : FB_PI_Controller;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+pi(ProcessVariable := 10.0, Setpoint := 4.0, Kp := 2.0, IntegralConstant := 0.0, MaxLoopOutput := 100.0, MinLoopOutput := -5.0, Bias := 0.0);
+AssertEquals_LREAL(Expected := -5.0, Actual := pi.Output, Delta := 1.0E-9, Message := 'output held at the minimum');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_IntegralInRepeatsPerMinute" Id="{adebae75-f62e-4eb2-b21c-bb273750d426}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_IntegralInRepeatsPerMinute
+VAR
+  pi : FB_PI_Controller;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// 60 repeats per minute is 1 repeat per second: one 10 ms cycle adds error * 0.01
+pi(ProcessVariable := 0.0, Setpoint := 1.0, Kp := 0.0, IntegralConstant := 60.0, RepeatsPerMinute := TRUE, MaxLoopOutput := 100.0, MinLoopOutput := -100.0, Bias := 0.0);
+AssertEquals_LREAL(Expected := 0.01, Actual := pi.Output, Delta := 1.0E-6, Message := 'integral normalised from repeats per minute');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_IntegralInRepeatsPerSecond" Id="{4b355492-b074-4b29-a973-191979cb2e91}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_IntegralInRepeatsPerSecond
+VAR
+  pi : FB_PI_Controller;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+pi(ProcessVariable := 0.0, Setpoint := 1.0, Kp := 0.0, IntegralConstant := 1.0, RepeatsPerMinute := FALSE, MaxLoopOutput := 100.0, MinLoopOutput := -100.0, Bias := 0.0);
+AssertEquals_LREAL(Expected := 0.01, Actual := pi.Output, Delta := 1.0E-6, Message := 'integral in repeats per second');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="F_TargToString_Tests" Id="{6ed5fad8-cfe9-4d60-b66c-7b9d826ae25e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK F_TargToString_Tests EXTENDS TcUnit.FB_TestSuite
+VAR
+  i : INT := 42;
+  d : DINT := -7;
+  lr : LREAL := 1.5;
+  text : T_MaxString := 'hi';
+  b : BOOL := TRUE;
+  w : WORD := 16#FFFF;
+  li : LINT := 5;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_IntToString();
+Test_DintToString();
+Test_LrealToString();
+Test_StringToString();
+Test_BoolToString();
+Test_WordToString();
+Test_UnsupportedTypeGivesEmpty();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_IntToString" Id="{b06dc30c-1ef2-47dc-bdf2-6623cea2abf5}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_IntToString
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertEquals_STRING(Expected := '42', Actual := F_TargToString(F_INT(i)), Message := 'INT formatted');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_DintToString" Id="{6b86627b-1ac7-4833-aee5-ed6e2fd4397c}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_DintToString
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertEquals_STRING(Expected := '-7', Actual := F_TargToString(F_DINT(d)), Message := 'DINT formatted');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_LrealToString" Id="{ad19b22f-d342-4c19-bf2d-a350070546fb}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_LrealToString
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertEquals_STRING(Expected := '1.5', Actual := F_TargToString(F_LREAL(lr)), Message := 'LREAL formatted');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_StringToString" Id="{d2576bd2-2a0b-43b4-8974-5c443970d246}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_StringToString
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertEquals_STRING(Expected := 'hi', Actual := F_TargToString(F_STRING(text)), Message := 'STRING passed through');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_BoolToString" Id="{51d7a7d1-5541-4fd9-824e-dd5f29d5e5e7}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_BoolToString
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertEquals_STRING(Expected := 'TRUE', Actual := F_TargToString(F_BOOL(b)), Message := 'BOOL formatted');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_WordToString" Id="{1fdfe941-1694-4fc4-a420-5ac37e310310}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_WordToString
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertEquals_STRING(Expected := '65535', Actual := F_TargToString(F_WORD(w)), Message := 'WORD formatted');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_UnsupportedTypeGivesEmpty" Id="{3b54a318-1d4c-4548-8f8a-36448c710ee5}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_UnsupportedTypeGivesEmpty
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertEquals_STRING(Expected := '', Actual := F_TargToString(F_LINT(li)), Message := 'LINT is not handled and gives an empty string');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="TryStringToDint_Tests" Id="{e1522205-2a98-494c-8147-1d16914d440d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK TryStringToDint_Tests EXTENDS TcUnit.FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_ParsesPositive();
+Test_ParsesNegative();
+Test_ParsesMaxValue();
+Test_RejectsLetters();
+Test_RejectsEmptyString();
+Test_RejectsMinusInsideNumber();
+Test_RejectsPlusSign();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_ParsesPositive" Id="{c28fefe8-f866-443a-89cd-5a903a3f182a}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ParsesPositive
+VAR
+  value : DINT;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// act
+ok := TryStringToDint('123', value);
+
+// assert
+AssertTrue(Condition := ok, Message := '123 parses');
+AssertEquals_DINT(Expected := 123, Actual := value, Message := 'parsed value');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ParsesNegative" Id="{4c07db1a-4ec8-4c80-bd4b-7c2056c07155}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ParsesNegative
+VAR
+  value : DINT;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// act
+ok := TryStringToDint('-45', value);
+
+// assert
+AssertTrue(Condition := ok, Message := '-45 parses');
+AssertEquals_DINT(Expected := -45, Actual := value, Message := 'parsed value');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ParsesMaxValue" Id="{d1a4511d-f641-4816-a1d6-3b22d9bbc23d}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ParsesMaxValue
+VAR
+  value : DINT;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// act
+ok := TryStringToDint('2147483647', value);
+
+// assert
+AssertTrue(Condition := ok, Message := 'DINT max parses');
+AssertEquals_DINT(Expected := 2147483647, Actual := value, Message := 'parsed value');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RejectsLetters" Id="{604eb0d6-f263-4527-907e-064f50c1873d}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RejectsLetters
+VAR
+  value : DINT;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+value := 99;
+
+// act
+ok := TryStringToDint('12a', value);
+
+// assert
+AssertFalse(Condition := ok, Message := 'letters rejected');
+AssertEquals_DINT(Expected := 0, Actual := value, Message := 'value cleared on failure');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RejectsEmptyString" Id="{9d4d485c-d0f1-4723-94a6-2728981c67f8}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RejectsEmptyString
+VAR
+  value : DINT;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+value := 99;
+
+// act
+ok := TryStringToDint('', value);
+
+// assert
+AssertFalse(Condition := ok, Message := 'empty string rejected');
+AssertEquals_DINT(Expected := 0, Actual := value, Message := 'value cleared on failure');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RejectsMinusInsideNumber" Id="{d6e4ad89-9e38-4337-992b-18b80309785e}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RejectsMinusInsideNumber
+VAR
+  value : DINT;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// act
+ok := TryStringToDint('1-2', value);
+
+// assert
+AssertFalse(Condition := ok, Message := 'minus only allowed as first character');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RejectsPlusSign" Id="{cee68477-ed93-417a-8bdf-4b5d851d3783}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RejectsPlusSign
+VAR
+  value : DINT;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// act
+ok := TryStringToDint('+1', value);
+
+// assert
+AssertFalse(Condition := ok, Message := 'explicit plus sign is not accepted');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

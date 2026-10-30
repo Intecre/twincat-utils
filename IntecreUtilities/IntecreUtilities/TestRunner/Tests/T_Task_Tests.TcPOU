@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="T_Task_Tests" Id="{0f91fc0f-ff40-4b3b-8067-23d591e7b5f5}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK T_Task_Tests EXTENDS TcUnit.FB_TestSuite
+VAR
+  task : T_Task;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_NameIsPlcTask();
+Test_CycleTimeMatchesConfiguredTask();
+Test_CycleCountAdvances();
+Test_DistributedClockUnitsAgree();
+Test_DateTimeStringFormat();
+Test_DateStringIsDateOnly();
+Test_TimeStringIsTimeOnly();
+Test_DateTimeFromDcIsCurrent();
+Test_SetToThisTaskSelectsCurrentTask();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_NameIsPlcTask" Id="{991cd033-5d5f-4806-9f1f-3fe7815d29b0}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_NameIsPlcTask
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertEquals_STRING(Expected := 'PlcTask', Actual := RIGHT(task.Name, 7), Message := 'task name read from _TaskInfo ends with the task name');
+AssertTrue(Condition := LEN(task.Name) >= 7, Message := 'task name is not empty');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_CycleTimeMatchesConfiguredTask" Id="{0630a54e-3069-439a-9f5d-3138b7fb3faf}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_CycleTimeMatchesConfiguredTask
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertEquals_LREAL(Expected := 10.0, Actual := task.CycleTimeInMs, Delta := 1.0E-6, Message := 'PlcTask runs every 10 ms');
+AssertEquals_LREAL(Expected := 0.01, Actual := task.CycleTimeInSecs, Delta := 1.0E-9, Message := 'cycle time in seconds');
+AssertEquals_LREAL(Expected := 100.0, Actual := task.CyclesPerSecond, Delta := 1.0E-6, Message := 'cycles per second');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_CycleCountAdvances" Id="{251162d7-f6c7-40d7-81db-7ffd3a461bd0}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_CycleCountAdvances
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertTrue(Condition := task.CycleCount > 0, Message := 'cycle count read from _TaskInfo');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_DistributedClockUnitsAgree" Id="{c5c87809-3365-4501-92e5-ee8c6ac251e7}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_DistributedClockUnitsAgree
+VAR
+  ns : LINT;
+  ms : LINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+ns := task.DistributedClockTimeInNs;
+ms := task.DistributedClockTimeInMs;
+AssertEquals_LINT(Expected := ns / 1000000, Actual := ms, Message := 'milliseconds derived from nanoseconds');
+AssertEquals_LINT(Expected := ms / 1000, Actual := task.DistributedClockTimeInSecs, Message := 'seconds derived from milliseconds');
+AssertTrue(Condition := ns > 0, Message := 'distributed clock is running');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_DateTimeStringFormat" Id="{52c2f88e-1df1-4c0e-ab57-dbe214a2853c}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_DateTimeStringFormat
+VAR
+  text : STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// yyyy-mm-dd_hh-mm-ss
+text := task.DateTimeString;
+AssertEquals_INT(Expected := 19, Actual := LEN(text), Message := 'length of yyyy-mm-dd_hh-mm-ss');
+AssertEquals_BYTE(Expected := 45, Actual := text[4], Message := 'dash after the year');
+AssertEquals_BYTE(Expected := 45, Actual := text[7], Message := 'dash after the month');
+AssertEquals_BYTE(Expected := 95, Actual := text[10], Message := 'underscore between date and time');
+AssertEquals_BYTE(Expected := 45, Actual := text[13], Message := 'dash after the hour');
+AssertEquals_BYTE(Expected := 45, Actual := text[16], Message := 'dash after the minute');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_DateStringIsDateOnly" Id="{6e8188c3-5c7b-4d7c-b89f-c9d7dfc32fc1}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_DateStringIsDateOnly
+VAR
+  text : STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+text := task.DateString;
+AssertEquals_INT(Expected := 10, Actual := LEN(text), Message := 'length of yyyy-mm-dd');
+AssertEquals_STRING(Expected := LEFT(task.DateTimeString, 10), Actual := text, Message := 'date part of the date-time string');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_TimeStringIsTimeOnly" Id="{ca41546e-dfb0-4d30-bc0b-4ebb241c78af}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_TimeStringIsTimeOnly
+VAR
+  text : STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+text := task.TimeString;
+AssertEquals_INT(Expected := 8, Actual := LEN(text), Message := 'length of hh-mm-ss');
+AssertEquals_STRING(Expected := RIGHT(task.DateTimeString, 8), Actual := text, Message := 'time part of the date-time string');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_DateTimeFromDcIsCurrent" Id="{6de42157-23ca-432b-8632-53169959a39b}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_DateTimeFromDcIsCurrent
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertTrue(Condition := task.DateTimeFromDc > DT#2026-01-01-00:00:00, Message := 'distributed clock converts to a current date');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_SetToThisTaskSelectsCurrentTask" Id="{26f756a4-f468-46fe-913f-209d07fc3193}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_SetToThisTaskSelectsCurrentTask
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+task.Index := 7;
+task.SetToThisTask();
+AssertEquals_BYTE(Expected := 1, Actual := task.Index, Message := 'the test runner has a single task at index 1');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

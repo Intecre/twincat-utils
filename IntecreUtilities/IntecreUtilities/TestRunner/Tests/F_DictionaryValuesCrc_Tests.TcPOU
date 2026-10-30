@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="F_DictionaryValuesCrc_Tests" Id="{e58432d5-39ca-4887-9fb2-2108bd7e93f2}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK F_DictionaryValuesCrc_Tests EXTENDS TcUnit.FB_TestSuite
+VAR
+  dict : FB_Dictionary;
+  first : INT := 1234;
+  second : INT := 5678;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_EmptyDictionaryGivesZero();
+Test_CrcCoversAllValues();
+Test_CrcChangesWhenLaterValueChanges();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_EmptyDictionaryGivesZero" Id="{98649fa7-1783-4435-947d-711941524aef}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_EmptyDictionaryGivesZero
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+dict.Clear();
+AssertEquals_WORD(Expected := 0, Actual := F_DictionaryValuesCrc(dict), Message := 'no values, no CRC');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_CrcCoversAllValues" Id="{4e9f2b13-8635-4458-af7a-325d3c83cf17}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_CrcCoversAllValues
+VAR
+  expected : WORD;
+  actual : WORD;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+dict.Clear();
+dict.AddItem('first', F_INT(first));
+dict.AddItem('second', F_INT(second));
+expected := F_DATA_TO_CRC16_CCITT(pData := ADR(first), cbData := SIZEOF(first), crc := 16#FFFF);
+expected := F_DATA_TO_CRC16_CCITT(pData := ADR(second), cbData := SIZEOF(second), crc := expected);
+
+// act
+actual := F_DictionaryValuesCrc(dict);
+
+// assert
+AssertEquals_WORD(Expected := expected, Actual := actual, Message := 'CRC chained over every value in order');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_CrcChangesWhenLaterValueChanges" Id="{8d1ba937-3686-40c7-9bd6-9404f877f34b}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_CrcChangesWhenLaterValueChanges
+VAR
+  before : WORD;
+  after : WORD;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+dict.Clear();
+dict.AddItem('first', F_INT(first));
+dict.AddItem('second', F_INT(second));
+before := F_DictionaryValuesCrc(dict);
+
+// act
+second := second + 1;
+after := F_DictionaryValuesCrc(dict);
+second := second - 1;
+
+// assert
+AssertTrue(Condition := before <> after, Message := 'a change in the second value changes the CRC');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

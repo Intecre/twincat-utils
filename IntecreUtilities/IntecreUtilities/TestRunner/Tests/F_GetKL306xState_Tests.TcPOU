@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="F_GetKL306xState_Tests" Id="{a379eb53-f2a2-485b-a8d1-d2e8e9c4aa7a}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK F_GetKL306xState_Tests EXTENDS TcUnit.FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_Limit1BitsDecode();
+Test_Limit2BitsDecode();
+Test_RangeAndErrorFlagsPassThrough();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_Limit1BitsDecode" Id="{0297708b-e397-473d-bf99-4ebca58c5fe5}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_Limit1BitsDecode
+VAR
+  status : stKL306x_ChannelStatus;
+  isEqual, isGreater, isLess, notEnabled : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+status.Limit1Bit_1 := TRUE; status.Limit1Bit_0 := TRUE;
+F_GetKL306xState(KL306xState := status, ProcessData_EQ_Limit1 => isEqual, ProcessData_GT_Limit1 => isGreater, ProcessData_LT_Limit1 => isLess, Limit1NotEnabled => notEnabled);
+AssertTrue(Condition := isEqual AND NOT isGreater AND NOT isLess AND NOT notEnabled, Message := '11 = equal to limit 1');
+
+status.Limit1Bit_1 := TRUE; status.Limit1Bit_0 := FALSE;
+F_GetKL306xState(KL306xState := status, ProcessData_EQ_Limit1 => isEqual, ProcessData_GT_Limit1 => isGreater, ProcessData_LT_Limit1 => isLess, Limit1NotEnabled => notEnabled);
+AssertTrue(Condition := isGreater AND NOT isEqual AND NOT isLess AND NOT notEnabled, Message := '10 = greater than limit 1');
+
+status.Limit1Bit_1 := FALSE; status.Limit1Bit_0 := TRUE;
+F_GetKL306xState(KL306xState := status, ProcessData_EQ_Limit1 => isEqual, ProcessData_GT_Limit1 => isGreater, ProcessData_LT_Limit1 => isLess, Limit1NotEnabled => notEnabled);
+AssertTrue(Condition := isLess AND NOT isEqual AND NOT isGreater AND NOT notEnabled, Message := '01 = less than limit 1');
+
+status.Limit1Bit_1 := FALSE; status.Limit1Bit_0 := FALSE;
+F_GetKL306xState(KL306xState := status, ProcessData_EQ_Limit1 => isEqual, ProcessData_GT_Limit1 => isGreater, ProcessData_LT_Limit1 => isLess, Limit1NotEnabled => notEnabled);
+AssertTrue(Condition := notEnabled AND NOT isEqual AND NOT isGreater AND NOT isLess, Message := '00 = limit 1 not enabled');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Limit2BitsDecode" Id="{0a7a9b2d-748a-418a-a59f-db5b59681a6d}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_Limit2BitsDecode
+VAR
+  status : stKL306x_ChannelStatus;
+  isEqual, isGreater, isLess, notEnabled : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+status.Limit2Bit_1 := TRUE; status.Limit2Bit_0 := TRUE;
+F_GetKL306xState(KL306xState := status, ProcessData_EQ_Limit2 => isEqual, ProcessData_GT_Limit2 => isGreater, ProcessData_LT_Limit2 => isLess, Limit2NotEnabled => notEnabled);
+AssertTrue(Condition := isEqual AND NOT isGreater AND NOT isLess AND NOT notEnabled, Message := '11 = equal to limit 2');
+
+status.Limit2Bit_1 := TRUE; status.Limit2Bit_0 := FALSE;
+F_GetKL306xState(KL306xState := status, ProcessData_EQ_Limit2 => isEqual, ProcessData_GT_Limit2 => isGreater, ProcessData_LT_Limit2 => isLess, Limit2NotEnabled => notEnabled);
+AssertTrue(Condition := isGreater AND NOT isEqual AND NOT isLess AND NOT notEnabled, Message := '10 = greater than limit 2');
+
+status.Limit2Bit_1 := FALSE; status.Limit2Bit_0 := TRUE;
+F_GetKL306xState(KL306xState := status, ProcessData_EQ_Limit2 => isEqual, ProcessData_GT_Limit2 => isGreater, ProcessData_LT_Limit2 => isLess, Limit2NotEnabled => notEnabled);
+AssertTrue(Condition := isLess AND NOT isEqual AND NOT isGreater AND NOT notEnabled, Message := '01 = less than limit 2');
+
+status.Limit2Bit_1 := FALSE; status.Limit2Bit_0 := FALSE;
+F_GetKL306xState(KL306xState := status, ProcessData_EQ_Limit2 => isEqual, ProcessData_GT_Limit2 => isGreater, ProcessData_LT_Limit2 => isLess, Limit2NotEnabled => notEnabled);
+AssertTrue(Condition := notEnabled AND NOT isEqual AND NOT isGreater AND NOT isLess, Message := '00 = limit 2 not enabled');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RangeAndErrorFlagsPassThrough" Id="{0a1bbce4-0f1e-40ca-8aa3-c9cd124a49b6}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RangeAndErrorFlagsPassThrough
+VAR
+  status : stKL306x_ChannelStatus;
+  under, over, err : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+status.Underrange := TRUE; status.Overrange := FALSE; status.Error := TRUE;
+F_GetKL306xState(KL306xState := status, Underrange => under, Overrange => over, Error => err);
+AssertTrue(Condition := under, Message := 'underrange passed through');
+AssertFalse(Condition := over, Message := 'overrange passed through');
+AssertTrue(Condition := err, Message := 'error passed through');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

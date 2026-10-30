@@ -1,0 +1,300 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="FB_Dictionary_Tests" Id="{0a079283-8a6f-4123-8d73-2fb0a8ce8e0a}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Dictionary_Tests EXTENDS TcUnit.FB_TestSuite
+VAR
+  dict : FB_Dictionary;
+  a : INT := 10;
+  b : INT := 20;
+  c : INT := 30;
+  value : T_Arg;
+  key : T_MaxString;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_AddItemStoresKeyAndValue();
+Test_RejectsDuplicateKey();
+Test_RejectsEmptyKey();
+Test_RejectsEmptyValue();
+Test_TryGetReturnsValue();
+Test_TryGetFailsForMissingKey();
+Test_GetReturnsValue();
+Test_RemoveDeletesKey();
+Test_RemoveFailsForMissingKey();
+Test_TryGetIndexReturnsPair();
+Test_TryGetPartialKeyMatchesSubstring();
+Test_ClearEmptiesDictionary();
+Test_RejectsAddWhenFull();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_AddItemStoresKeyAndValue" Id="{3096e182-daca-4364-b3ea-feee9916e42b}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_AddItemStoresKeyAndValue
+VAR
+  ok : BOOL;
+  p : POINTER TO INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+dict.Clear();
+ok := dict.AddItem('a', F_INT(a));
+AssertTrue(Condition := ok, Message := 'add succeeds');
+AssertEquals_UDINT(Expected := 1, Actual := dict.Count, Message := 'count after one add');
+AssertTrue(Condition := dict.Contains('a'), Message := 'key found');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RejectsDuplicateKey" Id="{9661ed68-afd0-4ae4-ab5f-e6492c3734b0}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RejectsDuplicateKey
+VAR
+  ok : BOOL;
+  p : POINTER TO INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+dict.Clear();
+dict.AddItem('a', F_INT(a));
+ok := dict.AddItem('a', F_INT(b));
+AssertFalse(Condition := ok, Message := 'duplicate key rejected');
+AssertEquals_UDINT(Expected := 1, Actual := dict.Count, Message := 'count unchanged');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RejectsEmptyKey" Id="{7bf368ad-fb73-4236-b5e6-ef16f73c3190}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RejectsEmptyKey
+VAR
+  ok : BOOL;
+  p : POINTER TO INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+dict.Clear();
+ok := dict.AddItem('', F_INT(a));
+AssertFalse(Condition := ok, Message := 'empty key rejected');
+AssertEquals_UDINT(Expected := 0, Actual := dict.Count, Message := 'nothing added');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RejectsEmptyValue" Id="{e9a1cdad-3da2-4cc9-93f7-0b1004a9e0fd}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RejectsEmptyValue
+VAR
+  ok : BOOL;
+  empty : T_Arg;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+dict.Clear();
+ok := dict.AddItem('a', empty);
+AssertFalse(Condition := ok, Message := 'zero-length value rejected');
+AssertEquals_UDINT(Expected := 0, Actual := dict.Count, Message := 'nothing added');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_TryGetReturnsValue" Id="{0427f2f9-14fd-431e-af94-2dac473b43e4}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_TryGetReturnsValue
+VAR
+  ok : BOOL;
+  p : POINTER TO INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+dict.Clear();
+dict.AddItem('a', F_INT(a));
+dict.AddItem('b', F_INT(b));
+ok := dict.TryGet('b', value);
+p := value.pData;
+AssertTrue(Condition := ok, Message := 'key found');
+AssertTrue(Condition := value.pData = ADR(b), Message := 'value points at the stored variable');
+AssertEquals_INT(Expected := 20, Actual := p^, Message := 'value readable through the argument');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_TryGetFailsForMissingKey" Id="{b4f6f088-da5e-416e-8681-aecd8d21a236}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_TryGetFailsForMissingKey
+VAR
+  ok : BOOL;
+  p : POINTER TO INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+dict.Clear();
+dict.AddItem('a', F_INT(a));
+ok := dict.TryGet('zzz', value);
+AssertFalse(Condition := ok, Message := 'missing key fails');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_GetReturnsValue" Id="{c53f8756-53db-4e4f-9c5d-8c002442192b}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_GetReturnsValue
+VAR
+  ok : BOOL;
+  p : POINTER TO INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+dict.Clear();
+dict.AddItem('a', F_INT(a));
+value := dict.Get('a');
+p := value.pData;
+AssertEquals_INT(Expected := 10, Actual := p^, Message := 'Get returns the stored value');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RemoveDeletesKey" Id="{fbaf1f65-c576-4b39-98bf-119c1d1e8007}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RemoveDeletesKey
+VAR
+  ok : BOOL;
+  p : POINTER TO INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+dict.Clear();
+dict.AddItem('a', F_INT(a));
+dict.AddItem('b', F_INT(b));
+ok := dict.Remove('a');
+AssertTrue(Condition := ok, Message := 'remove succeeds');
+AssertEquals_UDINT(Expected := 1, Actual := dict.Count, Message := 'count after remove');
+AssertFalse(Condition := dict.Contains('a'), Message := 'removed key gone');
+AssertTrue(Condition := dict.TryGet('b', value), Message := 'other key still readable');
+AssertTrue(Condition := value.pData = ADR(b), Message := 'other value intact');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RemoveFailsForMissingKey" Id="{6025dc7b-f3c8-427c-b9e8-d1e02cdf3a23}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RemoveFailsForMissingKey
+VAR
+  ok : BOOL;
+  p : POINTER TO INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+dict.Clear();
+dict.AddItem('a', F_INT(a));
+ok := dict.Remove('zzz');
+AssertFalse(Condition := ok, Message := 'missing key cannot be removed');
+AssertEquals_UDINT(Expected := 1, Actual := dict.Count, Message := 'count unchanged');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_TryGetIndexReturnsPair" Id="{70a5a09a-3116-48b1-9a8b-753020e283b9}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_TryGetIndexReturnsPair
+VAR
+  ok : BOOL;
+  p : POINTER TO INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+dict.Clear();
+dict.AddItem('a', F_INT(a));
+dict.AddItem('b', F_INT(b));
+ok := dict.TryGetIndex(1, key, value);
+AssertTrue(Condition := ok, Message := 'index in range');
+AssertEquals_STRING(Expected := 'b', Actual := key, Message := 'key at index 1');
+AssertTrue(Condition := value.pData = ADR(b), Message := 'value at index 1');
+AssertFalse(Condition := dict.TryGetIndex(5, key, value), Message := 'index out of range fails');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_TryGetPartialKeyMatchesSubstring" Id="{b4fac775-3611-429c-a3e8-9d71a6b23b0c}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_TryGetPartialKeyMatchesSubstring
+VAR
+  ok : BOOL;
+  partial : T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+dict.Clear();
+dict.AddItem('temperature', F_INT(a));
+dict.AddItem('pressure', F_INT(b));
+partial := 'press';
+ok := dict.TryGetPartialKey(partial, value);
+AssertTrue(Condition := ok, Message := 'partial key found');
+AssertTrue(Condition := value.pData = ADR(b), Message := 'value of the matching key');
+partial := 'flow';
+AssertFalse(Condition := dict.TryGetPartialKey(partial, value), Message := 'no match fails');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ClearEmptiesDictionary" Id="{7532ea5e-7f82-49c2-9ec0-490e5b8d7808}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ClearEmptiesDictionary
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+dict.Clear();
+dict.AddItem('a', F_INT(a));
+dict.Clear();
+AssertEquals_UDINT(Expected := 0, Actual := dict.Count, Message := 'count after clear');
+AssertFalse(Condition := dict.Contains('a'), Message := 'keys gone after clear');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RejectsAddWhenFull" Id="{71a8fb21-6e80-4b6d-b5ab-4c6da70ddd0c}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RejectsAddWhenFull
+VAR
+  i : UINT;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+dict.Clear();
+FOR i := 1 TO GVL_List.LIST_SIZE DO
+  dict.AddItem(CONCAT('k', TO_STRING(i)), F_INT(a));
+END_FOR
+ok := dict.AddItem('extra', F_INT(b));
+AssertEquals_UDINT(Expected := TO_UDINT(GVL_List.LIST_SIZE), Actual := dict.Count, Message := 'dictionary holds LIST_SIZE items');
+AssertFalse(Condition := ok, Message := 'add rejected when full');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

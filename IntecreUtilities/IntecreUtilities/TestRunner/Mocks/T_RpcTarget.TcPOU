@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="T_RpcTarget" Id="{44ec3c53-cc59-420b-a59a-70bb63636348}" SpecialFunc="None">
+    <Declaration><![CDATA[// Target for the ADS RPC tests: AddNumbers is callable through ADS by symbol name.
+FUNCTION_BLOCK T_RpcTarget
+VAR
+  _lastSum : DINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="AddNumbers" Id="{abc64f41-a75c-45a0-a069-9cfd11f7948b}">
+      <Declaration><![CDATA[{attribute 'TcRpcEnable'}
+METHOD AddNumbers : DINT
+VAR_INPUT
+  a : DINT;
+  b : DINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[AddNumbers := a + b;
+_lastSum := AddNumbers;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="LastSum" Id="{a0ee6918-dde5-4689-ab8e-17fd5559396d}">
+      <Declaration><![CDATA[PROPERTY LastSum : DINT]]></Declaration>
+      <Get Name="Get" Id="{a8e4f882-08f6-4e60-b986-8730919faf14}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[LastSum := _lastSum;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

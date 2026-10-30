@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="TryStringToLreal_Tests" Id="{52389a08-41a9-4085-8a64-50800bee69e9}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK TryStringToLreal_Tests EXTENDS TcUnit.FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_ParsesDecimal();
+Test_ParsesNegativeDecimal();
+Test_ParsesInteger();
+Test_ParsesNegativeFraction();
+Test_ParsesSmallFraction();
+Test_RejectsLetters();
+Test_RejectsExponent();
+Test_RejectsEmptyString();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_ParsesDecimal" Id="{ef6eb107-4e2c-44d9-968c-fb2ddca923c2}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ParsesDecimal
+VAR
+  value : LREAL;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// act
+ok := TryStringToLreal('3.25', value);
+
+// assert
+AssertTrue(Condition := ok, Message := '3.25 parses');
+AssertEquals_LREAL(Expected := 3.25, Actual := value, Delta := 1.0E-9, Message := 'parsed value');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ParsesNegativeDecimal" Id="{b2ae65f2-16cf-4fe9-8346-9bd247eddf11}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ParsesNegativeDecimal
+VAR
+  value : LREAL;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// act
+ok := TryStringToLreal('-1.5', value);
+
+// assert
+AssertTrue(Condition := ok, Message := '-1.5 parses');
+AssertEquals_LREAL(Expected := -1.5, Actual := value, Delta := 1.0E-9, Message := 'sign applies to the whole number');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ParsesInteger" Id="{b69c463a-f615-41d3-a53b-825d64a0fa33}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ParsesInteger
+VAR
+  value : LREAL;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// act
+ok := TryStringToLreal('42', value);
+
+// assert
+AssertTrue(Condition := ok, Message := '42 parses');
+AssertEquals_LREAL(Expected := 42.0, Actual := value, Delta := 1.0E-9, Message := 'integer text parses as LREAL');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ParsesNegativeFraction" Id="{0fcd8e7f-8278-49eb-8a4d-8951f91b3065}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ParsesNegativeFraction
+VAR
+  value : LREAL;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// act
+ok := TryStringToLreal('-0.5', value);
+
+// assert
+AssertTrue(Condition := ok, Message := '-0.5 parses');
+AssertEquals_LREAL(Expected := -0.5, Actual := value, Delta := 1.0E-9, Message := 'sign kept when the integer part is zero');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ParsesSmallFraction" Id="{917dd1f4-78d8-4f76-9ca4-a72f034f077b}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ParsesSmallFraction
+VAR
+  value : LREAL;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// act
+ok := TryStringToLreal('0.001', value);
+
+// assert
+AssertTrue(Condition := ok, Message := '0.001 parses');
+AssertEquals_LREAL(Expected := 0.001, Actual := value, Delta := 1.0E-9, Message := 'leading zeros in the fraction are kept');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RejectsLetters" Id="{72f9f39b-00ae-4fab-82c4-24ca578d532d}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RejectsLetters
+VAR
+  value : LREAL;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+value := 9.9;
+
+// act
+ok := TryStringToLreal('abc', value);
+
+// assert
+AssertFalse(Condition := ok, Message := 'letters rejected');
+AssertEquals_LREAL(Expected := 0.0, Actual := value, Delta := 1.0E-9, Message := 'value cleared on failure');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RejectsExponent" Id="{c98a8792-f4d4-489d-a93a-2bfd9e5788a4}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RejectsExponent
+VAR
+  value : LREAL;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// act
+ok := TryStringToLreal('1e5', value);
+
+// assert
+AssertFalse(Condition := ok, Message := 'exponent notation rejected');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RejectsEmptyString" Id="{10da3f51-571c-46e9-ad7c-21de89db6522}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RejectsEmptyString
+VAR
+  value : LREAL;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+value := 9.9;
+
+// act
+ok := TryStringToLreal('', value);
+
+// assert
+AssertFalse(Condition := ok, Message := 'empty string rejected');
+AssertEquals_LREAL(Expected := 0.0, Actual := value, Delta := 1.0E-9, Message := 'value cleared on failure');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

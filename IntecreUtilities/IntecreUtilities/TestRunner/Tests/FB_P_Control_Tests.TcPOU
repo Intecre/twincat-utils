@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="FB_P_Control_Tests" Id="{f96375d2-1f05-4bc3-a98f-4f274556dd38}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_P_Control_Tests EXTENDS TcUnit.FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_TermIsErrorTimesGain();
+Test_NegativeErrorGivesNegativeTerm();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_TermIsErrorTimesGain" Id="{5bee72fc-1ffc-4144-8128-eb8f31268727}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_TermIsErrorTimesGain
+VAR
+  p : FB_P_Control;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+p(ProcessVariable := 4.0, Setpoint := 10.0, Kp := 2.0);
+AssertEquals_LREAL(Expected := 12.0, Actual := p.Term, Delta := 1.0E-9, Message := '(10 - 4) * 2');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_NegativeErrorGivesNegativeTerm" Id="{cc2aef1e-bd20-49b6-9d18-5a9487a0e636}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_NegativeErrorGivesNegativeTerm
+VAR
+  p : FB_P_Control;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+p(ProcessVariable := 10.0, Setpoint := 4.0, Kp := 0.5);
+AssertEquals_LREAL(Expected := -3.0, Actual := p.Term, Delta := 1.0E-9, Message := '(4 - 10) * 0.5');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

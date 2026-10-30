@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="T_GetHandle_Tests" Id="{b0d3b706-00ee-4c18-80ce-c77e70bd0ed9}" SpecialFunc="None">
+    <Declaration><![CDATA[// ADS integration: needs the runtime's ADS router (works on the usermode runtime). The suite instance in MAIN must be named suiteGetHandle.
+FUNCTION_BLOCK T_GetHandle_Tests EXTENDS TcUnit.FB_TestSuite
+VAR
+  probe : DINT := 7;
+  getHandle : T_GetHandle;
+  releaseHandle : T_ReleaseHandle;
+  handle : ST_SymbolHandle;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_GetsAndReleasesSymbolHandle();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_GetsAndReleasesSymbolHandle" Id="{4fac02e8-94eb-450c-bdc1-d6ef6a4fd2d2}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_GetsAndReleasesSymbolHandle
+VAR_INST
+  state : INT := 10;
+  wait : TON;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+getHandle();
+releaseHandle();
+wait();
+
+CASE state OF
+
+  10:
+
+    // arrange: a handle for a symbol of this PLC, over local ADS
+    handle.Handle := 0;
+    handle.SymbolAddress.SymbolName := 'MAIN.suiteGetHandle.probe';
+    handle.SymbolAddress.Ads.port := 851;
+
+    // act
+    AssertTrue(Condition := getHandle.TryGetHandle(symbolHandle := handle), Message := 'get handle request accepted');
+    state := 20;
+    wait(IN := TRUE, PT := T#5S);
+
+  20:
+
+    IF getHandle.Done THEN
+      wait(IN := FALSE);
+      AssertTrue(Condition := handle.Handle <> 0, Message := 'ADS returned a symbol handle');
+      AssertFalse(Condition := getHandle.Busy, Message := 'not busy once done');
+      AssertTrue(Condition := releaseHandle.TryReleaseHandle(symbolHandle := handle), Message := 'release handle request accepted');
+      state := 30;
+      wait(IN := TRUE, PT := T#5S);
+
+    ELSIF getHandle.Error OR wait.Q THEN
+      wait(IN := FALSE);
+      AssertTrue(Condition := FALSE, Message := 'get handle failed or timed out');
+      TEST_FINISHED_NAMED(__POUNAME());
+      state := 40;
+
+    END_IF
+
+  30:
+
+    IF releaseHandle.Done THEN
+      wait(IN := FALSE);
+      AssertFalse(Condition := releaseHandle.Error, Message := 'handle released without error');
+      TEST_FINISHED_NAMED(__POUNAME());
+      state := 40;
+
+    ELSIF releaseHandle.Error OR wait.Q THEN
+      wait(IN := FALSE);
+      AssertTrue(Condition := FALSE, Message := 'release handle failed or timed out');
+      TEST_FINISHED_NAMED(__POUNAME());
+      state := 40;
+
+    END_IF
+
+  40:
+    ; // finished
+
+END_CASE
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

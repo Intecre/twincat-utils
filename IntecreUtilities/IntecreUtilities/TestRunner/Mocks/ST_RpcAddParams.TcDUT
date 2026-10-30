@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <DUT Name="ST_RpcAddParams" Id="{9fb974a3-0f95-43a7-a9a8-10bdaae70d91}">
+    <Declaration><![CDATA[// Input block of T_RpcTarget.Add as sent over ADS.
+TYPE ST_RpcAddParams :
+STRUCT
+  a : DINT;
+  b : DINT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

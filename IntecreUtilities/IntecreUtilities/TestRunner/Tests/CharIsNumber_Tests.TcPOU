@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="CharIsNumber_Tests" Id="{0b868f2e-946d-4038-a418-15c64f4e1a93}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK CharIsNumber_Tests EXTENDS TcUnit.FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_DigitsAreNumbers();
+Test_NonDigitsAreNotNumbers();
+Test_MinusAcceptedOnlyByOrMinus();
+Test_PeriodAcceptedOnlyByOrPeriod();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_DigitsAreNumbers" Id="{d2fd3aaa-f615-4a05-814c-77138eb5b54f}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_DigitsAreNumbers
+VAR
+  ch : BYTE;
+  allDigits : BOOL := TRUE;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange / act
+FOR ch := 48 TO 57 DO
+  allDigits := allDigits AND CharIsNumber(ch);
+END_FOR
+
+// assert
+AssertTrue(Condition := allDigits, Message := 'ASCII 0-9 are numbers');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_NonDigitsAreNotNumbers" Id="{beb7ef5f-d0e3-4c4d-ad46-04afb6258c81}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_NonDigitsAreNotNumbers
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// act / assert
+AssertFalse(Condition := CharIsNumber(47), Message := 'slash (47) is not a number');
+AssertFalse(Condition := CharIsNumber(58), Message := 'colon (58) is not a number');
+AssertFalse(Condition := CharIsNumber(65), Message := 'A is not a number');
+AssertFalse(Condition := CharIsNumber(32), Message := 'space is not a number');
+AssertFalse(Condition := CharIsNumber(45), Message := 'minus is not a number');
+AssertFalse(Condition := CharIsNumber(46), Message := 'period is not a number');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_MinusAcceptedOnlyByOrMinus" Id="{bb759ba0-794b-472c-a277-7047adb3ea3d}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_MinusAcceptedOnlyByOrMinus
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// act / assert
+AssertTrue(Condition := CharIsNumberOrMinus(45), Message := 'minus accepted');
+AssertTrue(Condition := CharIsNumberOrMinus(53), Message := 'digit 5 accepted');
+AssertFalse(Condition := CharIsNumberOrMinus(46), Message := 'period rejected');
+AssertFalse(Condition := CharIsNumberOrMinus(65), Message := 'letter rejected');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_PeriodAcceptedOnlyByOrPeriod" Id="{53df425e-5371-4b53-b008-da6d4bcadfc8}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_PeriodAcceptedOnlyByOrPeriod
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// act / assert
+AssertTrue(Condition := CharIsNumberOrPeriod(46), Message := 'period accepted');
+AssertTrue(Condition := CharIsNumberOrPeriod(48), Message := 'digit 0 accepted');
+AssertFalse(Condition := CharIsNumberOrPeriod(45), Message := 'minus rejected');
+AssertFalse(Condition := CharIsNumberOrPeriod(65), Message := 'letter rejected');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

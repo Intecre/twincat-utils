@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="FB_I_Controller_Tests" Id="{293ad5ea-8403-42d7-904d-28d6b7dc341e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_I_Controller_Tests EXTENDS TcUnit.FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_IntegratesErrorOverOneCycle();
+Test_AccumulatesOverCycles();
+Test_ClampsAtMaximum();
+Test_ClampsAtMinimum();
+Test_PauseHoldsTerm();
+Test_ResetClearsIntegral();
+Test_ZeroGainGivesZero();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_IntegratesErrorOverOneCycle" Id="{3f2a7185-1f12-46a1-9aff-70bd9557839c}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_IntegratesErrorOverOneCycle
+VAR
+  i : FB_I_Controller;
+  n : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// the test task runs at 10 ms, so one cycle adds Ki * error * 0.01
+i(ProcessVariable := 0.0, Setpoint := 1.0, Ki := 1.0, MaxIntegralComponent := 1000.0, MinIntegralComponent := -1000.0);
+AssertEquals_LREAL(Expected := 0.01, Actual := i.Term, Delta := 1.0E-6, Message := 'one cycle of integration');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_AccumulatesOverCycles" Id="{3a066fe1-a6cd-42aa-bf62-7efc458cdfe3}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_AccumulatesOverCycles
+VAR
+  i : FB_I_Controller;
+  n : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+FOR n := 1 TO 10 DO
+  i(ProcessVariable := 0.0, Setpoint := 1.0, Ki := 1.0, MaxIntegralComponent := 1000.0, MinIntegralComponent := -1000.0);
+END_FOR
+AssertEquals_LREAL(Expected := 0.1, Actual := i.Term, Delta := 1.0E-6, Message := 'ten cycles of integration');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ClampsAtMaximum" Id="{2a4a7f52-b69c-452f-ab6a-a774e64e7be6}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ClampsAtMaximum
+VAR
+  i : FB_I_Controller;
+  n : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+FOR n := 1 TO 10 DO
+  i(ProcessVariable := 0.0, Setpoint := 1.0, Ki := 1.0, MaxIntegralComponent := 0.05, MinIntegralComponent := -1000.0);
+END_FOR
+AssertEquals_LREAL(Expected := 0.05, Actual := i.Term, Delta := 1.0E-9, Message := 'integral held at the maximum');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ClampsAtMinimum" Id="{ff42cc64-c265-489c-b289-e4204fd90e4c}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ClampsAtMinimum
+VAR
+  i : FB_I_Controller;
+  n : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+FOR n := 1 TO 10 DO
+  i(ProcessVariable := 0.0, Setpoint := -1.0, Ki := 1.0, MaxIntegralComponent := 1000.0, MinIntegralComponent := -0.05);
+END_FOR
+AssertEquals_LREAL(Expected := -0.05, Actual := i.Term, Delta := 1.0E-9, Message := 'integral held at the minimum');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_PauseHoldsTerm" Id="{dd4d6b30-7de8-4486-a17b-333e09948980}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_PauseHoldsTerm
+VAR
+  i : FB_I_Controller;
+  n : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+FOR n := 1 TO 5 DO
+  i(ProcessVariable := 0.0, Setpoint := 1.0, Ki := 1.0, MaxIntegralComponent := 1000.0, MinIntegralComponent := -1000.0);
+END_FOR
+FOR n := 1 TO 5 DO
+  i(ProcessVariable := 0.0, Setpoint := 1.0, Ki := 1.0, MaxIntegralComponent := 1000.0, MinIntegralComponent := -1000.0, Pause := TRUE);
+END_FOR
+AssertEquals_LREAL(Expected := 0.05, Actual := i.Term, Delta := 1.0E-6, Message := 'no integration while paused');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ResetClearsIntegral" Id="{47b1f23d-01c1-4e1d-83cd-8f14116169d9}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ResetClearsIntegral
+VAR
+  i : FB_I_Controller;
+  n : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+FOR n := 1 TO 5 DO
+  i(ProcessVariable := 0.0, Setpoint := 1.0, Ki := 1.0, MaxIntegralComponent := 1000.0, MinIntegralComponent := -1000.0);
+END_FOR
+i(ProcessVariable := 0.0, Setpoint := 1.0, Ki := 1.0, MaxIntegralComponent := 1000.0, MinIntegralComponent := -1000.0, Reset := TRUE);
+AssertEquals_LREAL(Expected := 0.01, Actual := i.Term, Delta := 1.0E-6, Message := 'reset restarts integration from zero');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ZeroGainGivesZero" Id="{a586a676-c6e0-4a08-80d3-28d7ed955f73}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ZeroGainGivesZero
+VAR
+  i : FB_I_Controller;
+  n : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+i(ProcessVariable := 0.0, Setpoint := 1.0, Ki := 0.0, MaxIntegralComponent := 1000.0, MinIntegralComponent := -1000.0);
+AssertEquals_LREAL(Expected := 0.0, Actual := i.Term, Delta := 1.0E-9, Message := 'no gain, no term');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

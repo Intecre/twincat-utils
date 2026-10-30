@@ -6,7 +6,7 @@
     <ProjectGuid>{d1b062e0-87ea-4121-b516-d7e6660b0caa}</ProjectGuid>
     <SubObjectsSortedByName>True</SubObjectsSortedByName>
     <Name>IntecreUtilities</Name>
-    <ProgramVersion>3.1.4026.22</ProgramVersion>
+    <ProgramVersion>3.1.4026.25</ProgramVersion>
     <Application>{00896292-27dd-4d70-a117-dc9ae6d2506c}</Application>
     <TypeSystem>{1feb5e04-6256-41bd-9396-697d3a69b7df}</TypeSystem>
     <Implicit_Task_Info>{d4bc8210-7a19-49e9-a951-a7e2ce1e2c8e}</Implicit_Task_Info>
@@ -42,7 +42,18 @@
     <SelectedLibraryCategories>
       <Id>{d7292350-a6c3-11e8-98d0-529269fb1459}</Id>
     </SelectedLibraryCategories>
-    <Description>3.4.3.0 - corrects Task.TimeString bug
+    <Description>4.0.0.0 - TwinCAT 4026 release with unit tests and a TcPkg package.
+  - TestRunner PLC project added to the solution: 31 TcUnit suites, 165 tests, run on the usermode runtime.
+  - Published as a .library and as a TcPkg package (Intecre.Utilities) with the Beckhoff library packages as dependencies.
+  - Fixed: FB_Dictionary.Remove had its guard inverted (returned FALSE for keys that exist, removed nothing for keys that do not).
+  - Fixed: F_DictionaryValuesCrc read index 0 on every pass, so only the first value went into the CRC.
+  - Fixed: TryStringToWord accepted values above 65535 (the range check ran on the already-truncated WORD).
+  - Fixed: F_ConcatLarge measured its inputs with LEN, which stops at 255 characters; it now uses LEN2 so inputs over 255 characters are kept.
+  - Changed: TryStringToDint/Udint/Lreal/Word always set the output to 0 when they fail, including for an empty string.
+  - Changed: CharIsNumberOrMinus parameter renamed from Char (a reserved word in 4026) to bChar, matching its siblings. Positional callers are unaffected.
+  - Dependencies: Tc2_Math, Tc2_Standard, Tc2_System, Tc2_Utilities, Tc3_Module (stable TcPkg feed) and Tc2_MDP (testing feed only).
+
+3.4.3.0 - corrects Task.TimeString bug
 
 3.4.2.0 - recovered from another lib.
 3.4.1.0 - adds attribute to_string to E_LogSeverity
@@ -58,7 +69,7 @@
 3.1.5.0 Adding KL33xx to Terminal Interfaces
 3.1.4.0 Adding TryStringToDint
 3.1.3.0 Adding ObjectName to T_NamedBase</Description>
-    <ProjectVersion>3.4.3.0</ProjectVersion>
+    <ProjectVersion>4.0.0.0</ProjectVersion>
     <POUsForPropertyAccessIncluded>true</POUsForPropertyAccessIncluded>
     <GlobalVersionStructureIncluded>true</GlobalVersionStructureIncluded>
   </PropertyGroup>
@@ -465,8 +476,8 @@
   <ProjectExtensions>
     <PlcProjectOptions>
       <XmlArchive>
-        <Data>
-          <o xml:space="preserve" t="OptionKey">
+  <Data>
+    <o xml:space="preserve" t="OptionKey">
       <v n="Name">"&lt;ProjectRoot&gt;"</v>
       <d n="SubKeys" t="Hashtable" ckt="String" cvt="OptionKey">
         <v>{192FAD59-8248-4824-A8DE-9177C94C195A}</v>
@@ -474,6 +485,61 @@
           <v n="Name">"{192FAD59-8248-4824-A8DE-9177C94C195A}"</v>
           <d n="SubKeys" t="Hashtable" />
           <d n="Values" t="Hashtable" />
+        </o>
+        <v>{246001F4-279D-43AC-B241-948EB31120E1}</v>
+        <o>
+          <v n="Name">"{246001F4-279D-43AC-B241-948EB31120E1}"</v>
+          <d n="SubKeys" t="Hashtable" />
+          <d n="Values" t="Hashtable" />
+        </o>
+        <v>{29BD8D0C-3586-4548-BB48-497B9A01693F}</v>
+        <o>
+          <v n="Name">"{29BD8D0C-3586-4548-BB48-497B9A01693F}"</v>
+          <d n="SubKeys" t="Hashtable" ckt="String" cvt="OptionKey">
+            <v>NamingConventions</v>
+            <o>
+              <v n="Name">"NamingConventions"</v>
+              <d n="SubKeys" t="Hashtable" />
+              <d n="Values" t="Hashtable" />
+            </o>
+            <v>Rules</v>
+            <o>
+              <v n="Name">"Rules"</v>
+              <d n="SubKeys" t="Hashtable" />
+              <d n="Values" t="Hashtable" />
+            </o>
+          </d>
+          <d n="Values" t="Hashtable" ckt="String" cvt="Boolean">
+            <v>PerformStaticAnalyse</v>
+            <v>False</v>
+          </d>
+        </o>
+        <v>{40450F57-0AA3-4216-96F3-5444ECB29763}</v>
+        <o>
+          <v n="Name">"{40450F57-0AA3-4216-96F3-5444ECB29763}"</v>
+          <d n="SubKeys" t="Hashtable" />
+          <d n="Values" t="Hashtable" ckt="String" cvt="String">
+            <v>ActiveVisuProfile</v>
+            <v>IR0whWr8bwfyBwAAZPMnNwAAAABVAgAA/0805AAAAAABAAAAAAAAAAEaUwB5AHMAdABlAG0ALgBTAHQAcgBpAG4AZwACTHsAZgA5ADUAYgBiADQAMgA2AC0ANQA1ADIANAAtADQAYgA0ADUALQA5ADQAMAAwAC0AZgBiADAAZgAyAGUANwA3AGUANQAxAGIAfQADCE4AYQBtAGUABDJUAHcAaQBuAEMAQQBUACAAMwAuADEAIABCAHUAaQBsAGQAIAA0ADAAMgA2AC4AMgA1AAUWUAByAG8AZgBpAGwAZQBEAGEAdABhAAZMewAxADYAZQA1ADUAYgA2ADAALQA3ADAANAAzAC0ANABhADYAMwAtAGIANgA1AGIALQA2ADEANAA3ADEAMwA4ADcAOABkADQAMgB9AAcSTABpAGIAcgBhAHIAaQBlAHMACEx7ADMAYgBmAGQANQA0ADUAOQAtAGIAMAA3AGYALQA0AGQANgBlAC0AYQBlADEAYQAtAGEAOAAzADMANQA2AGEANQA1ADEANAAyAH0ACUx7ADkAYwA5ADUAOAA5ADYAOAAtADIAYwA4ADUALQA0ADEAYgBiAC0AOAA4ADcAMQAtADgAOQA1AGYAZgAxAGYAZQBkAGUAMQBhAH0ACg5WAGUAcgBzAGkAbwBuAAsGaQBuAHQADApVAHMAYQBnAGUADQpUAGkAdABsAGUADhpWAGkAcwB1AEUAbABlAG0ATQBlAHQAZQByAA8OQwBvAG0AcABhAG4AeQAQDFMAeQBzAHQAZQBtABESVgBpAHMAdQBFAGwAZQBtAHMAEjBWAGkAcwB1AEUAbABlAG0AcwBTAHAAZQBjAGkAYQBsAEMAbwBuAHQAcgBvAGwAcwATKFYAaQBzAHUARQBsAGUAbQBzAFcAaQBuAEMAbwBuAHQAcgBvAGwAcwAUJFYAaQBzAHUARQBsAGUAbQBUAGUAeAB0AEUAZABpAHQAbwByABUiVgBpAHMAdQBOAGEAdABpAHYAZQBDAG8AbgB0AHIAbwBsABYUVgBpAHMAdQBJAG4AcAB1AHQAcwAXGFYAaQBzAHUARQBsAGUAbQBCAGEAcwBlABgmRABlAHYAUABsAGEAYwBlAGgAbwBsAGQAZQByAHMAVQBzAGUAZAAZCGIAbwBvAGwAGiJQAGwAdQBnAGkAbgBDAG8AbgBzAHQAcgBhAGkAbgB0AHMAG0x7ADQAMwBkADUAMgBiAGMAZQAtADkANAAyAGMALQA0ADQAZAA3AC0AOQBlADkANAAtADEAYgBmAGQAZgAzADEAMABlADYAMwBjAH0AHBxBAHQATABlAGEAcwB0AFYAZQByAHMAaQBvAG4AHRRQAGwAdQBnAGkAbgBHAHUAaQBkAB4WUwB5AHMAdABlAG0ALgBHAHUAaQBkAB9IYQBmAGMAZAA1ADQANAA2AC0ANAA5ADEANAAtADQAZgBlADcALQBiAGIANwA4AC0AOQBiAGYAZgBlAGIANwAwAGYAZAAxADcAIBRVAHAAZABhAHQAZQBJAG4AZgBvACFMewBiADAAMwAzADYANgBhADgALQBiADUAYwAwAC0ANABiADkAYQAtAGEAMAAwAGUALQBlAGIAOAA2ADAAMQAxADEAMAA0AGMAMwB9ACIOVQBwAGQAYQB0AGUAcwAjTHsAMQA4ADYAOABmAGYAYwA5AC0AZQA0AGYAYwAtADQANQAzADIALQBhAGMAMAA2AC0AMQBlADMAOQBiAGIANQA1ADcAYgA2ADkAfQAkTHsAYQA1AGIAZAA0ADgAYwAzAC0AMABkADEANwAtADQAMQBiADUALQBiADEANgA0AC0ANQBmAGMANgBhAGQAMgBiADkANgBiADcAfQAlFk8AYgBqAGUAYwB0AHMAVAB5AHAAZQAmVFUAcABkAGEAdABlAEwAYQBuAGcAdQBhAGcAZQBNAG8AZABlAGwARgBvAHIAQwBvAG4AdgBlAHIAdABpAGIAbABlAEwAaQBiAHIAYQByAGkAZQBzACcQTABpAGIAVABpAHQAbABlACgUTABpAGIAQwBvAG0AcABhAG4AeQApHlUAcABkAGEAdABlAFAAcgBvAHYAaQBkAGUAcgBzACo4UwB5AHMAdABlAG0ALgBDAG8AbABsAGUAYwB0AGkAbwBuAHMALgBIAGEAcwBoAHQAYQBiAGwAZQArEnYAaQBzAHUAZQBsAGUAbQBzACwMcwB5AHMAdABlAG0ALUg2AGMAYgAxAGMAZABlADEALQBkADUAZABjAC0ANABhADMAYgAtADkAMAA1ADQALQAyADEAZgBhADcANQA2AGEAMwBmAGEANAAuKEkAbgB0AGUAcgBmAGEAYwBlAFYAZQByAHMAaQBvAG4ASQBuAGYAbwAvTHsAYwA2ADEAMQBlADQAMAAwAC0ANwBmAGIAOQAtADQAYwAzADUALQBiADkAYQBjAC0ANABlADMAMQA0AGIANQA5ADkANgA0ADMAfQAwGE0AYQBqAG8AcgBWAGUAcgBzAGkAbwBuADEYTQBpAG4AbwByAFYAZQByAHMAaQBvAG4AMgxMAGUAZwBhAGMAeQAzMEwAYQBuAGcAdQBhAGcAZQBNAG8AZABlAGwAVgBlAHIAcwBpAG8AbgBJAG4AZgBvADQwTABvAGEAZABMAGkAYgByAGEAcgBpAGUAcwBJAG4AdABvAFAAcgBvAGoAZQBjAHQANRpDAG8AbQBwAGEAdABpAGIAaQBsAGkAdAB5ANAAAhoD0AMBLQTQBQYaB9AHCBoBRQcJCNAACRoERQoLBAQAAAAKAAAAAAAAAAAAAADQDAutAgAAANANAS0O0A8BLRDQAAkaBEUKCwQEAAAACgAAAAAAAAAAAAAA0AwLrQEAAADQDQEtEdAPAS0Q0AAJGgRFCgsEBAAAAAcAAAAAAAAAAAAAANAMC60CAAAA0A0BLRLQDwEtENAACRoERQoLBAQAAAAKAAAAAAAAAAAAAADQDAutAgAAANANAS0T0A8BLRDQAAkaBEUKCwQEAAAACAAAAAAAAAAAAAAA0AwLrQIAAADQDQEtFNAPAS0Q0AAJGgRFCgsEBAAAAAkAAAAAAAAAAAAAANAMC60CAAAA0A0BLRXQDwEtENAACRoERQoLBAQAAAAHAAAAAAAAAAAAAADQDAutAgAAANANAS0W0A8BLRDQAAkaBEUKCwQEAAAACgAAAAAAAAAAAAAA0AwLrQQAAADQDQEtF9APAS0Q0BgZrQFFGhsB0AAbGgJFHAsEBAAAAAIAAAAAAAAAAAAAANAdHi0f0CAhGgJFIiMC0AAkGgVFCgsEAwAAAAMAAAAAAAAACgAAANAlC60AAAAA0AMBLSbQJwEtEdAoAS0Q0AAkGgVFCgsEAwAAAAMAAAAAAAAACgAAANAlC60BAAAA0AMBLSbQJwEtEdAoAS0QmikqAUUAAQLQAAEtK9AAAS0s0AAeLS3QLi8aA9AwC60BAAAA0DELrSQAAADQMhmtANAzLxoD0DALrQIAAADQMQutBgAAANAyGa0A0DQZrQDQNRmtAA==</v>
+          </d>
+        </o>
+        <v>{8A0FB252-96EB-4DCC-A5B4-B4804D05E2D6}</v>
+        <o>
+          <v n="Name">"{8A0FB252-96EB-4DCC-A5B4-B4804D05E2D6}"</v>
+          <d n="SubKeys" t="Hashtable" />
+          <d n="Values" t="Hashtable" ckt="String" cvt="Boolean">
+            <v>WriteLineIDs</v>
+            <v>False</v>
+          </d>
+        </o>
+        <v>{8F99A816-E488-41E4-9FA3-846536012284}</v>
+        <o>
+          <v n="Name">"{8F99A816-E488-41E4-9FA3-846536012284}"</v>
+          <d n="SubKeys" t="Hashtable" />
+          <d n="Values" t="Hashtable" ckt="String" cvt="String">
+            <v>DisabledWarningIds</v>
+            <v>5410</v>
+          </d>
         </o>
         <v>{E709B08B-B6E4-4966-8EED-D793A13114C6}</v>
         <o>
@@ -484,45 +550,32 @@
             <v>True</v>
           </d>
         </o>
-        <v>{29BD8D0C-3586-4548-BB48-497B9A01693F}</v>
+        <v>{eeeeeeee-3909-4298-8022-501ac3238667}</v>
         <o>
-          <v n="Name">"{29BD8D0C-3586-4548-BB48-497B9A01693F}"</v>
-          <d n="SubKeys" t="Hashtable" ckt="String" cvt="OptionKey">
-            <v>Rules</v>
-            <o>
-              <v n="Name">"Rules"</v>
-              <d n="SubKeys" t="Hashtable" />
-              <d n="Values" t="Hashtable" />
-            </o>
-          </d>
-          <d n="Values" t="Hashtable" />
-        </o>
-        <v>{8F99A816-E488-41E4-9FA3-846536012284}</v>
-        <o>
-          <v n="Name">"{8F99A816-E488-41E4-9FA3-846536012284}"</v>
+          <v n="Name">"{eeeeeeee-3909-4298-8022-501ac3238667}"</v>
           <d n="SubKeys" t="Hashtable" />
           <d n="Values" t="Hashtable" />
         </o>
-        <v>{40450F57-0AA3-4216-96F3-5444ECB29763}</v>
+        <v>{F66C7017-BDD8-4114-926C-81D6D687E35F}</v>
         <o>
-          <v n="Name">"{40450F57-0AA3-4216-96F3-5444ECB29763}"</v>
+          <v n="Name">"{F66C7017-BDD8-4114-926C-81D6D687E35F}"</v>
           <d n="SubKeys" t="Hashtable" />
-          <d n="Values" t="Hashtable" ckt="String" cvt="String">
-            <v>ActiveVisuProfile</v>
-            <v>IR0whWr8bwfwBwAA4nmM6gAAAABVAgAAmXe8kwAAAAABAAAAAAAAAAEaUwB5AHMAdABlAG0ALgBTAHQAcgBpAG4AZwACTHsAZgA5ADUAYgBiADQAMgA2AC0ANQA1ADIANAAtADQAYgA0ADUALQA5ADQAMAAwAC0AZgBiADAAZgAyAGUANwA3AGUANQAxAGIAfQADCE4AYQBtAGUABDBUAHcAaQBuAEMAQQBUACAAMwAuADEAIABCAHUAaQBsAGQAIAA0ADAAMgAyAC4AMAAFFlAAcgBvAGYAaQBsAGUARABhAHQAYQAGTHsAMQA2AGUANQA1AGIANgAwAC0ANwAwADQAMwAtADQAYQA2ADMALQBiADYANQBiAC0ANgAxADQANwAxADMAOAA3ADgAZAA0ADIAfQAHEkwAaQBiAHIAYQByAGkAZQBzAAhMewAzAGIAZgBkADUANAA1ADkALQBiADAANwBmAC0ANABkADYAZQAtAGEAZQAxAGEALQBhADgAMwAzADUANgBhADUANQAxADQAMgB9AAlMewA5AGMAOQA1ADgAOQA2ADgALQAyAGMAOAA1AC0ANAAxAGIAYgAtADgAOAA3ADEALQA4ADkANQBmAGYAMQBmAGUAZABlADEAYQB9AAoOVgBlAHIAcwBpAG8AbgALBmkAbgB0AAwKVQBzAGEAZwBlAA0KVABpAHQAbABlAA4aVgBpAHMAdQBFAGwAZQBtAE0AZQB0AGUAcgAPDkMAbwBtAHAAYQBuAHkAEAxTAHkAcwB0AGUAbQARElYAaQBzAHUARQBsAGUAbQBzABIwVgBpAHMAdQBFAGwAZQBtAHMAUwBwAGUAYwBpAGEAbABDAG8AbgB0AHIAbwBsAHMAEyhWAGkAcwB1AEUAbABlAG0AcwBXAGkAbgBDAG8AbgB0AHIAbwBsAHMAFCRWAGkAcwB1AEUAbABlAG0AVABlAHgAdABFAGQAaQB0AG8AcgAVIlYAaQBzAHUATgBhAHQAaQB2AGUAQwBvAG4AdAByAG8AbAAWFHYAaQBzAHUAaQBuAHAAdQB0AHMAFwxzAHkAcwB0AGUAbQAYGFYAaQBzAHUARQBsAGUAbQBCAGEAcwBlABkmRABlAHYAUABsAGEAYwBlAGgAbwBsAGQAZQByAHMAVQBzAGUAZAAaCGIAbwBvAGwAGyJQAGwAdQBnAGkAbgBDAG8AbgBzAHQAcgBhAGkAbgB0AHMAHEx7ADQAMwBkADUAMgBiAGMAZQAtADkANAAyAGMALQA0ADQAZAA3AC0AOQBlADkANAAtADEAYgBmAGQAZgAzADEAMABlADYAMwBjAH0AHRxBAHQATABlAGEAcwB0AFYAZQByAHMAaQBvAG4AHhRQAGwAdQBnAGkAbgBHAHUAaQBkAB8WUwB5AHMAdABlAG0ALgBHAHUAaQBkACBIYQBmAGMAZAA1ADQANAA2AC0ANAA5ADEANAAtADQAZgBlADcALQBiAGIANwA4AC0AOQBiAGYAZgBlAGIANwAwAGYAZAAxADcAIRRVAHAAZABhAHQAZQBJAG4AZgBvACJMewBiADAAMwAzADYANgBhADgALQBiADUAYwAwAC0ANABiADkAYQAtAGEAMAAwAGUALQBlAGIAOAA2ADAAMQAxADEAMAA0AGMAMwB9ACMOVQBwAGQAYQB0AGUAcwAkTHsAMQA4ADYAOABmAGYAYwA5AC0AZQA0AGYAYwAtADQANQAzADIALQBhAGMAMAA2AC0AMQBlADMAOQBiAGIANQA1ADcAYgA2ADkAfQAlTHsAYQA1AGIAZAA0ADgAYwAzAC0AMABkADEANwAtADQAMQBiADUALQBiADEANgA0AC0ANQBmAGMANgBhAGQAMgBiADkANgBiADcAfQAmFk8AYgBqAGUAYwB0AHMAVAB5AHAAZQAnVFUAcABkAGEAdABlAEwAYQBuAGcAdQBhAGcAZQBNAG8AZABlAGwARgBvAHIAQwBvAG4AdgBlAHIAdABpAGIAbABlAEwAaQBiAHIAYQByAGkAZQBzACgQTABpAGIAVABpAHQAbABlACkUTABpAGIAQwBvAG0AcABhAG4AeQAqHlUAcABkAGEAdABlAFAAcgBvAHYAaQBkAGUAcgBzACs4UwB5AHMAdABlAG0ALgBDAG8AbABsAGUAYwB0AGkAbwBuAHMALgBIAGEAcwBoAHQAYQBiAGwAZQAsEnYAaQBzAHUAZQBsAGUAbQBzAC1INgBjAGIAMQBjAGQAZQAxAC0AZAA1AGQAYwAtADQAYQAzAGIALQA5ADAANQA0AC0AMgAxAGYAYQA3ADUANgBhADMAZgBhADQALihJAG4AdABlAHIAZgBhAGMAZQBWAGUAcgBzAGkAbwBuAEkAbgBmAG8AL0x7AGMANgAxADEAZQA0ADAAMAAtADcAZgBiADkALQA0AGMAMwA1AC0AYgA5AGEAYwAtADQAZQAzADEANABiADUAOQA5ADYANAAzAH0AMBhNAGEAagBvAHIAVgBlAHIAcwBpAG8AbgAxGE0AaQBuAG8AcgBWAGUAcgBzAGkAbwBuADIMTABlAGcAYQBjAHkAMzBMAGEAbgBnAHUAYQBnAGUATQBvAGQAZQBsAFYAZQByAHMAaQBvAG4ASQBuAGYAbwA0MEwAbwBhAGQATABpAGIAcgBhAHIAaQBlAHMASQBuAHQAbwBQAHIAbwBqAGUAYwB0ADUaQwBvAG0AcABhAHQAaQBiAGkAbABpAHQAeQDQAAIaA9ADAS0E0AUGGgfQBwgaAUUHCQjQAAkaBEUKCwQDAAAABQAAAAoAAAAAAAAA0AwLrQIAAADQDQEtDtAPAS0Q0AAJGgRFCgsEAwAAAAUAAAAKAAAAFAAAANAMC60BAAAA0A0BLRHQDwEtENAACRoERQoLBAMAAAAFAAAACgAAAAAAAADQDAutAgAAANANAS0S0A8BLRDQAAkaBEUKCwQDAAAABQAAAAoAAAAUAAAA0AwLrQIAAADQDQEtE9APAS0Q0AAJGgRFCgsEAwAAAAUAAAAKAAAACgAAANAMC60CAAAA0A0BLRTQDwEtENAACRoERQoLBAMAAAAFAAAACgAAAAAAAADQDAutAgAAANANAS0V0A8BLRDQAAkaBEUKCwQDAAAABQAAAAoAAAAAAAAA0AwLrQIAAADQDQEtFtAPAS0X0AAJGgRFCgsEAwAAAAUAAAAKAAAAFAAAANAMC60EAAAA0A0BLRjQDwEtENAZGq0BRRscAdAAHBoCRR0LBAMAAAAFAAAACgAAAAAAAADQHh8tINAhIhoCRSMkAtAAJRoFRQoLBAMAAAADAAAAAAAAAAoAAADQJgutAAAAANADAS0n0CgBLRHQKQEtENAAJRoFRQoLBAMAAAADAAAAAAAAAAoAAADQJgutAQAAANADAS0n0CgBLRHQKQEtEJoqKwFFAAEC0AABLSzQAAEtF9AAHy0t0C4vGgPQMAutAQAAANAxC60TAAAA0DIarQDQMy8aA9AwC60CAAAA0DELrQMAAADQMhqtANA0Gq0A0DUarQA=</v>
+          <d n="Values" t="Hashtable" ckt="String" cvt="Boolean">
+            <v>CalcActiveTransOnly</v>
+            <v>True</v>
           </d>
         </o>
       </d>
       <d n="Values" t="Hashtable" />
     </o>
-        </Data>
-        <TypeList>
-          <Type n="Boolean">System.Boolean</Type>
-          <Type n="Hashtable">System.Collections.Hashtable</Type>
-          <Type n="OptionKey">{54dd0eac-a6d8-46f2-8c27-2f43c7e49861}</Type>
-          <Type n="String">System.String</Type>
-        </TypeList>
-      </XmlArchive>
+  </Data>
+  <TypeList>
+    <Type n="Boolean">System.Boolean</Type>
+    <Type n="Hashtable">System.Collections.Hashtable</Type>
+    <Type n="OptionKey">{54dd0eac-a6d8-46f2-8c27-2f43c7e49861}</Type>
+    <Type n="String">System.String</Type>
+  </TypeList>
+</XmlArchive>
     </PlcProjectOptions>
   </ProjectExtensions>
 </Project>

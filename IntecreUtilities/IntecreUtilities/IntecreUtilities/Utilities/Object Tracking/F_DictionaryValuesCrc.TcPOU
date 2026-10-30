@@ -29,7 +29,7 @@ END_IF
 
 FOR i := 1 TO (Dictionary.Count - 1) DO
 
-   IF NOT Dictionary.TryGetIndex(Index := 0, Key := sKey, Value := tValue) THEN
+   IF NOT Dictionary.TryGetIndex(Index := i, Key := sKey, Value := tValue) THEN
       F_DictionaryValuesCrc := 16#0000;
       RETURN;
    ELSE

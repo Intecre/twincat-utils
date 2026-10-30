@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<TcSmItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4026.25" ClassName="CNestedPlcProjDef">
+	<Project GUID="{89034478-88AB-4657-8C36-A3494C060169}" Name="TestRunner" PrjFilePath="..\..\TestRunner\TestRunner.plcproj" TmcFilePath="..\..\TestRunner\TestRunner.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" CopyTmcToTarget="true" SymbolicMapping="true">
+		<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{8F1EE025-E968-361F-4D81-56FCFC6B154A}" TmcPath="TestRunner\TestRunner.tmc">
+			<Name>TestRunner Instance</Name>
+			<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
+			<Contexts>
+				<Context>
+					<Id>0</Id>
+					<Name>PlcTask</Name>
+					<ManualConfig>
+						<OTCID>#x02010020</OTCID>
+					</ManualConfig>
+					<Priority>20</Priority>
+					<CycleTime>10000000</CycleTime>
+				</Context>
+			</Contexts>
+			<JsonDynPous><![CDATA[null]]></JsonDynPous>
+			<TaskPouOids>
+				<TaskPouOid Prio="20" OTCID="#x08502001"/>
+			</TaskPouOids>
+		</Instance>
+	</Project>
+</TcSmItem>

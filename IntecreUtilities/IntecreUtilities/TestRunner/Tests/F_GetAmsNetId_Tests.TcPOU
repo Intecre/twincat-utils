@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="F_GetAmsNetId_Tests" Id="{55c71a69-48c6-46e9-88b3-2994ec50d50a}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK F_GetAmsNetId_Tests EXTENDS TcUnit.FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_ZeroArrayMeansLocal();
+Test_FormatsNonZeroArray();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_ZeroArrayMeansLocal" Id="{3c7bcb24-4632-495f-8dff-4969bb5abab9}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ZeroArrayMeansLocal
+VAR
+  arr : T_AmsNetIdArr;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertEquals_STRING(Expected := '', Actual := F_GetAmsNetId(arr), Message := 'all-zero NetId maps to the local (empty) NetId');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_FormatsNonZeroArray" Id="{45b4ab3b-cea7-445b-b3e1-2050deaebe41}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_FormatsNonZeroArray
+VAR
+  arr : T_AmsNetIdArr;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+arr[0] := 5; arr[1] := 6; arr[2] := 7; arr[3] := 8; arr[4] := 1; arr[5] := 1;
+AssertEquals_STRING(Expected := '5.6.7.8.1.1', Actual := F_GetAmsNetId(arr), Message := 'NetId formatted as dotted text');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

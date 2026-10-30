@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="F_StringToTarg_Tests" Id="{79eb2b7d-38c5-4902-8047-6ceb1f469bf5}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK F_StringToTarg_Tests EXTENDS TcUnit.FB_TestSuite
+VAR
+  i : INT;
+  d : DINT;
+  lr : LREAL;
+  text : T_MaxString;
+  b : BOOL;
+  li : LINT;
+  targ : T_Arg;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_WritesInt();
+Test_WritesDint();
+Test_WritesLreal();
+Test_WritesString();
+Test_WritesBool();
+Test_UnsupportedTypeLeavesValue();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_WritesInt" Id="{d5b328d4-6831-41f7-a83d-7ed05635d59e}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_WritesInt
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+i := 0;
+targ := F_INT(i);
+F_StringToTarg('123', targ);
+AssertEquals_INT(Expected := 123, Actual := i, Message := 'INT written through the argument');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_WritesDint" Id="{309cd1e9-1d05-4893-bad7-d461d5259e06}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_WritesDint
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+d := 0;
+targ := F_DINT(d);
+F_StringToTarg('-99', targ);
+AssertEquals_DINT(Expected := -99, Actual := d, Message := 'DINT written through the argument');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_WritesLreal" Id="{e22b0435-6f0e-4e41-80cf-3fa88d23597c}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_WritesLreal
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+lr := 0.0;
+targ := F_LREAL(lr);
+F_StringToTarg('2.5', targ);
+AssertEquals_LREAL(Expected := 2.5, Actual := lr, Delta := 1.0E-9, Message := 'LREAL written through the argument');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_WritesString" Id="{cd85f9f5-98cb-484f-86e9-b21d85722ef9}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_WritesString
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+text := '';
+targ := F_STRING(text);
+F_StringToTarg('abc', targ);
+AssertEquals_STRING(Expected := 'abc', Actual := text, Message := 'STRING written through the argument');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_WritesBool" Id="{9e1cec5c-e0ae-48d9-9a46-c60b6f5b4747}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_WritesBool
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+b := FALSE;
+targ := F_BOOL(b);
+F_StringToTarg('TRUE', targ);
+AssertTrue(Condition := b, Message := 'BOOL written through the argument');
+F_StringToTarg('FALSE', targ);
+AssertFalse(Condition := b, Message := 'BOOL cleared through the argument');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_UnsupportedTypeLeavesValue" Id="{3f688731-cd7e-486e-8e7c-af9c52652334}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_UnsupportedTypeLeavesValue
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+li := 5;
+targ := F_LINT(li);
+F_StringToTarg('9', targ);
+AssertEquals_LINT(Expected := 5, Actual := li, Message := 'LINT is not handled and stays unchanged');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

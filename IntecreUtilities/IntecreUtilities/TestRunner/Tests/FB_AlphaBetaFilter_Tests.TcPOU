@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="FB_AlphaBetaFilter_Tests" Id="{c8ddac4f-52a2-454d-9347-89666adfdccd}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_AlphaBetaFilter_Tests EXTENDS TcUnit.FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_UnityAlphaTracksMeasurement();
+Test_HalfAlphaMovesHalfway();
+Test_ZeroDeltaDoesNotDivideByZero();
+Test_ConvergesToConstantInput();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_UnityAlphaTracksMeasurement" Id="{e45ee375-fa88-40b5-b162-8dfac71b2026}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_UnityAlphaTracksMeasurement
+VAR
+  filter : FB_AlphaBetaFilter;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+filter(measurement := 10.0, deltaInSecond := 0.01, alpha := 1.0, beta := 0.0);
+AssertEquals_LREAL(Expected := 10.0, Actual := filter.output, Delta := 1.0E-9, Message := 'alpha 1 passes the measurement through');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_HalfAlphaMovesHalfway" Id="{e5c13093-9a1d-4b59-8046-6957a1b26bf1}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_HalfAlphaMovesHalfway
+VAR
+  filter : FB_AlphaBetaFilter;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+filter(measurement := 10.0, deltaInSecond := 0.01, alpha := 0.5, beta := 0.0);
+AssertEquals_LREAL(Expected := 5.0, Actual := filter.output, Delta := 1.0E-9, Message := 'first step halfway from 0');
+filter(measurement := 10.0, deltaInSecond := 0.01, alpha := 0.5, beta := 0.0);
+AssertEquals_LREAL(Expected := 7.5, Actual := filter.output, Delta := 1.0E-9, Message := 'second step halfway again');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ZeroDeltaDoesNotDivideByZero" Id="{84cd7811-bab4-42a0-88c3-e535dffa6408}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ZeroDeltaDoesNotDivideByZero
+VAR
+  filter : FB_AlphaBetaFilter;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+filter(measurement := 10.0, deltaInSecond := 0.0, alpha := 0.5, beta := 0.1);
+AssertEquals_LREAL(Expected := 5.0, Actual := filter.output, Delta := 1.0E-9, Message := 'velocity term dropped when delta is 0');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ConvergesToConstantInput" Id="{54fc9633-964f-4550-8eb5-a08d4571cfa7}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ConvergesToConstantInput
+VAR
+  filter : FB_AlphaBetaFilter;
+  i : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+FOR i := 1 TO 500 DO
+  filter(measurement := 100.0, deltaInSecond := 0.01, alpha := 0.3, beta := 0.01);
+END_FOR
+AssertEquals_LREAL(Expected := 100.0, Actual := filter.output, Delta := 0.001, Message := 'filter settles on a constant input');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

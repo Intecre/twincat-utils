@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="T_MockExternalLogger" Id="{8d2414c2-7bad-4c51-9de4-156368cc1a74}" SpecialFunc="None">
+    <Declaration><![CDATA[// Test double for I_ExternalLogger: records the last message and severity.
+FUNCTION_BLOCK T_MockExternalLogger IMPLEMENTS I_ExternalLogger
+VAR
+  _lastMessage : T_MaxString;
+  _lastSeverity : E_LogSeverity;
+  _callCount : UDINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="AddToLog" Id="{5b283d17-b641-465e-b17f-c75613736a3d}">
+      <Declaration><![CDATA[METHOD AddToLog
+VAR_IN_OUT
+  Message : T_MaxString;
+END_VAR
+VAR_INPUT
+  LogSeverity : E_LogSeverity;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_lastMessage := Message;
+_lastSeverity := LogSeverity;
+_callCount := _callCount + 1;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{73f3deac-0aaf-41a7-a52c-9f6edfebe8fb}">
+      <Declaration><![CDATA[METHOD Reset
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_lastMessage := '';
+_lastSeverity := E_LogSeverity.None;
+_callCount := 0;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="CallCount" Id="{fc6721e5-18a3-4013-a238-15621776cf83}">
+      <Declaration><![CDATA[PROPERTY CallCount : UDINT]]></Declaration>
+      <Get Name="Get" Id="{5e34f9fc-0653-4bee-babe-58e8816a1c44}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[CallCount := _callCount;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="LastMessage" Id="{cc6169c8-5763-49f1-a452-8f6a85f96758}">
+      <Declaration><![CDATA[PROPERTY LastMessage : T_MaxString]]></Declaration>
+      <Get Name="Get" Id="{30e8cb48-e02d-42a0-a6a8-5029a868ee1d}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[LastMessage := _lastMessage;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="LastSeverity" Id="{28a9825c-bd62-4679-be40-f77e0e822744}">
+      <Declaration><![CDATA[PROPERTY LastSeverity : E_LogSeverity]]></Declaration>
+      <Get Name="Get" Id="{01f19026-cce3-4784-b53c-03c63de856da}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[LastSeverity := _lastSeverity;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="T_Timer_Tests" Id="{47c54e74-0bc8-4140-9899-94d246359070}" SpecialFunc="None">
+    <Declaration><![CDATA[// Timed tests: each test is a small state machine driven every cycle.
+FUNCTION_BLOCK T_Timer_Tests EXTENDS TcUnit.FB_TestSuite
+VAR
+  timer : T_Timer;
+  pulseTimer : T_Timer;
+  periodTimer : T_Timer;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_QOnAndQOffFollowThePeriod();
+Test_PulseTrainTogglesEachHalfPeriod();
+Test_SetPeriodReadsBackWithMinimumOfOneMs();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_QOnAndQOffFollowThePeriod" Id="{1d04912e-0ed5-48d2-a618-31ccaf662cb8}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_QOnAndQOffFollowThePeriod
+VAR_INST
+  state : INT := 10;
+  wait : TON;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+wait();
+
+CASE state OF
+
+  10:
+
+    // arrange
+    timer.SetPeriod := T#50MS;
+    timer.Signal := TRUE;
+
+    // assert: nothing has elapsed yet
+    AssertFalse(Condition := timer.Q_On, Message := 'Q_On is not set as soon as the signal arrives');
+    AssertTrue(Condition := timer.ElapsedTimeInMs < 20, Message := 'elapsed time starts near zero');
+    state := 20;
+    wait(IN := TRUE, PT := T#150MS);
+
+  20:
+
+    IF NOT wait.Q THEN
+      RETURN;
+    END_IF
+    wait(IN := FALSE);
+
+    // assert: period elapsed with the signal on
+    AssertTrue(Condition := timer.Q_On, Message := 'Q_On after the period has elapsed');
+    AssertFalse(Condition := timer.Q_Off, Message := 'Q_Off stays clear while the signal is on');
+    AssertTrue(Condition := (timer.ElapsedTimeInMs >= 100) AND (timer.ElapsedTimeInMs < 400), Message := 'elapsed time tracks the wait');
+    AssertTrue(Condition := timer.ElapsedTime >= T#100MS, Message := 'elapsed time as TIME');
+
+    // act: drop the signal
+    timer.Signal := FALSE;
+    AssertEquals_LINT(Expected := 0, Actual := timer.ElapsedTimeInMs, Message := 'elapsed time reads zero once the signal is off');
+    AssertFalse(Condition := timer.Q_On, Message := 'Q_On clears with the signal');
+    AssertFalse(Condition := timer.Q_Off, Message := 'Q_Off needs the period to elapse first');
+    state := 30;
+    wait(IN := TRUE, PT := T#150MS);
+
+  30:
+
+    IF NOT wait.Q THEN
+      RETURN;
+    END_IF
+    wait(IN := FALSE);
+
+    // assert: period elapsed with the signal off
+    AssertTrue(Condition := timer.Q_Off, Message := 'Q_Off after the period has elapsed with the signal off');
+    AssertFalse(Condition := timer.Q_On, Message := 'Q_On stays clear while the signal is off');
+    TEST_FINISHED_NAMED(__POUNAME());
+    state := 40;
+
+  40:
+    ; // finished
+
+END_CASE
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_PulseTrainTogglesEachHalfPeriod" Id="{3873350a-9ec4-4d46-b9d9-22b1f38bb007}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_PulseTrainTogglesEachHalfPeriod
+VAR_INST
+  state : INT := 10;
+  wait : TON;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+wait();
+
+CASE state OF
+
+  10:
+
+    // arrange: 400 ms period, so the output is high from 200 ms to 400 ms
+    pulseTimer.SetPeriod := T#400MS;
+    pulseTimer.Signal := TRUE;
+    AssertFalse(Condition := pulseTimer.Q_PulseTrain, Message := 'pulse train starts low');
+    state := 20;
+    wait(IN := TRUE, PT := T#300MS);
+
+  20:
+
+    IF NOT wait.Q THEN
+      RETURN;
+    END_IF
+    wait(IN := FALSE);
+    AssertTrue(Condition := pulseTimer.Q_PulseTrain, Message := 'pulse train high in the second half of the period');
+    state := 30;
+    wait(IN := TRUE, PT := T#200MS);
+
+  30:
+
+    IF NOT wait.Q THEN
+      RETURN;
+    END_IF
+    wait(IN := FALSE);
+    AssertFalse(Condition := pulseTimer.Q_PulseTrain, Message := 'pulse train low in the first half of the next period');
+    pulseTimer.Signal := FALSE;
+    TEST_FINISHED_NAMED(__POUNAME());
+    state := 40;
+
+  40:
+    ; // finished
+
+END_CASE
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_SetPeriodReadsBackWithMinimumOfOneMs" Id="{51242a85-81c9-48ea-a40c-be8311c42def}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_SetPeriodReadsBackWithMinimumOfOneMs
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+periodTimer.SetPeriod := T#1S;
+AssertEquals_TIME(Expected := T#1S, Actual := periodTimer.SetPeriod, Message := 'period reads back');
+periodTimer.SetPeriod := T#0MS;
+AssertEquals_TIME(Expected := T#1MS, Actual := periodTimer.SetPeriod, Message := 'period never below 1 ms');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

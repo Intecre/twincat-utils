@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="FB_PointerList_Tests" Id="{44b8ef3a-3347-432a-971d-f6a7468523c1}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_PointerList_Tests EXTENDS TcUnit.FB_TestSuite
+VAR
+  list : FB_PointerList;
+  a, b, c : INT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_AddAndContains();
+Test_FindIndexReturnsPosition();
+Test_GetIndexReturnsPointer();
+Test_RemoveIndexShiftsItems();
+Test_ClearEmptiesList();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_AddAndContains" Id="{82a3a2ec-f832-4ad5-b3ef-485139c83abd}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_AddAndContains
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem(ADR(a));
+list.AddItem(ADR(b));
+AssertEquals_UDINT(Expected := 2, Actual := list.Count, Message := 'count after two adds');
+AssertTrue(Condition := list.Contains(ADR(b)), Message := 'added pointer found');
+AssertFalse(Condition := list.Contains(ADR(c)), Message := 'missing pointer not found');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_FindIndexReturnsPosition" Id="{28761c75-685e-4d7a-97d2-19f2c3480708}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_FindIndexReturnsPosition
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem(ADR(a));
+list.AddItem(ADR(b));
+AssertEquals_INT(Expected := 1, Actual := list.FindIndex(ADR(b)), Message := 'index of the second pointer');
+AssertEquals_INT(Expected := -1, Actual := list.FindIndex(ADR(c)), Message := 'missing pointer gives -1');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_GetIndexReturnsPointer" Id="{c7855745-d7d3-4419-82c4-c4a886f10408}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_GetIndexReturnsPointer
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem(ADR(a));
+list.AddItem(ADR(b));
+AssertTrue(Condition := list.GetIndex(1) = ADR(b), Message := 'pointer at index 1');
+AssertTrue(Condition := list.GetIndex(7) = 0, Message := 'out of range gives null');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RemoveIndexShiftsItems" Id="{8f9bff59-2797-4ded-9e62-ba37d1fb0f8b}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RemoveIndexShiftsItems
+VAR
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem(ADR(a));
+list.AddItem(ADR(b));
+list.AddItem(ADR(c));
+ok := list.RemoveIndex(0);
+AssertTrue(Condition := ok, Message := 'remove succeeds');
+AssertEquals_UDINT(Expected := 2, Actual := list.Count, Message := 'count after remove');
+AssertTrue(Condition := list.GetIndex(0) = ADR(b), Message := 'second pointer shifted to the front');
+AssertTrue(Condition := list.GetIndex(1) = ADR(c), Message := 'third pointer shifted down');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ClearEmptiesList" Id="{5e0d73e0-8b10-4f5a-a79c-79e989440182}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ClearEmptiesList
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+list.Clear();
+list.AddItem(ADR(a));
+list.Clear();
+AssertEquals_UDINT(Expected := 0, Actual := list.Count, Message := 'count after clear');
+AssertFalse(Condition := list.Contains(ADR(a)), Message := 'pointers gone after clear');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

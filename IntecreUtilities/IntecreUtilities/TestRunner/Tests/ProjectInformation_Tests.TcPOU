@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="ProjectInformation_Tests" Id="{6c643318-cb51-463a-86cd-2b298e83f5d7}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK ProjectInformation_Tests EXTENDS TcUnit.FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_VersionIsFourPointZero();
+Test_TitleAndCompany();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_VersionIsFourPointZero" Id="{a479a1da-6388-4562-8a17-5e0761ca0380}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_VersionIsFourPointZero
+VAR
+  version : ST_LibVersion;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+version := F_GetVersion();
+AssertEquals_STRING(Expected := '4.0.0.0', Actual := version.sVersion, Message := 'library version string');
+AssertEquals_UINT(Expected := 4, Actual := version.iMajor, Message := 'major version');
+AssertEquals_UINT(Expected := 0, Actual := version.iMinor, Message := 'minor version');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_TitleAndCompany" Id="{9533a47f-f557-4686-b84c-a1c50544af0e}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_TitleAndCompany
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertEquals_WSTRING(Expected := "Intecre.Utilities", Actual := F_GetTitle(), Message := 'library title');
+AssertEquals_WSTRING(Expected := "Intecre Ltd", Actual := F_GetCompany(), Message := 'library company');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="TryStringToUdint_Tests" Id="{8f69dd1a-97af-4ded-acbc-a67eecbf5282}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK TryStringToUdint_Tests EXTENDS TcUnit.FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_ParsesZero();
+Test_ParsesMaxValue();
+Test_RejectsNegative();
+Test_RejectsEmptyString();
+Test_RejectsTrailingSpace();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_ParsesZero" Id="{46d6448f-4a1a-4c7b-8668-8aa03517a164}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ParsesZero
+VAR
+  value : UDINT;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// act
+ok := TryStringToUdint('0', value);
+
+// assert
+AssertTrue(Condition := ok, Message := '0 parses');
+AssertEquals_UDINT(Expected := 0, Actual := value, Message := 'parsed value');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ParsesMaxValue" Id="{c808b405-88ed-4e33-bd28-b44bfdca249c}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ParsesMaxValue
+VAR
+  value : UDINT;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// act
+ok := TryStringToUdint('4294967295', value);
+
+// assert
+AssertTrue(Condition := ok, Message := 'UDINT max parses');
+AssertEquals_UDINT(Expected := 4294967295, Actual := value, Message := 'parsed value');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RejectsNegative" Id="{f333a0d3-9b6d-41e7-8744-f7acbddd9d85}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RejectsNegative
+VAR
+  value : UDINT;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+value := 99;
+
+// act
+ok := TryStringToUdint('-1', value);
+
+// assert
+AssertFalse(Condition := ok, Message := 'negative rejected');
+AssertEquals_UDINT(Expected := 0, Actual := value, Message := 'value cleared on failure');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RejectsEmptyString" Id="{178e20f9-d7b1-4162-8563-883105a28dd9}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RejectsEmptyString
+VAR
+  value : UDINT;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+value := 99;
+
+// act
+ok := TryStringToUdint('', value);
+
+// assert
+AssertFalse(Condition := ok, Message := 'empty string rejected');
+AssertEquals_UDINT(Expected := 0, Actual := value, Message := 'value cleared on failure');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RejectsTrailingSpace" Id="{d4cd8322-c1a6-4eef-9634-e8c4f7a650ea}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RejectsTrailingSpace
+VAR
+  value : UDINT;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// act
+ok := TryStringToUdint('12 ', value);
+
+// assert
+AssertFalse(Condition := ok, Message := 'trailing space rejected');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

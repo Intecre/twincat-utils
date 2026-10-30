@@ -1,0 +1,303 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="FB_StringList_Tests" Id="{920ef9ae-be1c-49b5-bdff-f06f91e089a7}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_StringList_Tests EXTENDS TcUnit.FB_TestSuite
+VAR
+  list : FB_StringList;
+  copy : ARRAY[0..GVL_List.LIST_SIZE - 1] OF T_MaxString;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_AddItemIncrementsCount();
+Test_ContainsFindsAddedItem();
+Test_FindIndexReturnsPosition();
+Test_GetIndexReturnsItem();
+Test_TryGetIndexLeavesItemOnFailure();
+Test_RemoveIndexShiftsItems();
+Test_RemoveIndexRejectsOutOfRange();
+Test_GetAndRemoveIndex();
+Test_ClearEmptiesList();
+Test_RejectsAddWhenFull();
+Test_ContainsPartialMatchesSubstring();
+Test_CopyListAndClearCopiesThenEmpties();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_AddItemIncrementsCount" Id="{3de0cb7a-6724-45b9-8c60-a622139457b4}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_AddItemIncrementsCount
+VAR
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+list.Clear();
+
+// act
+ok := list.AddItem('one');
+
+// assert
+AssertTrue(Condition := ok, Message := 'add succeeds');
+AssertEquals_UDINT(Expected := 1, Actual := list.Count, Message := 'count after one add');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ContainsFindsAddedItem" Id="{c96e09af-8659-4930-a327-437d1e4fd0b1}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ContainsFindsAddedItem
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+list.Clear();
+list.AddItem('one');
+list.AddItem('two');
+
+// assert
+AssertTrue(Condition := list.Contains('two'), Message := 'added item found');
+AssertFalse(Condition := list.Contains('three'), Message := 'missing item not found');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_FindIndexReturnsPosition" Id="{d0ce7bf3-adb7-4ce0-8d98-7d82ed1ccd38}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_FindIndexReturnsPosition
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+list.Clear();
+list.AddItem('a');
+list.AddItem('b');
+list.AddItem('c');
+
+// assert
+AssertEquals_INT(Expected := 2, Actual := list.FindIndex('c'), Message := 'index of the third item');
+AssertEquals_INT(Expected := -1, Actual := list.FindIndex('zzz'), Message := 'missing item gives -1');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_GetIndexReturnsItem" Id="{3838fbbe-03d2-4249-877d-187b2660eaf7}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_GetIndexReturnsItem
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+list.Clear();
+list.AddItem('a');
+list.AddItem('b');
+
+// assert
+AssertEquals_STRING(Expected := 'b', Actual := list.GetIndex(1), Message := 'item at index 1');
+AssertEquals_STRING(Expected := '', Actual := list.GetIndex(5), Message := 'out of range gives empty');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_TryGetIndexLeavesItemOnFailure" Id="{f632de85-14dd-4a82-9201-cbd89993f85c}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_TryGetIndexLeavesItemOnFailure
+VAR
+  ok : BOOL;
+  item : T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+list.Clear();
+list.AddItem('a');
+item := 'unchanged';
+
+// act
+ok := list.TryGetIndex(5, item);
+
+// assert
+AssertFalse(Condition := ok, Message := 'out of range fails');
+AssertEquals_STRING(Expected := 'unchanged', Actual := item, Message := 'item untouched');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RemoveIndexShiftsItems" Id="{3afb4b1a-b153-4587-9aaf-0da45065ddbb}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RemoveIndexShiftsItems
+VAR
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+list.Clear();
+list.AddItem('a');
+list.AddItem('b');
+list.AddItem('c');
+
+// act
+ok := list.RemoveIndex(1);
+
+// assert
+AssertTrue(Condition := ok, Message := 'remove succeeds');
+AssertEquals_UDINT(Expected := 2, Actual := list.Count, Message := 'count after remove');
+AssertEquals_STRING(Expected := 'a', Actual := list.GetIndex(0), Message := 'first item kept');
+AssertEquals_STRING(Expected := 'c', Actual := list.GetIndex(1), Message := 'last item shifted down');
+AssertEquals_STRING(Expected := '', Actual := list.GetIndex(2), Message := 'old slot cleared');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RemoveIndexRejectsOutOfRange" Id="{fcba2d6b-55c6-4b31-b64e-9847745363aa}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RemoveIndexRejectsOutOfRange
+VAR
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+list.Clear();
+list.AddItem('a');
+
+// act
+ok := list.RemoveIndex(1);
+
+// assert
+AssertFalse(Condition := ok, Message := 'out of range rejected');
+AssertEquals_UDINT(Expected := 1, Actual := list.Count, Message := 'count unchanged');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_GetAndRemoveIndex" Id="{5f932d34-2285-4fe2-b8b3-0b4345b0a72d}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_GetAndRemoveIndex
+VAR
+  item : T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+list.Clear();
+list.AddItem('a');
+list.AddItem('b');
+
+// act
+item := list.GetAndRemoveIndex(0);
+
+// assert
+AssertEquals_STRING(Expected := 'a', Actual := item, Message := 'removed item returned');
+AssertEquals_UDINT(Expected := 1, Actual := list.Count, Message := 'count after remove');
+AssertEquals_STRING(Expected := 'b', Actual := list.GetIndex(0), Message := 'remaining item shifted down');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ClearEmptiesList" Id="{453fcb9f-d315-4ef7-be85-bea379192921}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ClearEmptiesList
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+list.Clear();
+list.AddItem('a');
+list.AddItem('b');
+
+// act
+list.Clear();
+
+// assert
+AssertEquals_UDINT(Expected := 0, Actual := list.Count, Message := 'count after clear');
+AssertFalse(Condition := list.Contains('a'), Message := 'items gone after clear');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_RejectsAddWhenFull" Id="{e3886283-2ae3-4d89-a155-95ac03885942}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_RejectsAddWhenFull
+VAR
+  i : UINT;
+  ok : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+list.Clear();
+FOR i := 1 TO GVL_List.LIST_SIZE DO
+  list.AddItem(CONCAT('item', TO_STRING(i)));
+END_FOR
+
+// act
+ok := list.AddItem('overflow');
+
+// assert
+AssertEquals_UDINT(Expected := TO_UDINT(GVL_List.LIST_SIZE), Actual := list.Count, Message := 'list holds LIST_SIZE items');
+AssertFalse(Condition := ok, Message := 'add rejected when full');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ContainsPartialMatchesSubstring" Id="{12d66ec6-756c-41cb-be9e-8f6a5588276e}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ContainsPartialMatchesSubstring
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+list.Clear();
+list.AddItem('hello world');
+
+// assert
+AssertTrue(Condition := list.ContainsPartial('lo wo'), Message := 'substring found');
+AssertFalse(Condition := list.ContainsPartial('xyz'), Message := 'missing substring not found');
+AssertEquals_INT(Expected := 0, Actual := list.FindIndexPartialKey('world'), Message := 'index of the partial match');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_CopyListAndClearCopiesThenEmpties" Id="{3a4817eb-ccb4-48a7-8b83-f49ec6ec56cb}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_CopyListAndClearCopiesThenEmpties
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+list.Clear();
+list.AddItem('a');
+list.AddItem('b');
+
+// act
+list.CopyListAndClear(copy);
+
+// assert
+AssertEquals_STRING(Expected := 'a', Actual := copy[0], Message := 'first item copied');
+AssertEquals_STRING(Expected := 'b', Actual := copy[1], Message := 'second item copied');
+AssertEquals_UDINT(Expected := 0, Actual := list.Count, Message := 'list emptied');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -15,10 +15,12 @@ VAR
    u : UDINT;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[// check parsing to UDINT possible, then validate size of word.
+      <ST><![CDATA[sVal := 0;
+
+// check parsing to UDINT possible, then validate size of word.
 IF TryStringToUdint(sStringToParse, u) THEN
    // check within WORD size.
-   IF UDINT_TO_WORD(u) <= 65535 THEN
+   IF u <= 65535 THEN
       sVal := STRING_TO_WORD(sStringToParse);
       TryStringToWord := TRUE;
    END_IF

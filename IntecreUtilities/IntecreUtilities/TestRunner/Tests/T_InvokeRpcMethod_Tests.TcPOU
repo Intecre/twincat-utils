@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="T_InvokeRpcMethod_Tests" Id="{ba479a6d-1867-428c-8157-90a8d8ba30b7}" SpecialFunc="None">
+    <Declaration><![CDATA[// ADS integration: calls an RPC-enabled method of this PLC through ADS. The suite instance in MAIN must be named suiteInvokeRpc.
+FUNCTION_BLOCK T_InvokeRpcMethod_Tests EXTENDS TcUnit.FB_TestSuite
+VAR
+  rpcTarget : T_RpcTarget;
+  invoke : T_InvokeRpcMethod;
+  addParams : ST_RpcAddParams;
+  result : DINT;
+  handle : ST_SymbolHandle;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_InvokesMethodOverAds();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_InvokesMethodOverAds" Id="{b6170499-7dd8-4798-a112-e98f9e4bd7ea}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_InvokesMethodOverAds
+VAR_INST
+  state : INT := 10;
+  wait : TON;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+invoke();
+wait();
+
+CASE state OF
+
+  10:
+
+    // arrange: call T_RpcTarget.Add on this PLC's own instance through ADS
+    addParams.a := 20;
+    addParams.b := 22;
+    result := 0;
+    handle.Handle := 0;
+    handle.SymbolAddress.SymbolName := 'MAIN.suiteInvokeRpc.rpcTarget#AddNumbers';
+    handle.SymbolAddress.Ads.port := 851;
+    handle.SymbolAddress.WriteRef := F_BIGTYPE(pData := ADR(addParams), cbLen := SIZEOF(addParams));
+    handle.SymbolAddress.ReadRef := F_BIGTYPE(pData := ADR(result), cbLen := SIZEOF(result));
+
+    // act
+    AssertTrue(Condition := invoke.TryInvokeMethodCall(symbolHandle := handle), Message := 'invoke request accepted');
+    AssertTrue(Condition := invoke.Busy, Message := 'busy while the call is in flight');
+    state := 20;
+    wait(IN := TRUE, PT := T#10S);
+
+  20:
+
+    IF invoke.Done THEN
+      wait(IN := FALSE);
+      AssertEquals_DINT(Expected := 42, Actual := result, Message := 'the RPC method returned a + b');
+      AssertEquals_DINT(Expected := 42, Actual := rpcTarget.LastSum, Message := 'the method ran on the target instance');
+      AssertFalse(Condition := invoke.Busy, Message := 'not busy once done');
+      TEST_FINISHED_NAMED(__POUNAME());
+      state := 30;
+
+    ELSIF invoke.Error OR wait.Q THEN
+      wait(IN := FALSE);
+      AssertTrue(Condition := FALSE, Message := 'ADS RPC call failed or timed out');
+      TEST_FINISHED_NAMED(__POUNAME());
+      state := 30;
+
+    END_IF
+
+  30:
+    ; // finished
+
+END_CASE
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

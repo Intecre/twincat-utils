@@ -1,0 +1,286 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <FileVersion>1.0.0.0</FileVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{89034478-88ab-4657-8c36-a3494c060169}</ProjectGuid>
+    <SubObjectsSortedByName>True</SubObjectsSortedByName>
+    <DownloadApplicationInfo>true</DownloadApplicationInfo>
+    <WriteProductVersion>true</WriteProductVersion>
+    <GenerateTpy>false</GenerateTpy>
+    <Name>TestRunner</Name>
+    <ProgramVersion>3.1.4026.25</ProgramVersion>
+    <Application>{93c433f7-15bb-4ac2-a5c5-ddfd3685ee65}</Application>
+    <TypeSystem>{25714d2d-d8f9-468b-816b-cb99d3926846}</TypeSystem>
+    <Implicit_Task_Info>{60c36035-2f83-4f3c-b88f-d6e553963045}</Implicit_Task_Info>
+    <Implicit_KindOfTask>{7540a5aa-ac35-4016-9348-7dd560c5df56}</Implicit_KindOfTask>
+    <Implicit_Jitter_Distribution>{5853ce6e-6dab-4171-a95c-00fdf311b67c}</Implicit_Jitter_Distribution>
+    <LibraryReferences>{16877b01-c3e0-4e8b-ab6b-35def10bc835}</LibraryReferences>
+    <Company>Intecre Ltd</Company>
+    <Released>false</Released>
+    <Title>TestRunner</Title>
+    <ProjectVersion>1.0.0.0</ProjectVersion>
+    <Description>TcUnit test suites for the Intecre.Utilities library. Not a library; activate it on a runtime (the usermode runtime works) to run the tests.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="MAIN.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PlcTask.TcTTO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\CharIsNumber_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\TryStringToDint_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\TryStringToUdint_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\TryStringToWord_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\TryStringToLreal_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\F_Concat_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\F_ConcatLarge_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\F_Gate_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\FB_StringList_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\FB_UdintList_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\FB_PointerList_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\FB_LongStringList_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\FB_TargList_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\FB_Dictionary_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\F_DictionaryValuesCrc_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\FB_AlphaBetaFilter_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\FB_P_Control_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\FB_I_Controller_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\FB_PI_Controller_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\T_Task_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\T_NamedBase_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\Logger_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\FB_Assert_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\F_GetKL306xState_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\ProjectInformation_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\F_TargToString_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\F_StringToTarg_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\F_GetAmsNetId_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\T_Timer_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\T_GetHandle_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\T_InvokeRpcMethod_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mocks\T_MockExternalLogger.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mocks\T_RpcTarget.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mocks\ST_RpcAddParams.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <PlaceholderReference Include="Tc2_Standard">
+      <DefaultResolution>Tc2_Standard, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_Standard</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc2_System">
+      <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_System</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc2_Utilities">
+      <DefaultResolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_Utilities</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc3_Module">
+      <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc3_Module</Namespace>
+      <SystemLibrary>true</SystemLibrary>
+    </PlaceholderReference>
+    <PlaceholderReference Include="TcUnit">
+      <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
+      <Namespace>TcUnit</Namespace>
+      <Parameters>
+        <Parameter ListName="GVL_PARAM_TCUNIT">
+          <Key>XUNITENABLEPUBLISH</Key>
+          <Value>TRUE</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT">
+          <Key>XUNITFILEPATH</Key>
+          <Value>'C:\TcUnit_xUnit_testresults.xml'</Value>
+        </Parameter>
+      </Parameters>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Intecre.Utilities">
+      <DefaultResolution>Intecre.Utilities, * (Intecre Ltd)</DefaultResolution>
+      <Namespace>Intecre_Utilities</Namespace>
+    </PlaceholderReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Mocks" />
+    <Folder Include="Tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestRunner.tmc">
+      <SubType>Content</SubType>
+    </None>
+  </ItemGroup>
+  <ProjectExtensions>
+    <PlcProjectOptions>
+      <XmlArchive>
+  <Data>
+    <o xml:space="preserve" t="OptionKey">
+      <v n="Name">"&lt;ProjectRoot&gt;"</v>
+      <d n="SubKeys" t="Hashtable" ckt="String" cvt="OptionKey">
+        <v>{192FAD59-8248-4824-A8DE-9177C94C195A}</v>
+        <o>
+          <v n="Name">"{192FAD59-8248-4824-A8DE-9177C94C195A}"</v>
+          <d n="SubKeys" t="Hashtable" />
+          <d n="Values" t="Hashtable" />
+        </o>
+        <v>{246001F4-279D-43AC-B241-948EB31120E1}</v>
+        <o>
+          <v n="Name">"{246001F4-279D-43AC-B241-948EB31120E1}"</v>
+          <d n="SubKeys" t="Hashtable" />
+          <d n="Values" t="Hashtable" />
+        </o>
+        <v>{29BD8D0C-3586-4548-BB48-497B9A01693F}</v>
+        <o>
+          <v n="Name">"{29BD8D0C-3586-4548-BB48-497B9A01693F}"</v>
+          <d n="SubKeys" t="Hashtable" ckt="String" cvt="OptionKey">
+            <v>NamingConventions</v>
+            <o>
+              <v n="Name">"NamingConventions"</v>
+              <d n="SubKeys" t="Hashtable" />
+              <d n="Values" t="Hashtable" />
+            </o>
+            <v>Rules</v>
+            <o>
+              <v n="Name">"Rules"</v>
+              <d n="SubKeys" t="Hashtable" />
+              <d n="Values" t="Hashtable" />
+            </o>
+          </d>
+          <d n="Values" t="Hashtable" ckt="String" cvt="Boolean">
+            <v>PerformStaticAnalyse</v>
+            <v>False</v>
+          </d>
+        </o>
+        <v>{40450F57-0AA3-4216-96F3-5444ECB29763}</v>
+        <o>
+          <v n="Name">"{40450F57-0AA3-4216-96F3-5444ECB29763}"</v>
+          <d n="SubKeys" t="Hashtable" />
+          <d n="Values" t="Hashtable" ckt="String" cvt="String">
+            <v>ActiveVisuProfile</v>
+            <v>IR0whWr8bwfyBwAAZPMnNwAAAABVAgAA/0805AAAAAABAAAAAAAAAAEaUwB5AHMAdABlAG0ALgBTAHQAcgBpAG4AZwACTHsAZgA5ADUAYgBiADQAMgA2AC0ANQA1ADIANAAtADQAYgA0ADUALQA5ADQAMAAwAC0AZgBiADAAZgAyAGUANwA3AGUANQAxAGIAfQADCE4AYQBtAGUABDJUAHcAaQBuAEMAQQBUACAAMwAuADEAIABCAHUAaQBsAGQAIAA0ADAAMgA2AC4AMgA1AAUWUAByAG8AZgBpAGwAZQBEAGEAdABhAAZMewAxADYAZQA1ADUAYgA2ADAALQA3ADAANAAzAC0ANABhADYAMwAtAGIANgA1AGIALQA2ADEANAA3ADEAMwA4ADcAOABkADQAMgB9AAcSTABpAGIAcgBhAHIAaQBlAHMACEx7ADMAYgBmAGQANQA0ADUAOQAtAGIAMAA3AGYALQA0AGQANgBlAC0AYQBlADEAYQAtAGEAOAAzADMANQA2AGEANQA1ADEANAAyAH0ACUx7ADkAYwA5ADUAOAA5ADYAOAAtADIAYwA4ADUALQA0ADEAYgBiAC0AOAA4ADcAMQAtADgAOQA1AGYAZgAxAGYAZQBkAGUAMQBhAH0ACg5WAGUAcgBzAGkAbwBuAAsGaQBuAHQADApVAHMAYQBnAGUADQpUAGkAdABsAGUADhpWAGkAcwB1AEUAbABlAG0ATQBlAHQAZQByAA8OQwBvAG0AcABhAG4AeQAQDFMAeQBzAHQAZQBtABESVgBpAHMAdQBFAGwAZQBtAHMAEjBWAGkAcwB1AEUAbABlAG0AcwBTAHAAZQBjAGkAYQBsAEMAbwBuAHQAcgBvAGwAcwATKFYAaQBzAHUARQBsAGUAbQBzAFcAaQBuAEMAbwBuAHQAcgBvAGwAcwAUJFYAaQBzAHUARQBsAGUAbQBUAGUAeAB0AEUAZABpAHQAbwByABUiVgBpAHMAdQBOAGEAdABpAHYAZQBDAG8AbgB0AHIAbwBsABYUVgBpAHMAdQBJAG4AcAB1AHQAcwAXGFYAaQBzAHUARQBsAGUAbQBCAGEAcwBlABgmRABlAHYAUABsAGEAYwBlAGgAbwBsAGQAZQByAHMAVQBzAGUAZAAZCGIAbwBvAGwAGiJQAGwAdQBnAGkAbgBDAG8AbgBzAHQAcgBhAGkAbgB0AHMAG0x7ADQAMwBkADUAMgBiAGMAZQAtADkANAAyAGMALQA0ADQAZAA3AC0AOQBlADkANAAtADEAYgBmAGQAZgAzADEAMABlADYAMwBjAH0AHBxBAHQATABlAGEAcwB0AFYAZQByAHMAaQBvAG4AHRRQAGwAdQBnAGkAbgBHAHUAaQBkAB4WUwB5AHMAdABlAG0ALgBHAHUAaQBkAB9IYQBmAGMAZAA1ADQANAA2AC0ANAA5ADEANAAtADQAZgBlADcALQBiAGIANwA4AC0AOQBiAGYAZgBlAGIANwAwAGYAZAAxADcAIBRVAHAAZABhAHQAZQBJAG4AZgBvACFMewBiADAAMwAzADYANgBhADgALQBiADUAYwAwAC0ANABiADkAYQAtAGEAMAAwAGUALQBlAGIAOAA2ADAAMQAxADEAMAA0AGMAMwB9ACIOVQBwAGQAYQB0AGUAcwAjTHsAMQA4ADYAOABmAGYAYwA5AC0AZQA0AGYAYwAtADQANQAzADIALQBhAGMAMAA2AC0AMQBlADMAOQBiAGIANQA1ADcAYgA2ADkAfQAkTHsAYQA1AGIAZAA0ADgAYwAzAC0AMABkADEANwAtADQAMQBiADUALQBiADEANgA0AC0ANQBmAGMANgBhAGQAMgBiADkANgBiADcAfQAlFk8AYgBqAGUAYwB0AHMAVAB5AHAAZQAmVFUAcABkAGEAdABlAEwAYQBuAGcAdQBhAGcAZQBNAG8AZABlAGwARgBvAHIAQwBvAG4AdgBlAHIAdABpAGIAbABlAEwAaQBiAHIAYQByAGkAZQBzACcQTABpAGIAVABpAHQAbABlACgUTABpAGIAQwBvAG0AcABhAG4AeQApHlUAcABkAGEAdABlAFAAcgBvAHYAaQBkAGUAcgBzACo4UwB5AHMAdABlAG0ALgBDAG8AbABsAGUAYwB0AGkAbwBuAHMALgBIAGEAcwBoAHQAYQBiAGwAZQArEnYAaQBzAHUAZQBsAGUAbQBzACwMcwB5AHMAdABlAG0ALUg2AGMAYgAxAGMAZABlADEALQBkADUAZABjAC0ANABhADMAYgAtADkAMAA1ADQALQAyADEAZgBhADcANQA2AGEAMwBmAGEANAAuKEkAbgB0AGUAcgBmAGEAYwBlAFYAZQByAHMAaQBvAG4ASQBuAGYAbwAvTHsAYwA2ADEAMQBlADQAMAAwAC0ANwBmAGIAOQAtADQAYwAzADUALQBiADkAYQBjAC0ANABlADMAMQA0AGIANQA5ADkANgA0ADMAfQAwGE0AYQBqAG8AcgBWAGUAcgBzAGkAbwBuADEYTQBpAG4AbwByAFYAZQByAHMAaQBvAG4AMgxMAGUAZwBhAGMAeQAzMEwAYQBuAGcAdQBhAGcAZQBNAG8AZABlAGwAVgBlAHIAcwBpAG8AbgBJAG4AZgBvADQwTABvAGEAZABMAGkAYgByAGEAcgBpAGUAcwBJAG4AdABvAFAAcgBvAGoAZQBjAHQANRpDAG8AbQBwAGEAdABpAGIAaQBsAGkAdAB5ANAAAhoD0AMBLQTQBQYaB9AHCBoBRQcJCNAACRoERQoLBAQAAAAKAAAAAAAAAAAAAADQDAutAgAAANANAS0O0A8BLRDQAAkaBEUKCwQEAAAACgAAAAAAAAAAAAAA0AwLrQEAAADQDQEtEdAPAS0Q0AAJGgRFCgsEBAAAAAcAAAAAAAAAAAAAANAMC60CAAAA0A0BLRLQDwEtENAACRoERQoLBAQAAAAKAAAAAAAAAAAAAADQDAutAgAAANANAS0T0A8BLRDQAAkaBEUKCwQEAAAACAAAAAAAAAAAAAAA0AwLrQIAAADQDQEtFNAPAS0Q0AAJGgRFCgsEBAAAAAkAAAAAAAAAAAAAANAMC60CAAAA0A0BLRXQDwEtENAACRoERQoLBAQAAAAHAAAAAAAAAAAAAADQDAutAgAAANANAS0W0A8BLRDQAAkaBEUKCwQEAAAACgAAAAAAAAAAAAAA0AwLrQQAAADQDQEtF9APAS0Q0BgZrQFFGhsB0AAbGgJFHAsEBAAAAAIAAAAAAAAAAAAAANAdHi0f0CAhGgJFIiMC0AAkGgVFCgsEAwAAAAMAAAAAAAAACgAAANAlC60AAAAA0AMBLSbQJwEtEdAoAS0Q0AAkGgVFCgsEAwAAAAMAAAAAAAAACgAAANAlC60BAAAA0AMBLSbQJwEtEdAoAS0QmikqAUUAAQLQAAEtK9AAAS0s0AAeLS3QLi8aA9AwC60BAAAA0DELrSQAAADQMhmtANAzLxoD0DALrQIAAADQMQutBgAAANAyGa0A0DQZrQDQNRmtAA==</v>
+          </d>
+        </o>
+        <v>{8A0FB252-96EB-4DCC-A5B4-B4804D05E2D6}</v>
+        <o>
+          <v n="Name">"{8A0FB252-96EB-4DCC-A5B4-B4804D05E2D6}"</v>
+          <d n="SubKeys" t="Hashtable" />
+          <d n="Values" t="Hashtable" ckt="String" cvt="Boolean">
+            <v>WriteLineIDs</v>
+            <v>False</v>
+          </d>
+        </o>
+        <v>{8F99A816-E488-41E4-9FA3-846536012284}</v>
+        <o>
+          <v n="Name">"{8F99A816-E488-41E4-9FA3-846536012284}"</v>
+          <d n="SubKeys" t="Hashtable" />
+          <d n="Values" t="Hashtable" ckt="String" cvt="String">
+            <v>DisabledWarningIds</v>
+            <v>5410</v>
+          </d>
+        </o>
+        <v>{E709B08B-B6E4-4966-8EED-D793A13114C6}</v>
+        <o>
+          <v n="Name">"{E709B08B-B6E4-4966-8EED-D793A13114C6}"</v>
+          <d n="SubKeys" t="Hashtable" />
+          <d n="Values" t="Hashtable" ckt="String" cvt="Boolean">
+            <v>ReplaceConstants</v>
+            <v>True</v>
+          </d>
+        </o>
+        <v>{eeeeeeee-3909-4298-8022-501ac3238667}</v>
+        <o>
+          <v n="Name">"{eeeeeeee-3909-4298-8022-501ac3238667}"</v>
+          <d n="SubKeys" t="Hashtable" />
+          <d n="Values" t="Hashtable" />
+        </o>
+        <v>{F66C7017-BDD8-4114-926C-81D6D687E35F}</v>
+        <o>
+          <v n="Name">"{F66C7017-BDD8-4114-926C-81D6D687E35F}"</v>
+          <d n="SubKeys" t="Hashtable" />
+          <d n="Values" t="Hashtable" ckt="String" cvt="Boolean">
+            <v>CalcActiveTransOnly</v>
+            <v>True</v>
+          </d>
+        </o>
+      </d>
+      <d n="Values" t="Hashtable" />
+    </o>
+  </Data>
+  <TypeList>
+    <Type n="Boolean">System.Boolean</Type>
+    <Type n="Hashtable">System.Collections.Hashtable</Type>
+    <Type n="OptionKey">{54dd0eac-a6d8-46f2-8c27-2f43c7e49861}</Type>
+    <Type n="String">System.String</Type>
+  </TypeList>
+</XmlArchive>
+    </PlcProjectOptions>
+  </ProjectExtensions>
+</Project>

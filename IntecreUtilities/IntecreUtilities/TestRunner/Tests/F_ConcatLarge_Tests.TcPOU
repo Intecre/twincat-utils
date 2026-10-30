@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.19">
+  <POU Name="F_ConcatLarge_Tests" Id="{a2be9199-3b70-4b40-9774-afea6658d415}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK F_ConcatLarge_Tests EXTENDS TcUnit.FB_TestSuite
+VAR
+  one, two, three, four, five, six, seven : LongString;
+  result : LongString;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_ConcatsTwoStrings();
+Test_TruncatesFirstStringToFitMaxLength();
+Test_Concat3Large();
+Test_Concat4Large();
+Test_Concat5Large();
+Test_Concat6Large();
+Test_Concat7Large();
+Test_ClearLargeEmptiesString();
+]]></ST>
+    </Implementation>
+    <Method Name="Fill" Id="{b98fb265-30c6-40b4-ae6c-24811c945fca}">
+      <Declaration><![CDATA[// Test helper: a LongString of count copies of the byte ch.
+METHOD PRIVATE Fill : LongString
+VAR_INPUT
+  count : INT;
+  ch : BYTE;
+END_VAR
+VAR
+  i : INT;
+  text : LongString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i := 0 TO count - 1 DO
+  text[i] := ch;
+END_FOR
+text[count] := 0;
+Fill := text;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ClearLargeEmptiesString" Id="{75406280-dbd3-474a-9f70-6ffadae13d2e}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ClearLargeEmptiesString
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+one := 'abc';
+
+// act
+F_ClearLarge(one);
+
+// assert
+AssertEquals_INT(Expected := 0, Actual := LEN(one), Message := 'cleared string is empty');
+AssertEquals_BYTE(Expected := 0, Actual := one[1], Message := 'bytes behind the terminator are zeroed too');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Concat3Large" Id="{f5c592dd-a912-412a-b958-2859c4d9d721}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_Concat3Large
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+one := 'a'; two := 'b'; three := 'c';
+result := F_Concat3_Large(one, two, three);
+AssertTrue(Condition := result = 'abc', Message := 'three long strings joined');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Concat4Large" Id="{77353f69-3adb-402a-9878-5ae92c129f62}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_Concat4Large
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+one := 'a'; two := 'b'; three := 'c'; four := 'd';
+result := F_Concat4_Large(one, two, three, four);
+AssertTrue(Condition := result = 'abcd', Message := 'four long strings joined');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Concat5Large" Id="{0042d754-5975-4dcb-b6b7-59fd23e74ec1}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_Concat5Large
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+one := 'a'; two := 'b'; three := 'c'; four := 'd'; five := 'e';
+result := F_Concat5_Large(one, two, three, four, five);
+AssertTrue(Condition := result = 'abcde', Message := 'five long strings joined');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Concat6Large" Id="{cf5697a9-0f9f-4701-ac21-8b8c895d8d97}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_Concat6Large
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+one := 'a'; two := 'b'; three := 'c'; four := 'd'; five := 'e'; six := 'f';
+result := F_Concat6_Large(one, two, three, four, five, six);
+AssertTrue(Condition := result = 'abcdef', Message := 'six long strings joined');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Concat7Large" Id="{0b460051-58d9-46ae-b5f1-46634f592019}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_Concat7Large
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+one := 'a'; two := 'b'; three := 'c'; four := 'd'; five := 'e'; six := 'f'; seven := 'g';
+result := F_Concat7_Large(one, two, three, four, five, six, seven);
+AssertTrue(Condition := result = 'abcdefg', Message := 'seven long strings joined');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ConcatsTwoStrings" Id="{91a05143-8fb7-4d26-84df-56669c4b2c26}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ConcatsTwoStrings
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+one := 'abc';
+two := 'def';
+
+// act
+result := F_ConcatLarge(one, two);
+
+// assert
+AssertTrue(Condition := result = 'abcdef', Message := 'two long strings joined');
+AssertEquals_INT(Expected := 6, Actual := LEN(result), Message := 'length of the join');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_TruncatesFirstStringToFitMaxLength" Id="{bc35825e-b38d-495a-8111-afeac450d40b}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_TruncatesFirstStringToFitMaxLength
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange: 150 + 150 characters exceed the 299 usable characters of a LongString
+one := Fill(150, 97); // 'a'
+two := Fill(150, 98); // 'b'
+
+// act
+result := F_ConcatLarge(one, two);
+
+// assert (LEN stops at 255 characters, LEN2 measures the whole string)
+AssertEquals_UDINT(Expected := 299, Actual := LEN2(ADR(result)), Message := 'result fills the LongString');
+AssertEquals_BYTE(Expected := 97, Actual := result[148], Message := 'first string keeps 149 characters');
+AssertEquals_BYTE(Expected := 98, Actual := result[149], Message := 'second string starts where the first was cut');
+AssertEquals_BYTE(Expected := 98, Actual := result[298], Message := 'second string kept whole');
+AssertEquals_BYTE(Expected := 0, Actual := result[299], Message := 'terminator in the last position');
+
+// arrange: a second string longer than 255 characters must be measured in full
+one := Fill(10, 97);
+two := Fill(280, 98);
+
+// act
+result := F_ConcatLarge(one, two);
+
+// assert
+AssertEquals_UDINT(Expected := 290, Actual := LEN2(ADR(result)), Message := 'inputs over 255 characters are measured in full');
+AssertEquals_BYTE(Expected := 97, Actual := result[9], Message := 'first string copied whole');
+AssertEquals_BYTE(Expected := 98, Actual := result[289], Message := 'last character of the second string kept');
+AssertEquals_BYTE(Expected := 0, Actual := result[290], Message := 'terminator after the join');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

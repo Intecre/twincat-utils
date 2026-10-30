@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="FB_Assert_Tests" Id="{74f6c6e0-a923-452f-94f1-8f0b8e159320}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Assert_Tests EXTENDS TcUnit.FB_TestSuite
+VAR
+  assert : FB_Assert;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_IsTrue();
+Test_IsFalse();
+Test_FloatsAreEqualWithinPrecision();
+Test_FloatsAreDifferentOutsidePrecision();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_IsTrue" Id="{71d8f064-3d0a-4923-8d9b-883c9edf385b}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_IsTrue
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertTrue(Condition := assert.IsTrue(TRUE, 'x'), Message := 'TRUE passes IsTrue');
+AssertFalse(Condition := assert.IsTrue(FALSE, 'x'), Message := 'FALSE fails IsTrue');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_IsFalse" Id="{4ad57fce-af75-4a3e-a9d8-65077f8366d6}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_IsFalse
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertTrue(Condition := assert.IsFalse(FALSE, 'x'), Message := 'FALSE passes IsFalse');
+AssertFalse(Condition := assert.IsFalse(TRUE, 'x'), Message := 'TRUE fails IsFalse');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_FloatsAreEqualWithinPrecision" Id="{b4052299-6098-4340-9677-5a5dd3f4fb13}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_FloatsAreEqualWithinPrecision
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertTrue(Condition := assert.FloatsAreEqual(1.0, 1.0005, 0.001, 'x'), Message := 'within precision');
+AssertFalse(Condition := assert.FloatsAreEqual(1.0, 1.1, 0.001, 'x'), Message := 'outside precision');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_FloatsAreDifferentOutsidePrecision" Id="{e58447ec-1287-4729-bb51-f93ca76565b6}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_FloatsAreDifferentOutsidePrecision
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertTrue(Condition := assert.FloatsAreDifferent(1.0, 1.1, 0.001, 'x'), Message := 'outside precision');
+AssertFalse(Condition := assert.FloatsAreDifferent(1.0, 1.0005, 0.001, 'x'), Message := 'within precision');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="F_Gate_Tests" Id="{070a938d-e118-41b4-8cee-83d1543a7f39}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK F_Gate_Tests EXTENDS TcUnit.FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_ReturnsTrueAndResetsFlag();
+Test_ReturnsFalseWhenFlagClear();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_ReturnsTrueAndResetsFlag" Id="{3b4d9a46-659d-4e6d-b210-689ae10b2875}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ReturnsTrueAndResetsFlag
+VAR
+  flag : BOOL;
+  result : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+flag := TRUE;
+
+// act
+result := F_Gate(flag);
+
+// assert
+AssertTrue(Condition := result, Message := 'returns the flag as it was');
+AssertFalse(Condition := flag, Message := 'flag reset by the call');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ReturnsFalseWhenFlagClear" Id="{86ba9325-14ee-4e08-bf33-12d87f686ec0}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ReturnsFalseWhenFlagClear
+VAR
+  flag : BOOL;
+  result : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+flag := FALSE;
+
+// act
+result := F_Gate(flag);
+
+// assert
+AssertFalse(Condition := result, Message := 'clear flag reads FALSE');
+AssertFalse(Condition := flag, Message := 'flag stays clear');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

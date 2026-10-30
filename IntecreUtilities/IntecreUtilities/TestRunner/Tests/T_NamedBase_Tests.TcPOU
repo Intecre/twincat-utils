@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="T_NamedBase_Tests" Id="{23a6686b-6aae-4a75-b4ef-2baff82b08c4}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK T_NamedBase_Tests EXTENDS TcUnit.FB_TestSuite
+VAR
+  named : T_NamedBase;
+  mock : T_MockExternalLogger;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_ObjectNameIsDeclaredName();
+Test_InstanceNameStartsAtProgram();
+Test_LogInfoPrefixesInstanceName();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_ObjectNameIsDeclaredName" Id="{72142ef7-d5ab-4a9d-8744-562ccbf3bb29}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ObjectNameIsDeclaredName
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertEquals_STRING(Expected := 'named', Actual := named.ObjectName, Message := 'object name is the last segment of the instance path');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_InstanceNameStartsAtProgram" Id="{74deabff-1a97-417b-b15d-77258a933e35}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_InstanceNameStartsAtProgram
+VAR
+  name : T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+name := named.InstanceName;
+AssertEquals_STRING(Expected := 'MAIN.suiteNamedBase.named', Actual := name, Message := 'instance name starts at the program, project name removed');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_LogInfoPrefixesInstanceName" Id="{d5af463a-3122-421b-af8e-683fe8aad8af}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_LogInfoPrefixesInstanceName
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+// arrange
+LogConfig.ExternalLogger := mock;
+LogConfig.LogLevel := E_LogSeverity.Debug;
+mock.Reset();
+
+// act
+named.LogInfo('hello');
+
+// assert
+AssertEquals_STRING(Expected := CONCAT(named.InstanceName, ': hello'), Actual := mock.LastMessage, Message := 'message carries the instance name');
+AssertTrue(Condition := mock.LastSeverity = E_LogSeverity.Info, Message := 'logged as info');
+
+// cleanup
+LogConfig.LogLevel := E_LogSeverity.None;
+LogConfig.ExternalLogger := 0;
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

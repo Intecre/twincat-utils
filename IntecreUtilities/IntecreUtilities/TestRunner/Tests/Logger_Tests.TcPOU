@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="Logger_Tests" Id="{1fb94582-30cd-4c18-b9df-cb4f48cc45bb}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Logger_Tests EXTENDS TcUnit.FB_TestSuite
+VAR
+  mock : T_MockExternalLogger;
+  risingEdge : FB_LogOnEdge;
+  fallingEdge : FB_LogOnEdge;
+  badSeverity : FB_LogOnEdge;
+  infoEdge : FB_LogInfoEdge;
+  warningEdge : FB_LogWarningEdge;
+  errorEdge : FB_LogErrorEdge;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_InfoLoggedAtDebugLevel();
+Test_DebugMessageIsPrefixed();
+Test_WarningFilteredBelowErrorLevel();
+Test_ErrorPassesErrorLevel();
+Test_NoneLevelSilencesEverything();
+Test_SeverityToString();
+Test_LogOnEdgeFiresOnRisingEdge();
+Test_LogOnEdgeFiresOnFallingEdge();
+Test_LogOnEdgeReportsUnsupportedSeverity();
+Test_TypedEdgeWrappersUseTheirSeverity();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_InfoLoggedAtDebugLevel" Id="{5023a792-495f-4bdd-a24d-c1ee1e52f5f9}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_InfoLoggedAtDebugLevel
+VAR
+  result : STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+UseMockAtLevel(E_LogSeverity.Debug);
+result := F_LogInfo('hello');
+AssertEquals_STRING(Expected := 'hello', Actual := result, Message := 'logged message returned');
+AssertEquals_UDINT(Expected := 1, Actual := mock.CallCount, Message := 'external logger called once');
+AssertEquals_STRING(Expected := 'hello', Actual := mock.LastMessage, Message := 'message passed on');
+AssertTrue(Condition := mock.LastSeverity = E_LogSeverity.Info, Message := 'severity is info');
+RestoreLogConfig();
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_DebugMessageIsPrefixed" Id="{b67ad8d4-b92e-4b66-bedb-912236c26386}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_DebugMessageIsPrefixed
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+UseMockAtLevel(E_LogSeverity.Debug);
+F_LogDebug('x');
+AssertEquals_STRING(Expected := 'DEBUG x', Actual := mock.LastMessage, Message := 'debug messages carry a DEBUG prefix');
+AssertTrue(Condition := mock.LastSeverity = E_LogSeverity.Debug, Message := 'severity is debug');
+RestoreLogConfig();
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_WarningFilteredBelowErrorLevel" Id="{3f2fd317-6b9a-4ebe-9875-e55049330c1e}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_WarningFilteredBelowErrorLevel
+VAR
+  result : STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+UseMockAtLevel(E_LogSeverity.Error);
+result := F_LogWarning('w');
+AssertEquals_STRING(Expected := '', Actual := result, Message := 'filtered message returns empty');
+AssertEquals_UDINT(Expected := 0, Actual := mock.CallCount, Message := 'external logger not called');
+RestoreLogConfig();
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ErrorPassesErrorLevel" Id="{1eea3b83-b135-43bc-a7f8-d70406c42dd9}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_ErrorPassesErrorLevel
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+UseMockAtLevel(E_LogSeverity.Error);
+F_LogError('e');
+AssertEquals_UDINT(Expected := 1, Actual := mock.CallCount, Message := 'external logger called');
+AssertTrue(Condition := mock.LastSeverity = E_LogSeverity.Error, Message := 'severity is error');
+RestoreLogConfig();
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_NoneLevelSilencesEverything" Id="{5dd69740-29ff-4b67-88a0-467a1d09aaa3}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_NoneLevelSilencesEverything
+VAR
+  result : STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+UseMockAtLevel(E_LogSeverity.None);
+result := F_LogError('e');
+AssertEquals_STRING(Expected := '', Actual := result, Message := 'nothing logged at level None');
+AssertEquals_UDINT(Expected := 0, Actual := mock.CallCount, Message := 'external logger not called');
+RestoreLogConfig();
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_SeverityToString" Id="{74d48eb0-db83-4c00-8475-4f6c2d375667}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_SeverityToString
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertEquals_STRING(Expected := 'Info', Actual := TO_STRING(E_LogSeverity.Info), Message := 'info name');
+AssertEquals_STRING(Expected := 'Warning', Actual := TO_STRING(E_LogSeverity.Warning), Message := 'warning name');
+AssertEquals_STRING(Expected := 'Error', Actual := TO_STRING(E_LogSeverity.Error), Message := 'error name');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_LogOnEdgeFiresOnRisingEdge" Id="{6a2cb4f0-f286-4543-b7b8-1ea5f7e1b10b}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_LogOnEdgeFiresOnRisingEdge
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+UseMockAtLevel(E_LogSeverity.Debug);
+risingEdge(Event := FALSE, Message := 'rise', LogSeverity := E_LogSeverity.Info);
+risingEdge(Event := TRUE, Message := 'rise', LogSeverity := E_LogSeverity.Info);
+AssertTrue(Condition := risingEdge.Q, Message := 'Q on the rising edge');
+AssertEquals_UDINT(Expected := 1, Actual := mock.CallCount, Message := 'logged once');
+AssertEquals_STRING(Expected := 'rise', Actual := mock.LastMessage, Message := 'message logged');
+risingEdge(Event := TRUE, Message := 'rise', LogSeverity := E_LogSeverity.Info);
+AssertFalse(Condition := risingEdge.Q, Message := 'Q clears while the event stays set');
+AssertEquals_UDINT(Expected := 1, Actual := mock.CallCount, Message := 'not logged again');
+RestoreLogConfig();
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_LogOnEdgeFiresOnFallingEdge" Id="{b4ce40dd-8177-423a-b903-ed64e41c8aec}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_LogOnEdgeFiresOnFallingEdge
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+UseMockAtLevel(E_LogSeverity.Debug);
+fallingEdge(Event := TRUE, Message := 'fall', LogSeverity := E_LogSeverity.Warning, EventFallingEdge := TRUE);
+AssertEquals_UDINT(Expected := 0, Actual := mock.CallCount, Message := 'rising edge ignored in falling mode');
+fallingEdge(Event := FALSE, Message := 'fall', LogSeverity := E_LogSeverity.Warning, EventFallingEdge := TRUE);
+AssertTrue(Condition := fallingEdge.Q, Message := 'Q on the falling edge');
+AssertEquals_UDINT(Expected := 1, Actual := mock.CallCount, Message := 'logged once');
+AssertTrue(Condition := mock.LastSeverity = E_LogSeverity.Warning, Message := 'severity passed on');
+RestoreLogConfig();
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_LogOnEdgeReportsUnsupportedSeverity" Id="{dbe1e0e3-b33c-4f7c-87fa-90481e5182dd}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_LogOnEdgeReportsUnsupportedSeverity
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+UseMockAtLevel(E_LogSeverity.Debug);
+badSeverity(Event := FALSE, Message := 'odd', LogSeverity := E_LogSeverity.Debug);
+badSeverity(Event := TRUE, Message := 'odd', LogSeverity := E_LogSeverity.Debug);
+AssertTrue(Condition := mock.LastSeverity = E_LogSeverity.Error, Message := 'an unsupported severity is reported as an error');
+AssertTrue(Condition := FIND(mock.LastMessage, 'odd') > 0, Message := 'the original message is included');
+RestoreLogConfig();
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_TypedEdgeWrappersUseTheirSeverity" Id="{ec61e00f-aa73-4a7a-8213-13b2be2ed84a}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_TypedEdgeWrappersUseTheirSeverity
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+UseMockAtLevel(E_LogSeverity.Debug);
+infoEdge(Event := FALSE, Message := 'i');
+infoEdge(Event := TRUE, Message := 'i');
+AssertTrue(Condition := infoEdge.Q, Message := 'info edge Q');
+AssertTrue(Condition := mock.LastSeverity = E_LogSeverity.Info, Message := 'info edge logs info');
+warningEdge(Event := FALSE, Message := 'w');
+warningEdge(Event := TRUE, Message := 'w');
+AssertTrue(Condition := warningEdge.Q, Message := 'warning edge Q');
+AssertTrue(Condition := mock.LastSeverity = E_LogSeverity.Warning, Message := 'warning edge logs warning');
+errorEdge(Event := FALSE, Message := 'e');
+errorEdge(Event := TRUE, Message := 'e');
+AssertTrue(Condition := errorEdge.Q, Message := 'error edge Q');
+AssertTrue(Condition := mock.LastSeverity = E_LogSeverity.Error, Message := 'error edge logs error');
+AssertEquals_UDINT(Expected := 3, Actual := mock.CallCount, Message := 'one log per edge');
+RestoreLogConfig();
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="UseMockAtLevel" Id="{e544a736-69c1-4f42-8ade-a7cd068e3f84}">
+      <Declaration><![CDATA[// Test helper: route the library logger to the mock at the given level.
+METHOD PRIVATE UseMockAtLevel
+VAR_INPUT
+  level : E_LogSeverity;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[LogConfig.ExternalLogger := mock;
+LogConfig.LogLevel := level;
+mock.Reset();
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RestoreLogConfig" Id="{80effe02-27d5-4ef1-8e9b-779d8ec7e9b0}">
+      <Declaration><![CDATA[// Test helper: put the library logger back to its defaults.
+METHOD PRIVATE RestoreLogConfig
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[LogConfig.LogLevel := E_LogSeverity.None;
+LogConfig.ExternalLogger := 0;
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
