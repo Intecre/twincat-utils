@@ -2,6 +2,8 @@
 
 A library of utility functions and classes for Beckhoff TwinCAT 3, built and tested on TwinCAT 3.1.4026.
 
+How to use each part, with examples, defaults and fixed limits: [docs/usage.md](docs/usage.md).
+
 ## What is in it
 
 - **String functions**: `F_Concat3` to `F_Concat7` for `T_MaxString`, and the `_Large` family plus `F_ConcatLarge` / `F_ClearLarge` for `LongString` (`STRING(300)`, length set by `StringsParams.MAX_STRING_LENGTH`).
