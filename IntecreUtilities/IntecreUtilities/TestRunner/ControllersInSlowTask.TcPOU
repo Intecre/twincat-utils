@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="ControllersInSlowTask" Id="{42458758-e512-4757-b1cb-2b2bd7527c50}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM ControllersInSlowTask
+VAR_OUTPUT
+  HasRunOnce : BOOL;
+  IntegratorTerm : LREAL;
+  PiOutput : LREAL;
+END_VAR
+VAR
+  integrator : FB_I_Controller;
+  piController : FB_PI_Controller;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF HasRunOnce THEN
+  RETURN;
+END_IF
+
+integrator(ProcessVariable := 0.0, Setpoint := 1.0, Ki := 1.0);
+piController(ProcessVariable := 0.0, Setpoint := 1.0, Kp := 0.0, IntegralConstant := 60.0, MaxLoopOutput := 100.0, MinLoopOutput := -100.0);
+IntegratorTerm := integrator.Term;
+PiOutput := piController.Output;
+HasRunOnce := TRUE;
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

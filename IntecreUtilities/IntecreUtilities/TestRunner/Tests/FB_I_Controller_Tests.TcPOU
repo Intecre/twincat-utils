@@ -11,6 +11,7 @@ Test_ClampsAtMinimum();
 Test_PauseHoldsTerm();
 Test_ResetClearsIntegral();
 Test_ZeroGainGivesZero();
+Test_UsesCycleTimeOfCallingTask();
 ]]></ST>
     </Implementation>
     <Method Name="Test_IntegratesErrorOverOneCycle" Id="{3f2a7185-1f12-46a1-9aff-70bd9557839c}">
@@ -142,6 +143,22 @@ END_VAR
 
 i(ProcessVariable := 0.0, Setpoint := 1.0, Ki := 0.0, MaxIntegralComponent := 1000.0, MinIntegralComponent := -1000.0);
 AssertEquals_LREAL(Expected := 0.0, Actual := i.Term, Delta := 1.0E-9, Message := 'no gain, no term');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_UsesCycleTimeOfCallingTask" Id="{1d5e91eb-1503-4f3d-a30f-ab40f76c705a}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_UsesCycleTimeOfCallingTask
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+IF NOT ControllersInSlowTask.HasRunOnce THEN
+  RETURN;
+END_IF
+
+AssertEquals_LREAL(Expected := 0.05, Actual := ControllersInSlowTask.IntegratorTerm, Delta := 1.0E-6, Message := 'one cycle of the 50 ms SlowTask, not the 10 ms PlcTask');
 
 TEST_FINISHED_NAMED(__POUNAME());
 ]]></ST>

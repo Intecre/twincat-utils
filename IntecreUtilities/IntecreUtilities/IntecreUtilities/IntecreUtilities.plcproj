@@ -42,7 +42,12 @@
     <SelectedLibraryCategories>
       <Id>{d7292350-a6c3-11e8-98d0-529269fb1459}</Id>
     </SelectedLibraryCategories>
-    <Description>4.0.0.0 - TwinCAT 4026 release with unit tests and a TcPkg package.
+    <Description>4.1.0.0 - controller and persistent-data fixes.
+  - Fixed: FB_I_Controller, and so FB_PI_Controller, used the cycle time of the first PLC task whatever task called it. It now uses the calling task.
+  - Fixed: T_WritePersistentData.SetConfig did nothing. It now sets the write period and ADS port, and returns FALSE without changing them for a zero period or port 0.
+  - Added: T_WritePersistentData.WritePeriod and T_WritePersistentData.AdsPort read-only properties.
+
+4.0.0.0 - TwinCAT 4026 release with unit tests and a TcPkg package.
   - TestRunner PLC project added to the solution: 31 TcUnit suites, 165 tests, run on the usermode runtime.
   - Published as a .library and as a TcPkg package (Intecre.Utilities) with the Beckhoff library packages as dependencies.
   - Fixed: FB_Dictionary.Remove had its guard inverted (returned FALSE for keys that exist, removed nothing for keys that do not).
@@ -69,7 +74,7 @@
 3.1.5.0 Adding KL33xx to Terminal Interfaces
 3.1.4.0 Adding TryStringToDint
 3.1.3.0 Adding ObjectName to T_NamedBase</Description>
-    <ProjectVersion>4.0.0.0</ProjectVersion>
+    <ProjectVersion>4.1.0.0</ProjectVersion>
     <POUsForPropertyAccessIncluded>true</POUsForPropertyAccessIncluded>
     <GlobalVersionStructureIncluded>true</GlobalVersionStructureIncluded>
   </PropertyGroup>

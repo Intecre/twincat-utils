@@ -5,18 +5,27 @@
 FUNCTION_BLOCK T_WritePersistentData
 VAR
    writePersistent : FB_WritePersistentData;
-   writePeriod : TIME := TIME#10s0ms;
-   adsPort : UINT := 851;
+   _writePeriod : TIME := TIME#10s0ms;
+   _adsPort : UINT := 851;
    writePersistTimer : TON;
    _log : T_NamedBase;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[// periodic force write of persistant variables.
-writePersistTimer(IN := NOT writePersistTimer.Q, PT := writePeriod);
-writePersistent(PORT := adsPort, START := writePersistTimer.Q);
+writePersistTimer(IN := NOT writePersistTimer.Q, PT := _writePeriod);
+writePersistent(PORT := _adsPort, START := writePersistTimer.Q);
 ]]></ST>
     </Implementation>
+    <Property Name="AdsPort" Id="{b49f7d48-f6d7-425e-a73e-6bd1a4c579dc}">
+      <Declaration><![CDATA[PROPERTY AdsPort : UINT]]></Declaration>
+      <Get Name="Get" Id="{12d5c034-a698-4885-befb-2273d9558cf0}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[AdsPort := _adsPort;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Method Name="SetConfig" Id="{e23e2b4c-1218-4ac3-a464-3a4fddad8077}">
       <Declaration><![CDATA[METHOD SetConfig : BOOL
 VAR_INPUT
@@ -27,8 +36,23 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[IF (WritePeriod = T#0S) OR (AdsPort = 0) THEN
+  RETURN;
+END_IF
+
+_writePeriod := WritePeriod;
+_adsPort := AdsPort;
+SetConfig := TRUE;]]></ST>
       </Implementation>
     </Method>
+    <Property Name="WritePeriod" Id="{66c7785f-4bfb-48b2-b2bf-fab96edaf4d9}">
+      <Declaration><![CDATA[PROPERTY WritePeriod : TIME]]></Declaration>
+      <Get Name="Get" Id="{a511cb30-9382-49bb-b7b3-50aba053c3c4}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[WritePeriod := _writePeriod;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
   </POU>
 </TcPlcObject>

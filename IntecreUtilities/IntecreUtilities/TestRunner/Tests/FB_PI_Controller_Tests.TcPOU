@@ -9,6 +9,7 @@ Test_OutputClampedToMax();
 Test_OutputClampedToMin();
 Test_IntegralInRepeatsPerMinute();
 Test_IntegralInRepeatsPerSecond();
+Test_UsesCycleTimeOfCallingTask();
 ]]></ST>
     </Implementation>
     <Method Name="Test_ProportionalOnlyWithBias" Id="{cd21461c-a771-480f-9b38-caf06491bc0a}">
@@ -87,6 +88,22 @@ END_VAR
 
 pi(ProcessVariable := 0.0, Setpoint := 1.0, Kp := 0.0, IntegralConstant := 1.0, RepeatsPerMinute := FALSE, MaxLoopOutput := 100.0, MinLoopOutput := -100.0, Bias := 0.0);
 AssertEquals_LREAL(Expected := 0.01, Actual := pi.Output, Delta := 1.0E-6, Message := 'integral in repeats per second');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_UsesCycleTimeOfCallingTask" Id="{7f10557a-0361-4a01-b733-27f389d6ed94}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_UsesCycleTimeOfCallingTask
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+IF NOT ControllersInSlowTask.HasRunOnce THEN
+  RETURN;
+END_IF
+
+AssertEquals_LREAL(Expected := 0.05, Actual := ControllersInSlowTask.PiOutput, Delta := 1.0E-6, Message := 'one cycle of the 50 ms SlowTask, not the 10 ms PlcTask');
 
 TEST_FINISHED_NAMED(__POUNAME());
 ]]></ST>

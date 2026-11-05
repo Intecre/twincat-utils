@@ -469,14 +469,14 @@ heaterPower := temperatureLoop.Output;
 ```
 
 - `FB_P_Control`: `Term` is `Kp × (Setpoint − ProcessVariable)`.
-- `FB_I_Controller`: each call adds `Ki × error × cycle time` to `Term`, held between `MinIntegralComponent` and `MaxIntegralComponent` (±1000 by default). `Pause` holds the term, `Reset` restarts it from zero, and a `Ki` of 0 or less gives a term of 0.
+- `FB_I_Controller`: each call adds `Ki × error × cycle time of the calling task` to `Term`, held between `MinIntegralComponent` and `MaxIntegralComponent` (±1000 by default). `Pause` holds the term, `Reset` restarts it from zero, and a `Ki` of 0 or less gives a term of 0.
 - `FB_PI_Controller`: `Output` is the P term plus the I term plus `Bias`, held between `MinLoopOutput` and `MaxLoopOutput`. `IntegralConstant` is in repeats per minute, or per second when `RepeatsPerMinute` is `FALSE`. Integration pauses while the output is held at a limit and the error would push it further.
 
 Call each controller exactly once per cycle.
 
 **Set both output limits on `FB_PI_Controller`.** They default to 0, which holds the output at 0.
 
-**The I and PI controllers use the cycle time of the first PLC task**, whatever task calls them. Call them from that task, or from one with the same cycle time.
+**Versions before 4.1.0.0 used the cycle time of the first PLC task**, whatever task called the controller. A controller in a task with a different cycle time integrated too fast or too slow. From 4.1.0.0 each controller uses its own task, so check the tuning of any loop that runs outside the first task.
 
 ### Alpha-beta filter
 
@@ -539,7 +539,21 @@ cpuHotLog(Event := cpuTemperature.CpuTemp > 80, Message := 'CPU above 80 degrees
 
 ### Saving persistent data regularly
 
-`T_WritePersistentData` writes the persistent variables of the PLC on ADS port 851 every 10 seconds. Call it every cycle. Its `SetConfig` method has no effect in this version, so the port and period cannot be changed.
+`T_WritePersistentData` writes the persistent variables of a PLC at a fixed period. By default it writes on ADS port 851 every 10 seconds. Call it every cycle.
+
+```pascal
+VAR
+  persistentWriter : T_WritePersistentData;
+  persistentWriterConfigured : BOOL;
+END_VAR
+
+IF NOT persistentWriterConfigured THEN
+  persistentWriterConfigured := persistentWriter.SetConfig(WritePeriod := T#1M, AdsPort := 852);
+END_IF
+persistentWriter();
+```
+
+`SetConfig` returns `TRUE` when it takes the new period and port. A zero period or port 0 is rejected: it returns `FALSE` and the current settings stay. `WritePeriod` and `AdsPort` read the settings back. Before 4.1.0.0, `SetConfig` did nothing.
 
 ## Small helpers
 

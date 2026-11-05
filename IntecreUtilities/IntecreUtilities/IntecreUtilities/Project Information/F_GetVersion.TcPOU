@@ -11,10 +11,10 @@ VAR_INPUT
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[F_GetVersion.iMajor := 4;
-F_GetVersion.iMinor := 0;
+F_GetVersion.iMinor := 1;
 F_GetVersion.iBuild := 0;
 F_GetVersion.iRevision := 0;
-F_GetVersion.sVersion := '4.0.0.0';
+F_GetVersion.sVersion := '4.1.0.0';
 F_GetVersion.nFlags := 0;
 ]]></ST>
     </Implementation>

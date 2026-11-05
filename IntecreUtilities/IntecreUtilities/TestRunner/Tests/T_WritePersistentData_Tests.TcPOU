@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.22">
+  <POU Name="T_WritePersistentData_Tests" Id="{d2112bb0-7743-4c82-b34f-737b35ecdced}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK T_WritePersistentData_Tests EXTENDS TcUnit.FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_DefaultsToPort851Every10Seconds();
+Test_SetConfigChangesPeriodAndPort();
+Test_SetConfigRejectsZeroPeriod();
+Test_SetConfigRejectsPortZero();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_DefaultsToPort851Every10Seconds" Id="{12fb92ec-9850-4218-99a9-5e2d0eb4b155}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_DefaultsToPort851Every10Seconds
+VAR
+  persistentWriter : T_WritePersistentData;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+AssertEquals_UINT(Expected := 851, Actual := persistentWriter.AdsPort, Message := 'default ADS port');
+AssertEquals_TIME(Expected := T#10S, Actual := persistentWriter.WritePeriod, Message := 'default write period');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_SetConfigChangesPeriodAndPort" Id="{52166c7a-8179-4da6-aaf0-a73e12b0bd77}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_SetConfigChangesPeriodAndPort
+VAR
+  persistentWriter : T_WritePersistentData;
+  accepted : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+accepted := persistentWriter.SetConfig(WritePeriod := T#1M, AdsPort := 852);
+AssertTrue(Condition := accepted, Message := 'a period and a port are accepted');
+AssertEquals_TIME(Expected := T#1M, Actual := persistentWriter.WritePeriod, Message := 'write period set');
+AssertEquals_UINT(Expected := 852, Actual := persistentWriter.AdsPort, Message := 'ADS port set');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_SetConfigRejectsZeroPeriod" Id="{815a606a-fd2b-4c93-a8e6-336c6f5f2ef2}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_SetConfigRejectsZeroPeriod
+VAR
+  persistentWriter : T_WritePersistentData;
+  accepted : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+accepted := persistentWriter.SetConfig(WritePeriod := T#0S, AdsPort := 852);
+AssertFalse(Condition := accepted, Message := 'a zero period is rejected');
+AssertEquals_TIME(Expected := T#10S, Actual := persistentWriter.WritePeriod, Message := 'write period unchanged');
+AssertEquals_UINT(Expected := 851, Actual := persistentWriter.AdsPort, Message := 'ADS port unchanged');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_SetConfigRejectsPortZero" Id="{dc58273f-5c5f-4ab0-aef3-680e3b731939}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_SetConfigRejectsPortZero
+VAR
+  persistentWriter : T_WritePersistentData;
+  accepted : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TcUnit.TEST(__POUNAME());
+
+accepted := persistentWriter.SetConfig(WritePeriod := T#1M, AdsPort := 0);
+AssertFalse(Condition := accepted, Message := 'port 0 is rejected');
+AssertEquals_TIME(Expected := T#10S, Actual := persistentWriter.WritePeriod, Message := 'write period unchanged');
+AssertEquals_UINT(Expected := 851, Actual := persistentWriter.AdsPort, Message := 'ADS port unchanged');
+
+TEST_FINISHED_NAMED(__POUNAME());
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

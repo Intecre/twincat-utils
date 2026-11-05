@@ -52,7 +52,7 @@
 			</Hides>
 		</DataType>
 	</DataTypes>
-	<Project ProjectGUID="{83E3C23D-9DEB-4EAD-91D6-1CD18FD375E1}" Target64Bit="true" ShowHideConfigurations="#x3c7">
+	<Project ProjectGUID="{83E3C23D-9DEB-4EAD-91D6-1CD18FD375E1}" TargetNetId="199.4.42.250.1.1" Target64Bit="true" ShowHideConfigurations="#x3c7">
 		<System>
 			<Settings MaxCpus="8" NonWinCpus="1">
 				<Cpu CpuId="7"/>
@@ -60,6 +60,9 @@
 			<Tasks>
 				<Task Id="2" Priority="20" CycleTime="100000" AmsPort="350">
 					<Name>PlcTask</Name>
+				</Task>
+				<Task Id="3" Priority="25" CycleTime="500000" AmsPort="351">
+					<Name>SlowTask</Name>
 				</Task>
 			</Tasks>
 		</System>

@@ -35,6 +35,7 @@ VAR
   suiteTimer               : T_Timer_Tests;
   suiteGetHandle           : T_GetHandle_Tests;
   suiteInvokeRpc           : T_InvokeRpcMethod_Tests;
+  suiteWritePersistentData : T_WritePersistentData_Tests;
 END_VAR
 ]]></Declaration>
     <Implementation>

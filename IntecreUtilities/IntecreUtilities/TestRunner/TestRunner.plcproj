@@ -29,6 +29,12 @@
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SlowTask.TcTTO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ControllersInSlowTask.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Tests\CharIsNumber_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -120,6 +126,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Tests\T_InvokeRpcMethod_Tests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\T_WritePersistentData_Tests.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Mocks\T_MockExternalLogger.TcPOU">

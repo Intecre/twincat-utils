@@ -49,13 +49,15 @@ The solution holds two PLC projects:
 - `IntecreUtilities`: the library.
 - `TestRunner`: the TcUnit suites, one `*_Tests` function block per library object under `Tests/`, with test doubles under `Mocks/`. `MAIN` declares every suite and calls `TcUnit.RUN_IN_SEQUENCE()`.
 
+`TestRunner` has two tasks. `PlcTask` (10 ms) runs `MAIN`. `SlowTask` (50 ms) runs `ControllersInSlowTask`, so the controller suites can check that a controller uses the cycle time of the task that calls it.
+
 `TestRunner` references the library through the placeholder, so the library must be installed in the repository before the tests build. The loop while developing is:
 
 1. Change the library, then *Save as library and install* (or `tclib publish`).
 2. Build `TestRunner` and activate the configuration on a runtime. The TwinCAT usermode runtime (`TC170x.UsermodeRuntime.XAR`) on the engineering PC is enough; the ADS tests talk to the test PLC's own port (851).
 3. Read the results in the error list or in `C:\TcUnit_xUnit_testresults.xml` (xUnit publishing is switched on in the `TcUnit` reference parameters).
 
-Current state: 31 suites, 165 tests, all passing on 4026.25 with the usermode runtime. The two ADS suites need a running router and fail on a target without one.
+Current state: 32 suites, 171 tests, all passing on 4026.25 with the usermode runtime. The two ADS suites need a running router and fail on a target without one.
 
 ## Releasing
 

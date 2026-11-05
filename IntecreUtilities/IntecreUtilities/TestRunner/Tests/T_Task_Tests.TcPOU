@@ -153,7 +153,7 @@ TEST_FINISHED_NAMED(__POUNAME());
 
 task.Index := 7;
 task.SetToThisTask();
-AssertEquals_BYTE(Expected := 1, Actual := task.Index, Message := 'the test runner has a single task at index 1');
+AssertEquals_BYTE(Expected := 1, Actual := task.Index, Message := 'PlcTask is the first task of the test runner');
 
 TEST_FINISHED_NAMED(__POUNAME());
 ]]></ST>
