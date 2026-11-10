@@ -745,6 +745,10 @@ smoothedPressure := pressureFilter.output;</code></pre>
 cpuTemperature();
 cpuHotLog(Event := cpuTemperature.CpuTemp &gt; 80, Message := 'CPU above 80 degrees');</code></pre>
 <p><code>SetUpdateTimerValue(T#2S)</code> changes how often it reads. <code>Busy</code>, <code>Error</code> and <code>ErrorId</code> report the read in progress. <code>ErrorId</code> is the HRESULT that Tc3_IPCDiag returns, 0 when the last read worked. The library needs Tc3_IPCDiag, which comes from Beckhoff's stable TcPkg feed with the package.</p>
+<div class="warn">
+  <strong>Not yet checked on a Beckhoff IPC since 4.2.0.0</strong>
+  The move to Tc3_IPCDiag has only been compiled. No test covers it, because the user-mode runtime has no IPC diagnostics to read. Before you rely on <code>CpuTemp</code>, check on the target IPC that <code>Error</code> stays FALSE and <code>CpuTemp</code> matches the temperature the IPC's device manager shows.
+</div>
 
 <h3>Writing persistent data regularly</h3>
 <p><code>T_WritePersistentData</code> writes the persistent variables of a PLC at a fixed period, so a power cut loses at most one period of changes. By default it writes on ADS port 851 every 10 seconds. Call it every cycle.</p>

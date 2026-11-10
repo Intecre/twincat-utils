@@ -15,7 +15,7 @@ The user guide, with a quick start, examples, defaults, fixed limits and what ea
 - **Control**: `FB_P_Control`, `FB_I_Controller`, `FB_PI_Controller` and `FB_AlphaBetaFilter`.
 - **Base classes**: `T_NamedBase` (instance and object names from the instance path, with logging methods), `FB_Assert` and `T_TestBase` from before TcUnit.
 - **Terminal interfaces**: process-image structures for EL3xxx / KL3xxx analogue inputs, EL9xxx system terminals and the EtherCAT standard diagnostics, plus OPC UA point structures.
-- **Diagnostics**: `T_MdpReadCpuTemp` (needs Tc3_IPCDiag, from 4.2.0.0; Tc2_MDP before) and `T_WritePersistentData`.
+- **Diagnostics**: `T_MdpReadCpuTemp` (needs Tc3_IPCDiag, from 4.2.0.0; Tc2_MDP before. **Needs retesting on a Beckhoff IPC**: since the move to Tc3_IPCDiag it has only been compiled, and no test covers it) and `T_WritePersistentData`.
 
 ## Getting it
 
