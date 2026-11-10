@@ -1,0 +1,880 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intecre Utilities: user guide</title>
+<link rel="icon" href="img/intecre-mark.png">
+<style>
+  :root { --brand: #4B734C; --brand-dark: #365538; --brand-tint: #F2F6F2; --ink: #2B2B2B; --muted: #6D6D6D;
+          --line: #E0E0E0; --code: #F4F4F4; --warn: #9A6700; --warn-tint: #FFF8E5; --stop: #A4332B; --stop-tint: #FDF1F0; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #F7F7F7; color: var(--ink); font: 15px/1.6 "Segoe UI", system-ui, sans-serif; }
+  header.top { background: #fff; border-top: 4px solid var(--brand); border-bottom: 1px solid var(--line); }
+  header.top .inner { max-width: 1220px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; gap: 22px; }
+  header.top img { height: 62px; border: 0; margin: 0; }
+  header.top .title { font-size: 22px; font-weight: 600; color: var(--brand); line-height: 1.2; }
+  header.top .sub { color: var(--muted); font-size: 13px; }
+  .page { max-width: 1220px; margin: 0 auto; display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 0; }
+  nav.toc { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; padding: 22px 12px 22px 24px; font-size: 13.5px; }
+  nav.toc .label { text-transform: uppercase; letter-spacing: .06em; font-size: 11px; color: var(--muted); margin: 0 0 8px; }
+  nav.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  nav.toc li { counter-increment: toc; margin: 0; }
+  nav.toc a { display: block; padding: 4px 8px; border-left: 3px solid transparent; color: var(--ink); text-decoration: none; border-radius: 0 3px 3px 0; }
+  nav.toc a::before { content: counter(toc) "  "; color: var(--muted); }
+  nav.toc a:hover { background: var(--brand-tint); border-left-color: var(--brand); color: var(--brand-dark); }
+  main { background: #fff; padding: 8px 40px 56px; border-left: 1px solid var(--line); border-right: 1px solid var(--line); min-width: 0; }
+  h1, h2, h3 { color: var(--brand); line-height: 1.25; }
+  h1 { margin: 28px 0 6px; font-size: 30px; }
+  h2 { margin-top: 44px; padding-bottom: 5px; border-bottom: 1px solid var(--line); font-size: 22px; scroll-margin-top: 12px; }
+  h2 .n { display: inline-block; min-width: 30px; height: 30px; line-height: 30px; margin-right: 10px; border-radius: 15px; background: var(--brand); color: #fff; font-size: 15px; text-align: center; vertical-align: 2px; }
+  h3 { margin-top: 26px; font-size: 17px; scroll-margin-top: 12px; }
+  p.lead { font-size: 17px; color: #444; margin-top: 4px; }
+  a { color: var(--brand); }
+  code { background: var(--code); padding: 1px 5px; border-radius: 3px; font: 13px Consolas, "Cascadia Mono", monospace; }
+  pre { background: var(--code); border-left: 3px solid var(--brand); padding: 11px 14px; border-radius: 0 4px 4px 0; overflow-x: auto; font: 13px/1.5 Consolas, "Cascadia Mono", monospace; margin: 12px 0; }
+  pre code { padding: 0; background: none; font: inherit; }
+  pre .c { color: #6A7F6B; }            /* comment */
+  pre .k { color: var(--brand-dark); font-weight: 600; }   /* keyword */
+  pre .o { color: #555; }               /* program output */
+  pre.out { border-left-color: #B9B9B9; }
+  .cap { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 16px 0 -8px; }
+  table { border-collapse: collapse; margin: 14px 0; width: 100%; }
+  th, td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--brand-tint); color: var(--brand-dark); font-weight: 600; }
+  td.yes { color: var(--brand-dark); font-weight: 600; white-space: nowrap; }
+  td.no { color: var(--muted); white-space: nowrap; }
+  td.num { text-align: right; white-space: nowrap; }
+  figure { margin: 18px 0; }
+  figure img, figure svg { max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; display: block; background: #fff; }
+  figcaption { color: var(--muted); font-size: 13px; margin-top: 6px; }
+  .note, .warn, .stop { border-left: 4px solid var(--brand); background: var(--brand-tint); padding: 10px 14px; margin: 16px 0; border-radius: 0 4px 4px 0; }
+  .warn { border-left-color: var(--warn); background: var(--warn-tint); }
+  .stop { border-left-color: var(--stop); background: var(--stop-tint); }
+  .note strong:first-child, .warn strong:first-child, .stop strong:first-child { display: block; margin-bottom: 2px; }
+  ol.steps { list-style: none; counter-reset: step; padding: 0; margin: 14px 0; }
+  ol.steps > li { counter-increment: step; position: relative; padding: 2px 0 10px 44px; }
+  ol.steps > li::before { content: counter(step); position: absolute; left: 0; top: 0; width: 28px; height: 28px; line-height: 28px; text-align: center; border-radius: 14px; border: 2px solid var(--brand); color: var(--brand); font-weight: 600; background: #fff; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .two > div { min-width: 0; }
+  kbd { border: 1px solid #BBB; border-bottom-width: 2px; border-radius: 3px; padding: 0 5px; font: 12px Consolas, monospace; background: #fff; }
+  footer { color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); margin-top: 48px; padding-top: 14px; }
+  @media (max-width: 900px) {
+    .page { display: block; }
+    nav.toc { position: static; max-height: none; padding: 14px 16px 0; }
+    nav.toc ol { columns: 2; }
+    main { padding: 4px 16px 40px; border: 0; }
+    .two { grid-template-columns: 1fr; }
+    th { width: auto !important; }
+    td, th { padding: 5px 7px; }
+    header.top .inner { padding: 12px 16px; }
+    header.top img { height: 48px; }
+  }
+  @media print {
+    body { background: #fff; } nav.toc { display: none; } .page { display: block; } main { border: 0; padding: 0; }
+    h2 { break-after: avoid; } pre, figure, table { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="inner">
+    <img src="img/intecre-logo.png" alt="Intecre: Innovation Technology Creativity" width="95" height="62">
+    <div>
+      <div class="title">Utilities</div>
+      <div class="sub">User guide &middot; <code>Intecre.Utilities</code> 4.1.0.0, November 2026 &middot; checked with TwinCAT 3.1 build 4026 on the user-mode runtime</div>
+    </div>
+  </div>
+</header>
+
+<div class="page">
+
+<nav class="toc" aria-label="Contents">
+  <p class="label">Contents</p>
+  <ol>
+    <li><a href="#what">What the library does</a></li>
+    <li><a href="#start">Quick start</a></li>
+    <li><a href="#logging">Logging</a></li>
+    <li><a href="#named">Named objects</a></li>
+    <li><a href="#lists">Lists</a></li>
+    <li><a href="#dictionary">Dictionary</a></li>
+    <li><a href="#text">Strings and text</a></li>
+    <li><a href="#task">Task information</a></li>
+    <li><a href="#timer">Timer</a></li>
+    <li><a href="#ads">ADS</a></li>
+    <li><a href="#control">Controllers and filter</a></li>
+    <li><a href="#io">I/O and OPC UA structures</a></li>
+    <li><a href="#diagnostics">Diagnostics</a></li>
+    <li><a href="#helpers">Small helpers and version</a></li>
+    <li><a href="#upgrading">Upgrading</a></li>
+    <li><a href="#messages">Messages and what to do</a></li>
+    <li><a href="#limits">Limits</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<h1>Utilities user guide</h1>
+<p class="lead">The everyday building blocks of an Intecre PLC project, in one TwinCAT 3 library: logging, fixed-size lists and a dictionary, long strings, safe parsing, task information, a timer, ADS calls by name and PI control. This guide shows how to use each part, and the defaults and limits to know first.</p>
+
+<h2 id="what"><span class="n">1</span>What the library does</h2>
+
+<p>The library is <strong>Intecre.Utilities</strong>. Reference it as the placeholder <code>Intecre.Utilities</code>. Its namespace is <code>Intecre_Utilities</code>.</p>
+
+<table>
+  <tr><th style="width: 210px">Part</th><th>What it gives you</th></tr>
+  <tr><td><a href="#logging">Logging</a></td><td><code>F_LogInfo</code> and its siblings write to the TwinCAT log, filtered by one level, and can copy every message to a logger of your own.</td></tr>
+  <tr><td><a href="#named">Named objects</a></td><td><code>T_NamedBase</code> gives a function block its instance path, and logging methods that put the path in front of each message.</td></tr>
+  <tr><td><a href="#lists">Lists</a> and <a href="#dictionary">dictionary</a></td><td>Fixed-size lists of strings, numbers, pointers and <code>T_Arg</code>, and a dictionary from text keys to your variables.</td></tr>
+  <tr><td><a href="#text">Strings and text</a></td><td>Joining up to seven strings, strings longer than 255 characters, parsing text into numbers without surprises, and reading or writing a variable as text.</td></tr>
+  <tr><td><a href="#task">Task information</a> and <a href="#timer">timer</a></td><td><code>T_Task</code> reads the cycle time, cycle count and clock of a PLC task. <code>T_Timer</code> times from the distributed clock and needs no cyclic call.</td></tr>
+  <tr><td><a href="#ads">ADS</a></td><td>Calls a method on any PLC by name, and reads and writes over ADS, spread over several cycles.</td></tr>
+  <tr><td><a href="#control">Controllers and filter</a></td><td>P, I and PI controllers, and an alpha-beta filter.</td></tr>
+  <tr><td><a href="#io">I/O and OPC UA structures</a></td><td>Process-image structures for common analogue and system terminals, EtherCAT diagnostics and the OPC UA client device.</td></tr>
+  <tr><td><a href="#diagnostics">Diagnostics</a></td><td>The IPC's CPU temperature, and writing persistent data at a fixed period.</td></tr>
+</table>
+
+<div class="note">
+  <strong>Where to look for more</strong>
+  <ul>
+    <li>The TcUnit suites in <a href="../IntecreUtilities/IntecreUtilities/TestRunner/Tests"><code>TestRunner\Tests</code></a> each show one block being set up, called and checked. They all pass against this version.</li>
+    <li>Building, testing and releasing the library are in the <a href="../README.md">README</a>.</li>
+    <li>Every library it depends on, and the TcPkg package that brings it, is in <a href="IntecreUtilities.dependencies.md">IntecreUtilities.dependencies.md</a>.</li>
+    <li>Release notes are on the <a href="https://github.com/Intecre/twincat-utils/releases">GitHub releases page</a>.</li>
+  </ul>
+</div>
+
+<h2 id="start"><span class="n">2</span>Quick start</h2>
+
+<p>You need TwinCAT 3.1 build 4026 or later. The library, and the Beckhoff libraries it uses, come as TcPkg packages.</p>
+
+<ol class="steps">
+  <li><strong>Add the Intecre feed.</strong> You do this once per PC. The feed is private, so first make an access token: sign in at <a href="https://dev.azure.com/intecre">dev.azure.com/intecre</a>, open <em>User settings &gt; Personal access tokens</em>, and create a token with the <strong>Packaging (Read)</strong> scope. Then, in PowerShell run as Administrator:
+<pre><code>tcpkg source add -n Intecre `
+  -s https://pkgs.dev.azure.com/intecre/Intecre-Packages/_packaging/tcpkg/nuget/v3/index.json `
+  -u your.name@yourcompany.com</code></pre>
+    When it asks for a password, paste the token.</li>
+
+  <li><strong>Check for Beckhoff's testing feed.</strong> The library uses Tc2_MDP, which Beckhoff only publishes on its testing feed. Run <code>tcpkg source list</code>. If there is no <code>testing</code> source, add it with your myBeckhoff login:
+<pre><code>tcpkg source add -n testing `
+  -s https://public.tcpkg.beckhoff-cloud.com/api/v1/feeds/testing `
+  -u your.myBeckhoff@email.com</code></pre></li>
+
+  <li><strong>Install the library.</strong> Close TwinCAT XAE, then run:
+<pre><code>tcpkg install Intecre.Utilities</code></pre>
+    This puts the library in the TwinCAT library repository, with the Beckhoff libraries it uses. Later, <code>tcpkg upgrade Intecre.Utilities</code> brings a new version.</li>
+
+  <li><strong>Reference it.</strong> In your PLC project, right-click <em>References</em>, choose <em>Add library</em>, and pick <em>Intecre Ltd &gt; Intecre.Utilities</em>. Its names then resolve without a prefix. If one clashes with a name in your project, qualify it with the namespace, for example <code>Intecre_Utilities.T_Timer</code>.</li>
+
+  <li><strong>Turn the log on.</strong> Set the level once at start-up:
+<pre><code>LogConfig.LogLevel := E_LogSeverity.Info;</code></pre>
+    The log is off by default. Without this line, nothing from the library or from your own <code>F_Log...</code> calls reaches the TwinCAT log.</li>
+
+  <li><strong>Try it.</strong> Give a function block a name and a message:
+<pre><code><span class="k">FUNCTION_BLOCK</span> T_Conveyor <span class="k">EXTENDS</span> T_NamedBase
+
+<span class="k">METHOD</span> Start
+LogInfo('Started');</code></pre>
+<pre><code><span class="k">PROGRAM</span> MAIN
+<span class="k">VAR</span>
+  infeedConveyor : T_Conveyor;
+  startRequested : <span class="k">BOOL</span> := <span class="k">TRUE</span>;
+<span class="k">END_VAR</span>
+
+LogConfig.LogLevel := E_LogSeverity.Info;
+
+<span class="k">IF</span> F_Gate(startRequested) <span class="k">THEN</span>
+  infeedConveyor.Start();
+<span class="k">END_IF</span></code></pre>
+    Build, activate and run. The Error List shows the message once, under <em>Messages</em>:
+<pre class="out"><code><span class="o">'PlcTask' (350): MAIN.infeedConveyor: Started</span></code></pre></li>
+</ol>
+
+<div class="note">
+  <strong>Without TcPkg</strong>
+  Download <code>IntecreUtilities.library</code> from the latest <a href="https://github.com/Intecre/twincat-utils/releases">GitHub release</a> and install it with <em>PLC &gt; Library Repository &gt; Install</em>. Then install the Beckhoff libraries it uses yourself: Tc2_Math, Tc2_Standard, Tc2_System, Tc2_Utilities, Tc3_Module, and Tc2_MDP from the testing feed.
+</div>
+
+<h2 id="logging"><span class="n">3</span>Logging</h2>
+
+<figure>
+<svg viewBox="0 0 1000 250" role="img" aria-label="Your F_Log functions, T_NamedBase methods and edge blocks all pass through LogConfig.LogLevel; messages at that severity and above go to the TwinCAT log and to your I_ExternalLogger if one is set; messages below the level are dropped" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, system-ui, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6D6D6D"/></marker>
+    <marker id="arrg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#4B734C"/></marker>
+  </defs>
+  <rect width="1000" height="250" fill="#fff"/>
+  <g font-size="13" font-weight="600" text-anchor="middle">
+    <text x="130" y="22" fill="#2B2B2B">Your code</text>
+    <text x="480" y="22" fill="#4B734C">Intecre.Utilities</text>
+    <text x="850" y="22" fill="#2B2B2B">Where it goes</text>
+  </g>
+  <g stroke="#6D6D6D" stroke-width="1.6" fill="#fff">
+    <rect x="20" y="40" width="220" height="56" rx="6"/>
+    <rect x="20" y="107" width="220" height="56" rx="6"/>
+    <rect x="20" y="174" width="220" height="56" rx="6"/>
+    <rect x="720" y="60" width="260" height="56" rx="6"/>
+    <rect x="720" y="155" width="260" height="56" rx="6"/>
+  </g>
+  <rect x="360" y="103" width="240" height="64" rx="6" fill="#4B734C" stroke="#4B734C" stroke-width="2"/>
+  <g stroke="#6D6D6D" stroke-width="1.6" fill="none" marker-end="url(#arr)">
+    <path d="M240,68 L356,125"/>
+    <path d="M240,135 L356,135"/>
+    <path d="M240,202 L356,145"/>
+  </g>
+  <g stroke="#4B734C" stroke-width="2" fill="none" marker-end="url(#arrg)">
+    <path d="M600,125 L716,90"/>
+    <path d="M600,145 L716,181"/>
+  </g>
+  <path d="M480,167 L480,200" stroke="#6D6D6D" stroke-width="1.6" stroke-dasharray="5 4" fill="none" marker-end="url(#arr)"/>
+  <g text-anchor="middle" fill="#2B2B2B">
+    <g font-size="14" font-weight="600">
+      <text x="130" y="64">F_Log... functions</text>
+      <text x="130" y="131">T_NamedBase methods</text>
+      <text x="130" y="198">Edge blocks</text>
+      <text x="480" y="131" fill="#fff">LogConfig.LogLevel</text>
+      <text x="850" y="84">TwinCAT log</text>
+      <text x="850" y="179">Your I_ExternalLogger</text>
+    </g>
+    <g font-size="12" fill="#6D6D6D">
+      <text x="130" y="84">F_LogInfo('Door opened')</text>
+      <text x="130" y="151">put the instance path first</text>
+      <text x="130" y="218">log once per edge</text>
+      <text x="480" y="151" fill="#F2F6F2">passes this severity and above</text>
+      <text x="850" y="104">XAE Error List and output window</text>
+      <text x="850" y="199">set in LogConfig.ExternalLogger</text>
+      <text x="480" y="222">Below the level: dropped, and F_Log... returns ''</text>
+    </g>
+  </g>
+</svg>
+<figcaption>Every message passes one filter, <code>LogConfig.LogLevel</code>. What passes goes to the TwinCAT log, and to your own logger if you set one.</figcaption>
+</figure>
+
+<h3>Turning it on</h3>
+<p>Set the level once at start-up. Messages at that severity and above are logged.</p>
+<pre><code>LogConfig.LogLevel := E_LogSeverity.Info;</code></pre>
+<table>
+  <tr><th style="width: 160px">Level</th><th>Logs</th></tr>
+  <tr><td><code>Debug</code></td><td>Debug, Info, Warning, Error</td></tr>
+  <tr><td><code>Info</code></td><td>Info, Warning, Error</td></tr>
+  <tr><td><code>Warning</code></td><td>Warning, Error</td></tr>
+  <tr><td><code>Error</code></td><td>Error</td></tr>
+  <tr><td><code>None</code></td><td>Nothing. This is the default.</td></tr>
+</table>
+
+<div class="warn">
+  <strong>Logging is off until you turn it on</strong>
+  <code>LogConfig.LogLevel</code> starts at <code>E_LogSeverity.None</code>. Until you set a level, the library's own warnings are silent too, so a refused <code>AddItem</code> or a busy ADS block gives no sign.
+</div>
+
+<h3>Writing messages</h3>
+<pre><code>F_LogInfo('Conveyor started');
+F_LogWarning(F_Concat3('Low pressure on ', lineName, ''));
+F_LogError('Door opened while running');
+F_LogDebug('Entering homing');</code></pre>
+<p>Each message goes to the TwinCAT log, which XAE shows in the Error List. <code>F_LogDebug</code> puts <code>DEBUG </code> in front of its message. Each function returns the message when it was logged, and an empty string when the level filtered it out.</p>
+<p><code>F_Logger(LogSeverity, Message)</code> does the same with the severity as a parameter.</p>
+
+<h3>Logging once per edge</h3>
+<p>The edge blocks log when their <code>Event</code> input changes, not on every cycle while it stays set. <code>Q</code> is <code>TRUE</code> on the cycle the message was logged.</p>
+<pre><code><span class="k">VAR</span>
+  doorOpenedLog : FB_LogWarningEdge;
+  doorClosedLog : FB_LogInfoEdge;
+<span class="k">END_VAR</span>
+
+doorOpenedLog(Event := doorOpen, Message := 'Door opened');
+doorClosedLog(Event := doorOpen, Message := 'Door closed', EventFallingEdge := <span class="k">TRUE</span>);</code></pre>
+<p><code>FB_LogInfoEdge</code>, <code>FB_LogWarningEdge</code> and <code>FB_LogErrorEdge</code> each log at their own severity. <code>FB_LogOnEdge</code> takes the severity as an input and accepts <code>Info</code>, <code>Warning</code> or <code>Error</code>. Given <code>Debug</code>, it logs an error saying the severity is wrong, with your message attached.</p>
+
+<h3>Sending messages somewhere else as well</h3>
+<p>To copy every logged message to your own destination, such as a file, an HMI alarm list or a database, write a function block that implements <code>I_ExternalLogger</code>, and hand an instance to <code>LogConfig.ExternalLogger</code>.</p>
+<pre><code><span class="k">FUNCTION_BLOCK</span> T_HmiMessageLog <span class="k">IMPLEMENTS</span> I_ExternalLogger
+<span class="k">VAR</span>
+  lastMessage : T_MaxString;
+  lastSeverity : E_LogSeverity;
+<span class="k">END_VAR</span>
+
+<span class="k">METHOD</span> AddToLog
+<span class="k">VAR_IN_OUT</span>
+  Message : T_MaxString;
+<span class="k">END_VAR</span>
+<span class="k">VAR_INPUT</span>
+  LogSeverity : E_LogSeverity;
+<span class="k">END_VAR</span>
+
+lastMessage := Message;
+lastSeverity := LogSeverity;</code></pre>
+<pre><code><span class="k">PROGRAM</span> MAIN
+<span class="k">VAR</span>
+  hmiMessageLog : T_HmiMessageLog;
+<span class="k">END_VAR</span>
+
+LogConfig.ExternalLogger := hmiMessageLog;
+LogConfig.LogLevel := E_LogSeverity.Warning;</code></pre>
+<p>The external logger receives only the messages that pass the level. Declare its instance somewhere that lives as long as the PLC runs, such as a program or a global variable list. To stop forwarding, set <code>LogConfig.ExternalLogger := 0</code>.</p>
+
+<h2 id="named"><span class="n">4</span>Named objects</h2>
+
+<p>Extend <code>T_NamedBase</code> to give a function block its own name and logging methods.</p>
+<div class="two">
+  <div>
+<p class="cap">The function block</p>
+<pre><code><span class="k">FUNCTION_BLOCK</span> T_Conveyor <span class="k">EXTENDS</span> T_NamedBase
+
+<span class="k">METHOD</span> Start
+LogInfo('Started');</code></pre>
+  </div>
+  <div>
+<p class="cap">Using it</p>
+<pre><code><span class="k">PROGRAM</span> MAIN
+<span class="k">VAR</span>
+  infeedConveyor : T_Conveyor;
+<span class="k">END_VAR</span>
+
+infeedConveyor.Start();</code></pre>
+  </div>
+</div>
+<table>
+  <tr><th style="width: 210px">Member</th><th>For <code>MAIN.infeedConveyor</code></th></tr>
+  <tr><td><code>InstanceName</code></td><td><code>MAIN.infeedConveyor</code>: the instance path, without the project name</td></tr>
+  <tr><td><code>ObjectName</code></td><td><code>infeedConveyor</code></td></tr>
+  <tr><td><code>LogInfo('Started')</code> logs</td><td><code>MAIN.infeedConveyor: Started</code></td></tr>
+</table>
+<p><code>LogDebug</code>, <code>LogInfo</code>, <code>LogWarning</code> and <code>LogError</code> follow <code>LogConfig.LogLevel</code>, like the <code>F_Log...</code> functions. The library's own blocks extend <code>T_NamedBase</code>, so their warnings say which instance they came from.</p>
+
+<h2 id="lists"><span class="n">5</span>Lists</h2>
+
+<table>
+  <tr><th style="width: 210px">Block</th><th>Holds</th></tr>
+  <tr><td><code>FB_StringList</code></td><td><code>T_MaxString</code>, up to 255 characters</td></tr>
+  <tr><td><code>FB_LongStringList</code></td><td><code>LongString</code>, up to 299 characters</td></tr>
+  <tr><td><code>FB_UdintList</code></td><td><code>UDINT</code></td></tr>
+  <tr><td><code>FB_PointerList</code></td><td><code>PVOID</code></td></tr>
+  <tr><td><code>FB_TargList</code></td><td><code>T_Arg</code></td></tr>
+</table>
+
+<p>All lists work the same way:</p>
+<ul>
+  <li>Each holds up to 100 items (<code>GVL_List.LIST_SIZE</code>). <code>AddItem</code> returns <code>FALSE</code> once the list is full.</li>
+  <li>Lists accept duplicates.</li>
+  <li>Indexes start at 0. <code>FindIndex</code> returns -1 when the item is not there.</li>
+  <li><code>RemoveIndex</code> moves the later items down one place.</li>
+  <li><code>GetIndex</code> past the end returns an empty string, 0 or a null pointer, so prefer <code>TryGetIndex</code> when the index may be out of range.</li>
+</ul>
+
+<pre><code><span class="k">VAR</span>
+  activeAlarms : FB_StringList;
+  alarmIndex : <span class="k">INT</span>;
+<span class="k">END_VAR</span>
+
+<span class="k">IF</span> <span class="k">NOT</span> activeAlarms.Contains('Door open') <span class="k">THEN</span>
+  activeAlarms.AddItem('Door open');
+<span class="k">END_IF</span>
+
+alarmIndex := activeAlarms.FindIndex('Door open');
+<span class="k">IF</span> alarmIndex &gt;= 0 <span class="k">THEN</span>
+  activeAlarms.RemoveIndex(TO_UDINT(alarmIndex));
+<span class="k">END_IF</span></code></pre>
+
+<h3>Going through every item</h3>
+<p>Let <code>TryGetIndex</code> end the loop:</p>
+<pre><code><span class="k">VAR</span>
+  index : <span class="k">UDINT</span>;
+  alarm : T_MaxString;
+<span class="k">END_VAR</span>
+
+index := 0;
+<span class="k">WHILE</span> activeAlarms.TryGetIndex(index, alarm) <span class="k">DO</span>
+  F_LogWarning(alarm);
+  index := index + 1;
+<span class="k">END_WHILE</span></code></pre>
+
+<div class="warn">
+  <strong>Don't loop with FOR to Count - 1</strong>
+  <code>Count</code> is unsigned. On an empty list, <code>Count - 1</code> wraps to the largest <code>UDINT</code> and the loop runs away.
+</div>
+
+<h3>What else the lists have</h3>
+<ul>
+  <li><code>ContainsPartial</code> and <code>FindIndexPartialKey</code> on the string lists match any item containing the given text.</li>
+  <li><code>CopyList</code> and <code>CopyListAndClear</code> on the string lists copy every item into an <code>ARRAY[0..GVL_List.LIST_SIZE - 1]</code> of the list's item type.</li>
+  <li><code>GetAndRemoveIndex</code> on <code>FB_StringList</code> returns an item and removes it in one call.</li>
+  <li><code>FB_TargList.Contains</code> and <code>FindIndex</code> compare the data each <code>T_Arg</code> points at, so two arguments for different variables holding the same value match.</li>
+</ul>
+
+<h2 id="dictionary"><span class="n">6</span>Dictionary</h2>
+
+<p><code>FB_Dictionary</code> maps a text key to a <code>T_Arg</code>, which points at one of your variables. Use it to reach variables by name, for example settings that an HMI or a recipe file sends as text.</p>
+
+<pre><code><span class="k">VAR</span>
+  settings : FB_Dictionary;
+  conveyorSpeed : <span class="k">LREAL</span> := 1.5;
+  operatingMode : <span class="k">INT</span> := 2;
+  setting : T_Arg;
+  settingText : T_MaxString;
+<span class="k">END_VAR</span>
+
+settings.AddItem('speed', F_LREAL(conveyorSpeed));
+settings.AddItem('mode', F_INT(operatingMode));
+
+<span class="k">IF</span> settings.TryGet('speed', setting) <span class="k">THEN</span>
+  settingText := F_TargToString(setting);
+  F_StringToTarg('2.0', setting);
+<span class="k">END_IF</span></code></pre>
+<p>After this, <code>settingText</code> is <code>'1.5'</code> and <code>conveyorSpeed</code> is 2.0.</p>
+
+<div class="warn">
+  <strong>The dictionary stores where the variable is, not a copy of its value</strong>
+  Reading through the dictionary always gives the variable's current value, and writing through it changes the variable. Only add variables that live as long as the dictionary: never a function's local variable or a <code>VAR_TEMP</code>.
+</div>
+
+<p><code>AddItem</code> returns <code>FALSE</code>, adds nothing and logs a warning (<a href="#messages">section 16</a>) when:</p>
+<ul>
+  <li>the key is empty;</li>
+  <li>the value is empty, a <code>T_Arg</code> with no length;</li>
+  <li>the key is already there;</li>
+  <li>the dictionary already holds 100 entries.</li>
+</ul>
+
+<table>
+  <tr><th style="width: 290px">Method</th><th>Does</th></tr>
+  <tr><td><code>Contains(key)</code></td><td><code>TRUE</code> when the key is present</td></tr>
+  <tr><td><code>TryGet(key, value)</code></td><td><code>TRUE</code>, and the value, when the key is present</td></tr>
+  <tr><td><code>Get(key)</code></td><td>The value, or an empty <code>T_Arg</code></td></tr>
+  <tr><td><code>TryGetPartialKey(partialKey, value)</code></td><td>The value of the first key containing the text</td></tr>
+  <tr><td><code>TryGetIndex(index, key, value)</code></td><td>The key and value at a position, in the order they were added</td></tr>
+  <tr><td><code>Remove(key)</code></td><td><code>TRUE</code> when the key was there and is now gone</td></tr>
+  <tr><td><code>Clear()</code></td><td>Empties the dictionary</td></tr>
+  <tr><td><code>Count</code></td><td>The number of entries</td></tr>
+</table>
+
+<h3>Noticing when any value changes</h3>
+<p><code>F_DictionaryValuesCrc</code> returns a CRC-16 of every value in the dictionary, in the order they were added, and 0 for an empty dictionary. Compare it with the last one to see whether anything changed, for example before saving settings.</p>
+<pre><code>settingsChecksum := F_DictionaryValuesCrc(settings);
+<span class="k">IF</span> settingsChecksum &lt;&gt; savedSettingsChecksum <span class="k">THEN</span>
+  SaveSettings();
+  savedSettingsChecksum := settingsChecksum;
+<span class="k">END_IF</span></code></pre>
+
+<h2 id="text"><span class="n">7</span>Strings and text</h2>
+
+<h3>Joining up to seven strings</h3>
+<pre><code>statusText := F_Concat4('Axis ', axisName, ' at ', TO_STRING(position));</code></pre>
+<p><code>F_Concat3</code> to <code>F_Concat7</code> return a <code>T_MaxString</code>. Anything past 255 characters is cut off. Empty parts add nothing.</p>
+
+<h3>Strings longer than 255 characters</h3>
+<p><code>LongString</code> holds up to 299 characters. Join <code>LongString</code> variables with <code>F_ConcatLarge</code> for two, or <code>F_Concat3_Large</code> to <code>F_Concat7_Large</code> for more.</p>
+<pre><code><span class="k">VAR</span>
+  reportHeader, reportBody, reportFooter, report : LongString;
+<span class="k">END_VAR</span>
+
+report := F_Concat3_Large(reportHeader, reportBody, reportFooter);</code></pre>
+<p>When the parts add up to more than 299 characters, the earlier parts are shortened so that the last part is kept whole. <code>F_ClearLarge(report)</code> empties a <code>LongString</code> and zeroes its whole buffer.</p>
+<div class="note">
+  <strong>Measuring a long string</strong>
+  The standard <code>LEN</code> stops counting at 255 characters. Measure a <code>LongString</code> with <code>LEN2(ADR(report))</code> from Tc2_Utilities.
+</div>
+
+<h3>Parsing text into numbers</h3>
+<p>The <code>TryStringTo...</code> functions return <code>TRUE</code> when the whole text is a valid number for the type, and write the number into the variable you pass. When they return <code>FALSE</code>, the variable is set to 0.</p>
+<pre><code><span class="k">IF</span> TryStringToDint(setpointText, setpoint) <span class="k">THEN</span>
+  F_LogInfo('Setpoint accepted');
+<span class="k">ELSE</span>
+  F_LogWarning(F_Concat3('Not a whole number: ', setpointText, ''));
+<span class="k">END_IF</span></code></pre>
+<table>
+  <tr><th style="width: 180px">Function</th><th>Accepts</th><th>Rejects</th></tr>
+  <tr><td><code>TryStringToDint</code></td><td>Digits, with an optional leading minus: <code>123</code>, <code>-45</code></td><td><code>+1</code>, <code>1-2</code>, letters, spaces, empty text</td></tr>
+  <tr><td><code>TryStringToUdint</code></td><td>Digits up to 4294967295</td><td>Any sign, spaces, empty text</td></tr>
+  <tr><td><code>TryStringToWord</code></td><td>Digits up to 65535</td><td>65536 and above, letters, empty text</td></tr>
+  <tr><td><code>TryStringToLreal</code></td><td>Digits with an optional point and leading minus: <code>3.25</code>, <code>-0.5</code>, <code>42</code></td><td>Exponents such as <code>1e5</code>, letters, empty text</td></tr>
+</table>
+<p><code>CharIsNumber</code>, <code>CharIsNumberOrMinus</code> and <code>CharIsNumberOrPeriod</code> test a single character, given as its byte value.</p>
+
+<h3>Reading and writing a variable as text</h3>
+<p><code>T_Arg</code> comes from Tc2_Utilities. It records where a variable is, its type and its size. Make one with the Tc2_Utilities functions such as <code>F_INT(variable)</code>, <code>F_LREAL(variable)</code> or <code>F_STRING(variable)</code>.</p>
+<p><code>F_TargToString(arg)</code> returns the variable's value as text. <code>F_StringToTarg(text, arg)</code> converts text and writes it into the variable.</p>
+<p>Both handle <code>BOOL</code>, <code>BYTE</code>, <code>WORD</code>, <code>DWORD</code>, <code>USINT</code>, <code>SINT</code>, <code>UINT</code>, <code>INT</code>, <code>UDINT</code>, <code>DINT</code>, <code>REAL</code>, <code>LREAL</code> and <code>STRING</code>. For any other type they log a warning: <code>F_TargToString</code> returns an empty string, and <code>F_StringToTarg</code> leaves the variable unchanged.</p>
+
+<h2 id="task"><span class="n">8</span>Task information</h2>
+
+<p><code>T_Task</code> reads the information TwinCAT keeps for each PLC task.</p>
+<pre><code><span class="k">VAR</span>
+  task : T_Task;
+<span class="k">END_VAR</span>
+
+task.SetToThisTask();
+logFileName := F_Concat3('log_', task.DateTimeString, '.csv');</code></pre>
+
+<div class="warn">
+  <strong>T_Task reads the first task until told otherwise</strong>
+  In a project with more than one task, call <code>SetToThisTask()</code> from the task it runs in, or every property describes the first task instead.
+</div>
+
+<table>
+  <tr><th style="width: 330px">Property</th><th>Gives</th></tr>
+  <tr><td><code>Name</code></td><td>The task name</td></tr>
+  <tr><td><code>CycleTimeInMs</code>, <code>CycleTimeInSecs</code>, <code>CyclesPerSecond</code></td><td>The configured cycle time</td></tr>
+  <tr><td><code>CycleCount</code></td><td>Cycles run so far</td></tr>
+  <tr><td><code>IsFirstScan</code></td><td><code>TRUE</code> on the first cycle</td></tr>
+  <tr><td><code>CycleTimeExceeded</code></td><td><code>TRUE</code> when the last cycle overran</td></tr>
+  <tr><td><code>DistributedClockTimeInNs</code>, <code>...InMs</code>, <code>...InSecs</code></td><td>The distributed clock time</td></tr>
+  <tr><td><code>DateTimeFromDc</code></td><td>The distributed clock time as <code>DATE_AND_TIME</code></td></tr>
+  <tr><td><code>DateTimeString</code></td><td><code>yyyy-mm-dd_hh-mm-ss</code>, safe to use in file names</td></tr>
+  <tr><td><code>DateString</code></td><td><code>yyyy-mm-dd</code></td></tr>
+  <tr><td><code>TimeString</code></td><td><code>hh-mm-ss</code></td></tr>
+  <tr><td><code>Index</code></td><td>Which task it reads. <code>SetToThisTask()</code> sets it to the calling task.</td></tr>
+</table>
+
+<h2 id="timer"><span class="n">9</span>Timer</h2>
+
+<p><code>T_Timer</code> times from the distributed clock. It has no inputs and needs no cyclic call: set its properties, and read its outputs whenever you like.</p>
+<pre><code><span class="k">VAR</span>
+  doorOpenTimer : T_Timer;
+<span class="k">END_VAR</span>
+
+doorOpenTimer.SetPeriod := T#5S;
+doorOpenTimer.Signal := doorOpen;
+
+doorAlarm := doorOpenTimer.Q_On;
+doorBeacon := doorOpenTimer.Q_PulseTrain;</code></pre>
+
+<figure>
+<svg viewBox="0 0 1000 255" role="img" aria-label="Timing of T_Timer: Q_On rises one period after Signal is set and falls when Signal is cleared; Q_PulseTrain is low for the first half and high for the second half of each period while Signal is set; Q_Off rises one period after Signal is cleared" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, system-ui, sans-serif">
+  <defs>
+    <marker id="tick" viewBox="0 0 2 10" refX="1" refY="5" markerWidth="2" markerHeight="10" orient="auto"><path d="M1,0 L1,10" stroke="#6D6D6D" stroke-width="2"/></marker>
+  </defs>
+  <rect width="1000" height="255" fill="#fff"/>
+  <g stroke="#D0D0D0" stroke-width="1" stroke-dasharray="4 3">
+    <path d="M250,30 V232"/>
+    <path d="M410,30 V232"/>
+    <path d="M690,30 V232"/>
+    <path d="M850,30 V232"/>
+  </g>
+  <g stroke="#6D6D6D" stroke-width="1.4" fill="none" marker-start="url(#tick)" marker-end="url(#tick)">
+    <path d="M250,26 H410"/>
+    <path d="M690,26 H850"/>
+  </g>
+  <g font-size="12" fill="#6D6D6D" text-anchor="middle">
+    <text x="330" y="18">one period</text>
+    <text x="770" y="18">one period</text>
+    <text x="250" y="249">Signal set</text>
+    <text x="690" y="249">Signal cleared</text>
+  </g>
+  <g font-family="Consolas, 'Cascadia Mono', monospace" font-size="13" fill="#2B2B2B">
+    <text x="20" y="64">Signal</text>
+    <text x="20" y="114">Q_On</text>
+    <text x="20" y="164">Q_PulseTrain</text>
+    <text x="20" y="214">Q_Off</text>
+  </g>
+  <g stroke="#4B734C" stroke-width="2.2" fill="none" stroke-linejoin="round">
+    <path d="M170,70 H250 V48 H690 V70 H970"/>
+    <path d="M170,120 H410 V98 H690 V120 H970"/>
+    <path d="M170,170 H330 V148 H410 V170 H490 V148 H570 V170 H650 V148 H690 V170 H970"/>
+    <path d="M170,220 H850 V198 H970"/>
+  </g>
+</svg>
+<figcaption>Timing restarts each time <code>Signal</code> changes. <code>Q_On</code> comes on one period after <code>Signal</code> is set, and <code>Q_Off</code> one period after it is cleared.</figcaption>
+</figure>
+
+<table>
+  <tr><th style="width: 210px">Property</th><th>Meaning</th></tr>
+  <tr><td><code>Signal</code></td><td>The input. Timing restarts whenever it changes. Writing the same value every cycle does not restart it.</td></tr>
+  <tr><td><code>SetPeriod</code></td><td>The period. Anything under 1 ms is stored as 1 ms.</td></tr>
+  <tr><td><code>Q_On</code></td><td><code>TRUE</code> once <code>Signal</code> has been on for longer than the period</td></tr>
+  <tr><td><code>Q_Off</code></td><td><code>TRUE</code> once <code>Signal</code> has been off for longer than the period, after having been on at least once</td></tr>
+  <tr><td><code>Q_PulseTrain</code></td><td>While <code>Signal</code> is on: low for the first half of each period, high for the second half</td></tr>
+  <tr><td><code>ElapsedTime</code>, <code>ElapsedTimeInMs</code></td><td>The time since <code>Signal</code> came on, and 0 while it is off</td></tr>
+</table>
+
+<h2 id="ads"><span class="n">10</span>ADS</h2>
+
+<p>The ADS blocks run a request over several cycles. Each one:</p>
+<ul>
+  <li>starts with a <code>Try...</code> method, which returns <code>FALSE</code> and logs a warning if a request is already busy;</li>
+  <li>must be called every cycle, as <code>myBlock();</code>, while the request runs;</li>
+  <li>reports through <code>Busy</code>, <code>Done</code> and <code>Error</code>, which it also offers as the <code>I_TaskState</code> interface.</li>
+</ul>
+<p>Addresses use <code>ST_AmsAddr</code>. Leave its <code>netId</code> all zero for the local system, and set <code>port</code> to the target, for example 851 for the first PLC.</p>
+
+<h3>Calling a method on a PLC by name</h3>
+<p><code>T_InvokeRpcMethod</code> calls a method marked <code>{attribute 'TcRpcEnable'}</code> on any PLC it can reach over ADS. In one request, it gets a handle for the method, calls it and releases the handle.</p>
+
+<div class="two">
+  <div>
+<p class="cap">On the target PLC</p>
+<pre><code><span class="k">FUNCTION_BLOCK</span> T_Calculator
+
+{attribute 'TcRpcEnable'}
+<span class="k">METHOD</span> AddNumbers : <span class="k">DINT</span>
+<span class="k">VAR_INPUT</span>
+  a : <span class="k">DINT</span>;
+  b : <span class="k">DINT</span>;
+<span class="k">END_VAR</span>
+
+AddNumbers := a + b;</code></pre>
+  </div>
+  <div>
+<p class="cap">On the calling PLC: the method's inputs, in order</p>
+<pre><code><span class="k">TYPE</span> ST_AddNumbersInputs :
+<span class="k">STRUCT</span>
+  a : <span class="k">DINT</span>;
+  b : <span class="k">DINT</span>;
+<span class="k">END_STRUCT</span>
+<span class="k">END_TYPE</span></code></pre>
+  </div>
+</div>
+
+<p class="cap">On the calling PLC: the call</p>
+<pre><code><span class="k">VAR</span>
+  addNumbers : T_InvokeRpcMethod;
+  addNumbersCall : ST_SymbolHandle;
+  inputs : ST_AddNumbersInputs;
+  sum : <span class="k">DINT</span>;
+<span class="k">END_VAR</span>
+
+addNumbers();
+
+<span class="k">IF</span> startCalculation <span class="k">THEN</span>
+  inputs.a := 20;
+  inputs.b := 22;
+  addNumbersCall.SymbolAddress.SymbolName := 'MAIN.calculator#AddNumbers';
+  addNumbersCall.SymbolAddress.Ads.port := 851;
+  addNumbersCall.SymbolAddress.WriteRef := F_BIGTYPE(pData := ADR(inputs), cbLen := SIZEOF(inputs));
+  addNumbersCall.SymbolAddress.ReadRef := F_BIGTYPE(pData := ADR(sum), cbLen := SIZEOF(sum));
+  addNumbers.TryInvokeMethodCall(symbolHandle := addNumbersCall);
+  startCalculation := <span class="k">FALSE</span>;
+<span class="k">END_IF</span>
+
+calculationBusy := addNumbers.Busy;
+calculationDone := addNumbers.Done;
+calculationFailed := addNumbers.Error;</code></pre>
+<p>The symbol name is the instance path of the target function block, then <code>#</code>, then the method name. <code>WriteRef</code> points at the method's inputs, and <code>ReadRef</code> at where to put its return value. <code>sum</code> holds 42 once <code>Done</code> is set.</p>
+<div class="warn">
+  <strong>Point WriteRef and ReadRef at variables that outlive the request</strong>
+  The block reads and writes them over several cycles. Never use the locals of a method or function.
+</div>
+
+<h3>Working with a handle yourself</h3>
+<p>To keep a handle and use it more than once, take the steps <code>T_InvokeRpcMethod</code> takes for you:</p>
+<ol>
+  <li><code>T_GetHandle.TryGetHandle(symbolHandle := handle)</code> fills in <code>handle.Handle</code> for <code>handle.SymbolAddress.SymbolName</code>.</li>
+  <li><code>T_CallMethod.TryMethodCall(symbolHandle := handle)</code> writes <code>WriteRef</code> and reads <code>ReadRef</code> through the handle.</li>
+  <li><code>T_ReleaseHandle.TryReleaseHandle(symbolHandle := handle)</code> frees it.</li>
+</ol>
+
+<h3>Raw read and write</h3>
+<p><code>T_AdsReadWrite.TryRequest(readWriteOptions)</code> and <code>T_AdsWrite.TryRequest(readWriteOptions)</code> send one ADS read-write or write, to the index group and offset in <code>ST_AdsReadWriteOptions</code>. <code>WriteParams</code> and <code>ReadParams</code> are <code>T_Arg</code> values saying what to send and where to put the reply. The default timeout is 5 seconds.</p>
+
+<h2 id="control"><span class="n">11</span>Controllers and filter</h2>
+
+<h3>P, I and PI</h3>
+<pre><code><span class="k">VAR</span>
+  temperatureLoop : FB_PI_Controller;
+<span class="k">END_VAR</span>
+
+temperatureLoop(
+  ProcessVariable := measuredTemperature,
+  Setpoint := targetTemperature,
+  Kp := 2.0,
+  IntegralConstant := 6.0,
+  MaxLoopOutput := 100.0,
+  MinLoopOutput := 0.0,
+  Bias := 0.0
+);
+heaterPower := temperatureLoop.Output;</code></pre>
+
+<table>
+  <tr><th style="width: 180px">Block</th><th>What it does</th></tr>
+  <tr><td><code>FB_P_Control</code></td><td><code>Term</code> is <code>Kp × (Setpoint − ProcessVariable)</code>.</td></tr>
+  <tr><td><code>FB_I_Controller</code></td><td>Each call adds <code>Ki × error × cycle time of the calling task</code> to <code>Term</code>, held between <code>MinIntegralComponent</code> and <code>MaxIntegralComponent</code> (±1000 by default). <code>Pause</code> holds the term, <code>Reset</code> restarts it from zero, and a <code>Ki</code> of 0 or less gives a term of 0.</td></tr>
+  <tr><td><code>FB_PI_Controller</code></td><td><code>Output</code> is the P term plus the I term plus <code>Bias</code>, held between <code>MinLoopOutput</code> and <code>MaxLoopOutput</code>. <code>IntegralConstant</code> is in repeats per minute, or per second when <code>RepeatsPerMinute</code> is <code>FALSE</code>. Integration pauses while the output is held at a limit and the error would push it further.</td></tr>
+</table>
+
+<div class="stop">
+  <strong>Set both output limits on FB_PI_Controller</strong>
+  <code>MaxLoopOutput</code> and <code>MinLoopOutput</code> default to 0, which holds the output at 0 whatever the error.
+</div>
+<div class="note">
+  <strong>Call each controller exactly once per cycle</strong>
+  The I term integrates once per call, using the cycle time of the task that calls it. A second call in the same cycle integrates twice.
+</div>
+<div class="warn">
+  <strong>Versions before 4.1.0.0 used the cycle time of the first PLC task</strong>
+  Whatever task called the controller, it integrated with the first task's cycle time, so a controller in a faster or slower task integrated too slowly or too fast. From 4.1.0.0, each controller uses its own task. Check the tuning of any loop that runs outside the first task (<a href="#upgrading">section 15</a>).
+</div>
+
+<h3>Alpha-beta filter</h3>
+<p><code>FB_AlphaBetaFilter</code> smooths a measurement and tracks its rate of change.</p>
+<pre><code>pressureFilter(
+  measurement := rawPressure,
+  deltaInSecond := task.CycleTimeInSecs,
+  alpha := 0.3,
+  beta := 0.01
+);
+smoothedPressure := pressureFilter.output;</code></pre>
+<p><code>alpha</code> runs from 0 to 1: 1 passes the measurement straight through, and smaller values smooth more. Keep <code>beta</code> small, between 0.001 and 0.1. With a <code>deltaInSecond</code> of 0, the rate term is left out.</p>
+
+<h2 id="io"><span class="n">12</span>I/O and OPC UA structures</h2>
+
+<p>Process-image structures to declare, then link in the I/O tree:</p>
+<table>
+  <tr><th style="width: 330px">Structure</th><th>For</th></tr>
+  <tr><td><code>stEL3058_Channel</code>, <code>stEL3152_Channel</code>, <code>stEL3318_Channel</code></td><td>One channel of an EL3058, EL3152 or EL3318 analogue input</td></tr>
+  <tr><td><code>stKL306x_Channel</code></td><td>One channel of a KL3061 or KL3062 analogue input</td></tr>
+  <tr><td><code>stKL33xx_Channel</code></td><td>One channel of a KL33xx input, such as the KL3314</td></tr>
+  <tr><td><code>stEL9410</code></td><td>EL9410 supply undervoltage bits</td></tr>
+  <tr><td><code>stEL9576</code></td><td>EL9576 brake chopper status</td></tr>
+  <tr><td><code>stWcState</code>, <code>stInfoData</code></td><td>The EtherCAT working counter and info data of a slave</td></tr>
+</table>
+<p><code>F_GetKL306xState</code> turns a <code>stKL306x_ChannelStatus</code> into named outputs: underrange, overrange, error, and whether the value is equal to, above or below each limit, or that limit is off.</p>
+<pre><code>F_GetKL306xState(
+  KL306xState := tankLevelInput.State,
+  Overrange =&gt; tankLevelOverrange,
+  ProcessData_GT_Limit1 =&gt; tankLevelHigh
+);</code></pre>
+<p>The OPC UA structures match the control word, status word and data points of the TwinCAT OPC UA client I/O device: <code>ST_OpcUAServer_Control</code>, <code>ST_OpcUAServer_Status</code>, <code>ST_OpcUa_LrealPoint</code>, <code>ST_OpcUa_UintPoint</code> and their <code>...Write</code> forms.</p>
+
+<h2 id="diagnostics"><span class="n">13</span>Diagnostics</h2>
+
+<h3>CPU temperature</h3>
+<p><code>T_MdpReadCpuTemp</code> reads the IPC's CPU temperature through the device manager every 500 ms. Call it every cycle and read <code>CpuTemp</code>, in degrees Celsius.</p>
+<pre><code><span class="k">VAR</span>
+  cpuTemperature : T_MdpReadCpuTemp;
+  cpuHotLog : FB_LogWarningEdge;
+<span class="k">END_VAR</span>
+
+cpuTemperature();
+cpuHotLog(Event := cpuTemperature.CpuTemp &gt; 80, Message := 'CPU above 80 degrees');</code></pre>
+<p><code>SetUpdateTimerValue(T#2S)</code> changes how often it reads. <code>Busy</code>, <code>Error</code> and <code>ErrorId</code> report the read in progress. It needs the Tc2_MDP library, which is only on Beckhoff's testing TcPkg feed (<a href="#start">section 2</a>, step 2).</p>
+
+<h3>Writing persistent data regularly</h3>
+<p><code>T_WritePersistentData</code> writes the persistent variables of a PLC at a fixed period, so a power cut loses at most one period of changes. By default it writes on ADS port 851 every 10 seconds. Call it every cycle.</p>
+<pre><code><span class="k">VAR</span>
+  persistentWriter : T_WritePersistentData;
+  persistentWriterConfigured : <span class="k">BOOL</span>;
+<span class="k">END_VAR</span>
+
+<span class="k">IF</span> <span class="k">NOT</span> persistentWriterConfigured <span class="k">THEN</span>
+  persistentWriterConfigured := persistentWriter.SetConfig(WritePeriod := T#1M, AdsPort := 852);
+<span class="k">END_IF</span>
+persistentWriter();</code></pre>
+<p><code>SetConfig</code> returns <code>TRUE</code> when it takes the new period and port. A zero period or port 0 is rejected: it returns <code>FALSE</code>, and the current settings stay. <code>WritePeriod</code> and <code>AdsPort</code> read the settings back.</p>
+<div class="note">
+  <strong>Set the port of the PLC you are in</strong>
+  The default, 851, is the first PLC. A second PLC on port 852 that keeps the default writes the first PLC's persistent data, not its own.
+</div>
+
+<h2 id="helpers"><span class="n">14</span>Small helpers and version</h2>
+
+<ul>
+  <li><code>F_Gate(flag)</code> returns the flag and clears it, so a request is acted on once.</li>
+  <li><code>F_GetAmsNetId(netIdBytes)</code> turns the six bytes of a <code>T_AmsNetIdArr</code> into text such as <code>5.6.7.8.1.1</code>, and all zeros into an empty string, which ADS reads as the local system.</li>
+  <li><code>NULL</code> is a null pointer constant.</li>
+</ul>
+<pre><code><span class="k">IF</span> F_Gate(saveRequested) <span class="k">THEN</span>
+  SaveSettings();
+<span class="k">END_IF</span></code></pre>
+
+<h3>Which version is running</h3>
+<pre><code>libraryVersion := F_GetVersion();</code></pre>
+<p><code>F_GetVersion</code> returns an <code>ST_LibVersion</code> with the major, minor, build and revision numbers, and the version as text. <code>F_GetTitle</code> and <code>F_GetCompany</code> return the library's title and company. The same version is in the constant <code>Global_Version.stLibVersion_Intecre_Utilities</code>.</p>
+
+<h2 id="upgrading"><span class="n">15</span>Upgrading</h2>
+
+<p>The placeholder <code>Intecre.Utilities</code> resolves to the newest version installed, so a project picks up an upgrade at its next build. Read the changes below before upgrading a machine that is in service.</p>
+
+<h3>From 4.0.0.0 to 4.1.0.0</h3>
+<table>
+  <tr><th style="width: 44%">Change</th><th>What to check</th></tr>
+  <tr><td><code>FB_I_Controller</code>, and so <code>FB_PI_Controller</code>, now integrates with the cycle time of the task that calls it, not the first task.</td><td>Any controller called from a task other than the first: its I term now integrates at a different rate. Check its tuning. Controllers in the first task, or in a task with the same cycle time, are unchanged.</td></tr>
+  <tr><td><code>T_WritePersistentData.SetConfig</code> now works. Before, it did nothing.</td><td>Any call to <code>SetConfig</code>: the period and port you pass now take effect. Check they are what you want.</td></tr>
+  <tr><td>New read-only <code>WritePeriod</code> and <code>AdsPort</code> properties on <code>T_WritePersistentData</code>.</td><td>Nothing.</td></tr>
+</table>
+
+<h3>From 3.x to 4.0.0.0</h3>
+<table>
+  <tr><th style="width: 44%">Change</th><th>What to check</th></tr>
+  <tr><td>The <code>TryStringTo...</code> functions always set the output to 0 when they fail, including for an empty string.</td><td>Code that relied on the output keeping its old value after a failed parse.</td></tr>
+  <tr><td>The parameter of <code>CharIsNumberOrMinus</code> is renamed from <code>Char</code>, a reserved word in build 4026, to <code>bChar</code>.</td><td>Calls that name the parameter. Calls that pass it by position are unaffected.</td></tr>
+  <tr><td><code>FB_Dictionary.Remove</code> had its check inverted. It now removes existing keys and returns <code>TRUE</code>.</td><td>Code that worked around the old behaviour.</td></tr>
+  <tr><td><code>F_DictionaryValuesCrc</code> now covers every value. Before, it read only the first.</td><td>Stored checksums: they change once after the upgrade.</td></tr>
+  <tr><td><code>TryStringToWord</code> rejects values above 65535, and <code>F_ConcatLarge</code> keeps inputs longer than 255 characters.</td><td>Nothing, unless code relied on the old results.</td></tr>
+  <tr><td>Built for TwinCAT 3.1 build 4026, and published as a TcPkg package.</td><td>Install it as in <a href="#start">section 2</a>.</td></tr>
+</table>
+
+<h2 id="messages"><span class="n">16</span>Messages and what to do</h2>
+
+<p>Turn the log on first (<a href="#start">section 2</a>, step 5). Messages go to the TwinCAT log, which shows in XAE's Error List and output window. Messages from a block that extends <code>T_NamedBase</code> start with its instance path, for example:</p>
+<pre class="out"><code><span class="o">MAIN.settings: Key already exists in dictionary.</span></code></pre>
+
+<h3>From the dictionary</h3>
+<table>
+  <tr><th style="width: 44%">Message</th><th>What to do</th></tr>
+  <tr><td><code>key is null.</code></td><td>The key passed to <code>AddItem</code> is empty. Give it a name.</td></tr>
+  <tr><td><code>Key already exists in dictionary.</code></td><td>Keys are unique. To change the value, write through the <code>T_Arg</code> that <code>TryGet</code> returns, or <code>Remove</code> the key first.</td></tr>
+  <tr><td><code>Value has no length.</code></td><td>The <code>T_Arg</code> is empty. Make it with a Tc2_Utilities function such as <code>F_LREAL(variable)</code>.</td></tr>
+  <tr><td><code>...Dictionary is full.</code></td><td>The dictionary holds 100 entries already. The instance path runs straight into this message, with no colon. Use a second dictionary, or remove entries you no longer need.</td></tr>
+  <tr><td><code>Cannot remove key as not in dictionary.</code></td><td><code>Remove</code> was given a key that is not there. Check the spelling: keys are case sensitive.</td></tr>
+  <tr><td><code>... error adding key.</code><br><code>Error adding value.</code><br><code>Missmatch keys and values count. Clearing dictionary.</code></td><td>Internal: these should not happen. The last one empties the dictionary. Report it, with what the code did just before.</td></tr>
+</table>
+
+<h3>From the ADS blocks</h3>
+<table>
+  <tr><th style="width: 44%">Message</th><th>What to do</th></tr>
+  <tr><td><code>Cannot TryRequest as Busy</code><br><code>Cannot TryGetHandle as Busy</code><br><code>Cannot TryReleaseHandle as Busy</code></td><td>A <code>Try...</code> method was called while the last request was still running. Wait for <code>Done</code> or <code>Error</code> first. If the block never leaves <code>Busy</code>, it is not being called every cycle. <code>T_CallMethod</code> also says <code>TryGetHandle</code>.</td></tr>
+  <tr><td><code>Error gettng symbol handle for method <em>symbol</em></code></td><td>The target refused the name. Check the instance path and method name, that the method has <code>{attribute 'TcRpcEnable'}</code>, the port, and that the target PLC is running.</td></tr>
+  <tr><td><code>Error calling method <em>symbol</em></code></td><td>The handle was found, but the call failed. Check that <code>WriteRef</code> matches the method's inputs in order and size, and that <code>ReadRef</code> matches its return type.</td></tr>
+  <tr><td><code>Error releasing handle for <em>symbol</em></code></td><td>Usually the target restarted and the handle had already gone. Get a new handle before the next call.</td></tr>
+  <tr><td><code>Error during InvokeMethod of <em>symbol</em></code></td><td>One of the steps above failed inside <code>T_InvokeRpcMethod</code>. Set the level to <code>Debug</code> to see each step, as <code>... transition to state ...</code>.</td></tr>
+</table>
+
+<h3>From the rest of the library</h3>
+<table>
+  <tr><th style="width: 44%">Message</th><th>What to do</th></tr>
+  <tr><td><code>Unsupported type in Targ for string conversion: <em>n</em></code></td><td><code>F_TargToString</code> or <code>F_StringToTarg</code> was given a type it does not handle (<a href="#text">section 7</a>). <em>n</em> is the <code>E_ArgType</code> value.</td></tr>
+  <tr><td><code>Error in FB_LogOnEdge, Logseverity incorrect. Log Message for event is : <em>message</em></code></td><td><code>FB_LogOnEdge</code> was given <code>Debug</code>. Use <code>Info</code>, <code>Warning</code> or <code>Error</code>.</td></tr>
+</table>
+
+<h3>Symptoms</h3>
+<table>
+  <tr><th style="width: 44%">What you see</th><th>Why, and what to do</th></tr>
+  <tr><td>No messages at all</td><td>The level is still <code>None</code>, the default. Set it (<a href="#logging">section 3</a>). In the Error List, also turn on <em>Messages</em> to see Info messages.</td></tr>
+  <tr><td>The PI controller's output stays at 0</td><td><code>MaxLoopOutput</code> and <code>MinLoopOutput</code> are both 0, the default. Set them.</td></tr>
+  <tr><td>A controller integrates too fast or too slow</td><td>It is called more than once per cycle, or the library is older than 4.1.0.0 and the controller is outside the first task.</td></tr>
+  <tr><td><code>T_Task</code> reports the wrong cycle time or name</td><td>It is reading the first task. Call <code>SetToThisTask()</code>.</td></tr>
+  <tr><td>A list or dictionary stops growing</td><td>It holds 100 items, the fixed size. <code>AddItem</code> returns <code>FALSE</code>.</td></tr>
+  <tr><td>The build cannot find Tc2_MDP</td><td>Install it from Beckhoff's testing feed (<a href="#start">section 2</a>, step 2).</td></tr>
+</table>
+
+<h2 id="limits"><span class="n">17</span>Limits</h2>
+
+<p>These sizes are constants compiled into the library. They are not library parameters, so a project cannot change them: changing one means changing the constant in the library source and publishing a new version.</p>
+<table>
+  <tr><th style="width: 290px">Constant</th><th class="num" style="width: 90px">Value</th><th>What it limits</th></tr>
+  <tr><td><code>GVL_List.LIST_SIZE</code></td><td class="num">100</td><td>Items in every list, and entries in a dictionary</td></tr>
+  <tr><td><code>StringsParams.MAX_STRING_LENGTH</code></td><td class="num">300</td><td>The size of <code>LongString</code>, which holds 299 characters</td></tr>
+</table>
+
+<ul>
+  <li><strong>255 characters</strong> in a <code>T_MaxString</code>: the result of <code>F_Concat3</code> to <code>F_Concat7</code>, and a dictionary key.</li>
+  <li><strong>One task per instance.</strong> Use each list, dictionary, ADS block or controller from one task only.</li>
+  <li><strong>Tc2_MDP comes from the testing feed.</strong> <code>T_MdpReadCpuTemp</code> needs it, and Beckhoff does not publish it on the stable feed.</li>
+  <li><strong>Older blocks.</strong> These remain so that existing projects keep compiling. Don't use them in new code:
+    <ul>
+      <li><code>FB_Assert</code> and <code>T_TestBase</code> were written before TcUnit. Use <a href="https://tcunit.org">TcUnit</a> instead.</li>
+      <li><code>TGenericCollection</code> is unfinished and does nothing.</li>
+    </ul></li>
+  <li><strong>Checked on one setup.</strong> TwinCAT 3.1 build 4026.25 on the user-mode runtime, 5 November 2026: all 171 tests in 32 TcUnit suites pass, including calls over ADS to the test PLC itself and controllers run from a 50 ms second task. Not yet checked on a real-time target.</li>
+</ul>
+
+<footer>
+  Intecre Utilities &middot; <code>Intecre.Utilities</code> 4.1.0.0 &middot; source, tests and releases at <a href="https://github.com/Intecre/twincat-utils">github.com/Intecre/twincat-utils</a>.
+</footer>
+
+</main>
+</div>
+</body>
+</html>

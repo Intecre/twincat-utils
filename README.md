@@ -2,7 +2,7 @@
 
 A library of utility functions and classes for Beckhoff TwinCAT 3, built and tested on TwinCAT 3.1.4026.
 
-How to use each part, with examples, defaults and fixed limits: [docs/usage.md](docs/usage.md).
+The user guide, with a quick start, examples, defaults, fixed limits and what each log message means: [intecre.github.io/twincat-utils/user-guide.html](https://intecre.github.io/twincat-utils/user-guide.html). Its source is [docs/user-guide.html](docs/user-guide.html), which also opens in a browser straight from a clone.
 
 ## What is in it
 
