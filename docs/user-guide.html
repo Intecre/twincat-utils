@@ -84,7 +84,7 @@
     <img src="img/intecre-logo.png" alt="Intecre: Innovation Technology Creativity" width="95" height="62">
     <div>
       <div class="title">Utilities</div>
-      <div class="sub">User guide &middot; <code>Intecre.Utilities</code> 4.1.0.0, November 2026 &middot; checked with TwinCAT 3.1 build 4026 on the user-mode runtime</div>
+      <div class="sub">User guide &middot; <code>Intecre.Utilities</code> 4.2.0.0, November 2026 &middot; checked with TwinCAT 3.1 build 4026 on the user-mode runtime</div>
     </div>
   </div>
 </header>
@@ -157,10 +157,6 @@
   -u your.name@yourcompany.com</code></pre>
     When it asks for a password, paste the token.</li>
 
-  <li><strong>Check for Beckhoff's testing feed.</strong> The library uses Tc2_MDP, which Beckhoff only publishes on its testing feed. Run <code>tcpkg source list</code>. If there is no <code>testing</code> source, add it with your myBeckhoff login:
-<pre><code>tcpkg source add -n testing `
-  -s https://public.tcpkg.beckhoff-cloud.com/api/v1/feeds/testing `
-  -u your.myBeckhoff@email.com</code></pre></li>
 
   <li><strong>Install the library.</strong> Close TwinCAT XAE, then run:
 <pre><code>tcpkg install Intecre.Utilities</code></pre>
@@ -194,7 +190,7 @@ LogConfig.LogLevel := E_LogSeverity.Info;
 
 <div class="note">
   <strong>Without TcPkg</strong>
-  Download <code>IntecreUtilities.library</code> from the latest <a href="https://github.com/Intecre/twincat-utils/releases">GitHub release</a> and install it with <em>PLC &gt; Library Repository &gt; Install</em>. Then install the Beckhoff libraries it uses yourself: Tc2_Math, Tc2_Standard, Tc2_System, Tc2_Utilities, Tc3_Module, and Tc2_MDP from the testing feed.
+  Download <code>IntecreUtilities.library</code> from the latest <a href="https://github.com/Intecre/twincat-utils/releases">GitHub release</a> and install it with <em>PLC &gt; Library Repository &gt; Install</em>. Then install the Beckhoff libraries it uses yourself: Tc2_Math, Tc2_Standard, Tc2_System, Tc2_Utilities, Tc3_IPCDiag and Tc3_Module.
 </div>
 
 <h2 id="logging"><span class="n">3</span>Logging</h2>
@@ -740,7 +736,7 @@ smoothedPressure := pressureFilter.output;</code></pre>
 <h2 id="diagnostics"><span class="n">13</span>Diagnostics</h2>
 
 <h3>CPU temperature</h3>
-<p><code>T_MdpReadCpuTemp</code> reads the IPC's CPU temperature through the device manager every 500 ms. Call it every cycle and read <code>CpuTemp</code>, in degrees Celsius.</p>
+<p><code>T_MdpReadCpuTemp</code> reads the IPC's CPU temperature through Beckhoff's Tc3_IPCDiag library every 500 ms. Call it every cycle and read <code>CpuTemp</code>, in degrees Celsius.</p>
 <pre><code><span class="k">VAR</span>
   cpuTemperature : T_MdpReadCpuTemp;
   cpuHotLog : FB_LogWarningEdge;
@@ -748,7 +744,7 @@ smoothedPressure := pressureFilter.output;</code></pre>
 
 cpuTemperature();
 cpuHotLog(Event := cpuTemperature.CpuTemp &gt; 80, Message := 'CPU above 80 degrees');</code></pre>
-<p><code>SetUpdateTimerValue(T#2S)</code> changes how often it reads. <code>Busy</code>, <code>Error</code> and <code>ErrorId</code> report the read in progress. It needs the Tc2_MDP library, which is only on Beckhoff's testing TcPkg feed (<a href="#start">section 2</a>, step 2).</p>
+<p><code>SetUpdateTimerValue(T#2S)</code> changes how often it reads. <code>Busy</code>, <code>Error</code> and <code>ErrorId</code> report the read in progress. <code>ErrorId</code> is the HRESULT that Tc3_IPCDiag returns, 0 when the last read worked. The library needs Tc3_IPCDiag, which comes from Beckhoff's stable TcPkg feed with the package.</p>
 
 <h3>Writing persistent data regularly</h3>
 <p><code>T_WritePersistentData</code> writes the persistent variables of a PLC at a fixed period, so a power cut loses at most one period of changes. By default it writes on ADS port 851 every 10 seconds. Call it every cycle.</p>
@@ -785,6 +781,14 @@ persistentWriter();</code></pre>
 <h2 id="upgrading"><span class="n">15</span>Upgrading</h2>
 
 <p>The placeholder <code>Intecre.Utilities</code> resolves to the newest version installed, so a project picks up an upgrade at its next build. Read the changes below before upgrading a machine that is in service.</p>
+
+<h3>From 4.1.0.0 to 4.2.0.0</h3>
+<table>
+  <tr><th style="width: 44%">Change</th><th>What to check</th></tr>
+  <tr><td><code>T_MdpReadCpuTemp</code> reads through Tc3_IPCDiag instead of Tc2_MDP. Its members are unchanged.</td><td>Tc3_IPCDiag must be installed. tcpkg installs it with the package; a manual install of the library needs it from the stable feed.</td></tr>
+  <tr><td><code>T_MdpReadCpuTemp.ErrorId</code> is now an HRESULT from Tc3_IPCDiag, not an ADS error code.</td><td>Any code that compares <code>ErrorId</code> with ADS error numbers.</td></tr>
+  <tr><td>Tc2_MDP is no longer a dependency, so the testing feed is no longer needed.</td><td>Nothing. You can remove the <code>testing</code> source if nothing else uses it.</td></tr>
+</table>
 
 <h3>From 4.0.0.0 to 4.1.0.0</h3>
 <table>
@@ -846,7 +850,8 @@ persistentWriter();</code></pre>
   <tr><td>A controller integrates too fast or too slow</td><td>It is called more than once per cycle, or the library is older than 4.1.0.0 and the controller is outside the first task.</td></tr>
   <tr><td><code>T_Task</code> reports the wrong cycle time or name</td><td>It is reading the first task. Call <code>SetToThisTask()</code>.</td></tr>
   <tr><td>A list or dictionary stops growing</td><td>It holds 100 items, the fixed size. <code>AddItem</code> returns <code>FALSE</code>.</td></tr>
-  <tr><td>The build cannot find Tc2_MDP</td><td>Install it from Beckhoff's testing feed (<a href="#start">section 2</a>, step 2).</td></tr>
+  <tr><td>A project on 4.1.0.0 or older cannot find Tc2_MDP, or <code>tcpkg install Intecre.Utilities</code> 4.1.0.0 fails on it</td><td>Those versions need Tc2_MDP 3.3.8, which Beckhoff no longer publishes. Upgrade to 4.2.0.0, which uses Tc3_IPCDiag instead.</td></tr>
+  <tr><td><code>T_MdpReadCpuTemp.Error</code> is set on a PC that is not a Beckhoff IPC</td><td>Tc3_IPCDiag reads the IPC's device manager, which only Beckhoff IPCs and CX controllers have. <code>ErrorId</code> holds the HRESULT.</td></tr>
 </table>
 
 <h2 id="limits"><span class="n">17</span>Limits</h2>
@@ -861,17 +866,16 @@ persistentWriter();</code></pre>
 <ul>
   <li><strong>255 characters</strong> in a <code>T_MaxString</code>: the result of <code>F_Concat3</code> to <code>F_Concat7</code>, and a dictionary key.</li>
   <li><strong>One task per instance.</strong> Use each list, dictionary, ADS block or controller from one task only.</li>
-  <li><strong>Tc2_MDP comes from the testing feed.</strong> <code>T_MdpReadCpuTemp</code> needs it, and Beckhoff does not publish it on the stable feed.</li>
   <li><strong>Older blocks.</strong> These remain so that existing projects keep compiling. Don't use them in new code:
     <ul>
       <li><code>FB_Assert</code> and <code>T_TestBase</code> were written before TcUnit. Use <a href="https://tcunit.org">TcUnit</a> instead.</li>
       <li><code>TGenericCollection</code> is unfinished and does nothing.</li>
     </ul></li>
-  <li><strong>Checked on one setup.</strong> TwinCAT 3.1 build 4026.25 on the user-mode runtime, 5 November 2026: all 171 tests in 32 TcUnit suites pass, including calls over ADS to the test PLC itself and controllers run from a 50 ms second task. Not yet checked on a real-time target.</li>
+  <li><strong>Checked on one setup.</strong> TwinCAT 3.1 build 4026.25 on the user-mode runtime, 10 November 2026, with 4.2.0.0: all 171 tests in 32 TcUnit suites pass, including calls over ADS to the test PLC itself and controllers run from a 50 ms second task. Not yet checked: a real-time target, and <code>T_MdpReadCpuTemp</code> on a Beckhoff IPC since the move to Tc3_IPCDiag; no test covers it, because the user-mode runtime has no IPC diagnostics to read.</li>
 </ul>
 
 <footer>
-  Intecre Utilities &middot; <code>Intecre.Utilities</code> 4.1.0.0 &middot; source, tests and releases at <a href="https://github.com/Intecre/twincat-utils">github.com/Intecre/twincat-utils</a>.
+  Intecre Utilities &middot; <code>Intecre.Utilities</code> 4.2.0.0 &middot; source, tests and releases at <a href="https://github.com/Intecre/twincat-utils">github.com/Intecre/twincat-utils</a>.
 </footer>
 
 </main>

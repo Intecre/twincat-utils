@@ -42,7 +42,11 @@
     <SelectedLibraryCategories>
       <Id>{d7292350-a6c3-11e8-98d0-529269fb1459}</Id>
     </SelectedLibraryCategories>
-    <Description>4.1.0.0 - controller and persistent-data fixes.
+    <Description>4.2.0.0 - CPU temperature through Tc3_IPCDiag.
+  - Changed: T_MdpReadCpuTemp reads the CPU temperature with Tc3_IPCDiag (FB_IPCDiag_Register, FB_IPCDiag_ReadParameter) instead of Tc2_MDP. Its members are unchanged; ErrorId now holds the HRESULT from Tc3_IPCDiag rather than an ADS error code.
+  - Dependencies: Tc2_MDP is gone, so nothing comes from Beckhoff's testing feed any more; Tc3_IPCDiag comes from the stable feed.
+
+4.1.0.0 - controller and persistent-data fixes.
   - Fixed: FB_I_Controller, and so FB_PI_Controller, used the cycle time of the first PLC task whatever task called it. It now uses the calling task.
   - Fixed: T_WritePersistentData.SetConfig did nothing. It now sets the write period and ADS port, and returns FALSE without changing them for a zero period or port 0.
   - Added: T_WritePersistentData.WritePeriod and T_WritePersistentData.AdsPort read-only properties.
@@ -423,10 +427,6 @@
       <DefaultResolution>Tc2_Math, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_Math</Namespace>
     </PlaceholderReference>
-    <PlaceholderReference Include="Tc2_MDP">
-      <DefaultResolution>Tc2_MDP, * (Beckhoff Automation GmbH)</DefaultResolution>
-      <Namespace>Tc2_MDP</Namespace>
-    </PlaceholderReference>
     <PlaceholderReference Include="Tc2_Standard">
       <DefaultResolution>Tc2_Standard, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_Standard</Namespace>
@@ -438,6 +438,10 @@
     <PlaceholderReference Include="Tc2_Utilities">
       <DefaultResolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_Utilities</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="Tc3_IPCDiag">
+      <DefaultResolution>Tc3_IPCDiag, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc3_IPCDiag</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>

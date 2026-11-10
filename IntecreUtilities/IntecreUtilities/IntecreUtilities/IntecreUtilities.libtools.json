@@ -28,11 +28,6 @@
         "source": "stable"
       },
       {
-        "id": "TwinCAT.XAE.PLC.Lib.Tc2_MDP",
-        "version": "3.3.8",
-        "source": "testing"
-      },
-      {
         "id": "TwinCAT.XAE.PLC.Lib.Tc2_Standard",
         "version": "3.4.7",
         "source": "stable"
@@ -45,6 +40,11 @@
       {
         "id": "TwinCAT.XAE.PLC.Lib.Tc2_Utilities",
         "version": "3.10.8",
+        "source": "stable"
+      },
+      {
+        "id": "TwinCAT.XAE.PLC.Lib.Tc3_IPCDiag",
+        "version": "1.2.6",
         "source": "stable"
       },
       {

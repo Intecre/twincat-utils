@@ -1,31 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="T_MdpReadCpuTemp" Id="{e0065e76-d33a-4e1b-a8bc-52fca8279681}" SpecialFunc="None">
-    <Declaration><![CDATA[/// cyclically reads the  cpu temp at specified update period. Default is 500ms.
+    <Declaration><![CDATA[/// cyclically reads the cpu temp at the update period (default 500 ms) through Tc3_IPCDiag.
 {attribute 'contains_implicit_enum'}
 FUNCTION_BLOCK T_MdpReadCpuTemp
 VAR
-   /// local read                
-   amsNetId : STRING := '';
-   mdpAddr : ST_MDP_Addr;
    updateTimer : TON := (PT := TIME#500ms);
-   readMdpElement : FB_MDP_ReadElement;
-   /// returned from MDP read element 
-   rawData : UINT;
+   /// finds the IPC diagnostic modules once; read by readCpuTemp
+   diagRegister : FB_IPCDiag_Register;
+   readCpuTemp : FB_IPCDiag_ReadParameter;
+   registered : BOOL;
    _cpuTemp : INT;
+   _error : BOOL;
+   _errorId : UDINT;
    {attribute 'implicit_enum_type' := ''}
    state : (
-      mrctInit := 0, // initiate state machine (set parameters)
+      mrctInit := 0, // waiting for the update timer
+      mrctRegister,
+      mrctWaitForRegister,
       mrctReadCpuTemp,
-      mrctWaitForReadComplete,
-      mrctProcessCpuTemp
+      mrctWaitForReadComplete
    );
-END_VAR
-VAR CONSTANT
-   /// from IPC Diagnostics Manual V1.8, p63 
-   CPU_PROPERTIES_TABLE_NUMBER : BYTE := 1;
-   /// from IPC Diagnostics Manual V1.8, p63 
-   CPU_TEMP_SUB_INDEX_OF_CPU_PROPS_TABLE : BYTE := 3;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -33,9 +28,24 @@ END_VAR
 
    mrctInit:
 
-      // timer starts the read process.
-      state :=
-         SEL(updateTimer.Q, state, mrctReadCpuTemp);
+      IF updateTimer.Q THEN
+         state := SEL(registered, mrctRegister, mrctReadCpuTemp);
+      END_IF
+
+   mrctRegister:
+
+      state := mrctWaitForRegister;
+
+   mrctWaitForRegister:
+
+      IF NOT diagRegister.bBusy THEN
+
+         registered := NOT diagRegister.bError;
+         _error := diagRegister.bError;
+         _errorId := SEL(diagRegister.bError, 0, TO_UDINT(diagRegister.hrErrorCode));
+         state := SEL(registered, mrctInit, mrctReadCpuTemp);
+
+      END_IF
 
    mrctReadCpuTemp:
 
@@ -43,20 +53,19 @@ END_VAR
 
    mrctWaitForReadComplete:
 
-      IF NOT readMdpElement.bBusy THEN
+      IF NOT readCpuTemp.bBusy THEN
 
-         state := mrctProcessCpuTemp;
+         IF readCpuTemp.bError THEN
+            _error := TRUE;
+            _errorId := TO_UDINT(readCpuTemp.hrErrorCode);
+         ELSE
+            _errorId := TO_UDINT(readCpuTemp.GetParameter(pBuffer := ADR(_cpuTemp), nBufferSize := SIZEOF(_cpuTemp)));
+            _error := _errorId <> 0;
+         END_IF
+
+         state := mrctInit;
 
       END_IF
-
-   mrctProcessCpuTemp:
-
-      IF NOT readMdpElement.bError THEN
-         MEMCPY(ADR(_cpuTemp), ADR(rawData), SIZEOF(rawData));
-
-      END_IF
-
-      state := mrctInit;
 
 ELSE
 
@@ -68,18 +77,14 @@ updateTimer(
    IN := state = mrctInit
 );
 
-mdpAddr.nArea := INT_TO_BYTE(eMDP_Area_ConfigArea);
-mdpAddr.nTableId := CPU_PROPERTIES_TABLE_NUMBER;
-mdpAddr.nSubIdx := CPU_TEMP_SUB_INDEX_OF_CPU_PROPS_TABLE;
+diagRegister(
+   bExecute := state = mrctRegister
+);
 
-readMdpElement(
+readCpuTemp(
    bExecute := state = mrctReadCpuTemp,
-   eModuleType := E_MDP_ModuleType.eMDP_ModT_CPU,
-   stMDP_Addr := mdpAddr,
-   iModIdx := 0,
-   pDstBuf := ADR(rawData),
-   cbDstBufLen := SIZEOF(rawData),
-   sAmsNetId := amsNetId,
+   eParameterKey := E_IPCDiag_ParameterKey.CPU_Temp,
+   fbRegister := diagRegister
 );]]></ST>
     </Implementation>
     <Property Name="Busy" Id="{fdefc8c5-2d51-4f3f-b7dc-6050cfc8022e}">
@@ -111,7 +116,7 @@ PROPERTY Error : BOOL
       <Get Name="Get" Id="{146efe53-e3fc-4f51-aa4d-8a47191b0902}">
         <Declaration><![CDATA[]]></Declaration>
         <Implementation>
-          <ST><![CDATA[Error := NOT Busy AND readMdpElement.bError;]]></ST>
+          <ST><![CDATA[Error := NOT Busy AND _error;]]></ST>
         </Implementation>
       </Get>
     </Property>
@@ -122,7 +127,7 @@ PROPERTY ErrorId : UDINT
       <Get Name="Get" Id="{416a38a4-c638-4f00-a26b-9c06c0826534}">
         <Declaration><![CDATA[]]></Declaration>
         <Implementation>
-          <ST><![CDATA[ErrorId := SEL(Busy, readMdpElement.nErrID, 0);]]></ST>
+          <ST><![CDATA[ErrorId := SEL(Busy, _errorId, 0);]]></ST>
         </Implementation>
       </Get>
     </Property>
@@ -139,25 +144,5 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="T_MdpReadCpuTemp">
-      <LineId Id="260" Count="50" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="T_MdpReadCpuTemp.Busy.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="T_MdpReadCpuTemp.CpuTemp.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="T_MdpReadCpuTemp.Error.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="T_MdpReadCpuTemp.ErrorId.Get">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="T_MdpReadCpuTemp.SetUpdateTimerValue">
-      <LineId Id="28" Count="2" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

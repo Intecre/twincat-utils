@@ -4,12 +4,12 @@
     <Declaration><![CDATA[FUNCTION_BLOCK ProjectInformation_Tests EXTENDS TcUnit.FB_TestSuite
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[Test_VersionIsFourPointOne();
+      <ST><![CDATA[Test_VersionIsFourPointTwo();
 Test_TitleAndCompany();
 ]]></ST>
     </Implementation>
-    <Method Name="Test_VersionIsFourPointOne" Id="{a479a1da-6388-4562-8a17-5e0761ca0380}">
-      <Declaration><![CDATA[METHOD PRIVATE Test_VersionIsFourPointOne
+    <Method Name="Test_VersionIsFourPointTwo" Id="{a479a1da-6388-4562-8a17-5e0761ca0380}">
+      <Declaration><![CDATA[METHOD PRIVATE Test_VersionIsFourPointTwo
 VAR
   version : ST_LibVersion;
 END_VAR
@@ -18,9 +18,9 @@ END_VAR
         <ST><![CDATA[TcUnit.TEST(__POUNAME());
 
 version := F_GetVersion();
-AssertEquals_STRING(Expected := '4.1.0.0', Actual := version.sVersion, Message := 'library version string');
+AssertEquals_STRING(Expected := '4.2.0.0', Actual := version.sVersion, Message := 'library version string');
 AssertEquals_UINT(Expected := 4, Actual := version.iMajor, Message := 'major version');
-AssertEquals_UINT(Expected := 1, Actual := version.iMinor, Message := 'minor version');
+AssertEquals_UINT(Expected := 2, Actual := version.iMinor, Message := 'minor version');
 
 TEST_FINISHED_NAMED(__POUNAME());
 ]]></ST>
